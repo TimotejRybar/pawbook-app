@@ -51,6 +51,7 @@ kotlin {
             implementation("io.ktor:ktor-client-serialization:2.3.10")
             implementation("io.ktor:ktor-client-logging:2.3.10")
             implementation("io.ktor:ktor-client-okhttp:2.3.10")
+            implementation("io.insert-koin:koin-android:3.6.0-wasm-alpha2")
         }
 
 
@@ -65,8 +66,9 @@ kotlin {
             implementation("org.jetbrains.androidx.navigation:navigation-compose:2.8.0-alpha01")
             implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.5.0")
             implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1-Beta")
-            implementation("androidx.lifecycle:lifecycle-viewmodel:2.8.0-rc01")
-            implementation("io.insert-koin:koin-core:3.5.6")
+            implementation("androidx.lifecycle:lifecycle-viewmodel:2.7.0")
+            implementation("io.insert-koin:koin-core:3.6.0-wasm-alpha2")
+            implementation("io.insert-koin:koin-compose:3.6.0-wasm-alpha2")
             implementation("de.jensklingenberg.ktorfit:ktorfit-lib:1.13.0")
         }
 
@@ -113,6 +115,11 @@ android {
         versionCode = 1
         versionName = "1.0"
     }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.13"
+    }
+
     packaging {
 
         resources {

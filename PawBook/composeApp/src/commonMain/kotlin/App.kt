@@ -96,9 +96,9 @@ fun App(navController: NavHostController = rememberNavController()) {
                             .padding(5.dp)
                     ) {
 
-                        val loginViewModel = LoginViewModel()
+
                         composable(route = AppScreen.Login.name) {
-                            LoginScreen(loginViewModel) {
+                            LoginScreen() {
                                 navController.navigate(AppScreen.MyPets.name)
                             }
                         }

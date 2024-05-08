@@ -42,12 +42,13 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
+import org.koin.compose.koinInject
 import pawbook.composeapp.generated.resources.Res
 import pawbook.composeapp.generated.resources.pawbook_logo
 import presentation.theme.colors.LocalAppColors
 
 @Composable
-fun LoginScreen(viewModel: LoginViewModel, onLoginSucces: () -> Unit ) {
+fun LoginScreen(viewModel: LoginViewModel = koinInject(), onLoginSucces: () -> Unit ) {
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier.fillMaxSize()
@@ -60,7 +61,7 @@ fun LoginScreen(viewModel: LoginViewModel, onLoginSucces: () -> Unit ) {
             Spacer(modifier = Modifier.height(20.dp))
             LogInForm(){ username, password ->
                 viewModel.login(username, password)
-                onLoginSucces()
+                //onLoginSucces()
             }
             ForgotPassword()
             CreateAccount() {

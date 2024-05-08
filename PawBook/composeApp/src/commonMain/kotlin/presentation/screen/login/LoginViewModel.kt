@@ -9,11 +9,13 @@ import org.koin.core.component.inject
 
 
 class LoginViewModel() : ViewModel(), KoinComponent {
-    val loginRepository: LoginRepositoryImpl by inject()
+    private val loginRepository: LoginRepositoryImpl by inject()
 
     fun login(email: String, password: String) {
         viewModelScope.launch {
-            loginRepository.login(email, password)
+            loginRepository.login(email, password).collect {
+                it.data
+            }
         }
     }
 
