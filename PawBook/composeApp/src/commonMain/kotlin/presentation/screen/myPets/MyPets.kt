@@ -23,8 +23,8 @@ import androidx.compose.ui.unit.sp
 import domain.model.PetItem
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
-import timotask.composeapp.generated.resources.Res
-import timotask.composeapp.generated.resources.sofka
+import pawbook.composeapp.generated.resources.Res
+import pawbook.composeapp.generated.resources.sofka
 import presentation.theme.colors.LocalAppColors
 import presentation.navbar.Navbar
 import core.util.PetUtils

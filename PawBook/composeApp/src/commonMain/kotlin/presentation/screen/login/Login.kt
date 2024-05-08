@@ -42,8 +42,8 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
-import timotask.composeapp.generated.resources.Res
-import timotask.composeapp.generated.resources.pawbook_logo
+import pawbook.composeapp.generated.resources.Res
+import pawbook.composeapp.generated.resources.pawbook_logo
 import presentation.theme.colors.LocalAppColors
 
 @Composable

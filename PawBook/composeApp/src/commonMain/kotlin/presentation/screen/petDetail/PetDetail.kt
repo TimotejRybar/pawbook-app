@@ -48,8 +48,8 @@ import io.ktor.util.date.GMTDate
 import domain.model.enums.PetPropFieldType
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
-import timotask.composeapp.generated.resources.Res
-import timotask.composeapp.generated.resources.sofka
+import pawbook.composeapp.generated.resources.Res
+import pawbook.composeapp.generated.resources.sofka
 import presentation.theme.colors.LocalAppColors
 import presentation.screen.login.StyledButton
 import utils.compose.PetPropFieldUtils

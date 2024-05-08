@@ -96,7 +96,7 @@ kotlin {
 
 
 android {
-    namespace = "sk.uplab.timotask"
+    namespace = "sk.uplab.pawbook"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
@@ -105,7 +105,7 @@ android {
     sourceSets["test"].java.srcDirs("src/commonTest/kotlin")
 
     defaultConfig {
-        applicationId = "sk.uplab.timotask"
+        applicationId = "sk.uplab.pawbook"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = 1
@@ -148,7 +148,7 @@ dependencies {
 
 /*
 multiplatformResources {
-   resourcesPackage = "sk.uplab.timotask" // required
+   resourcesPackage = "sk.uplab.pawbook" // required
    resourcesClassName = "MR" // optional, default MR
    resourcesVisibility = MRVisibility.Internal
 }

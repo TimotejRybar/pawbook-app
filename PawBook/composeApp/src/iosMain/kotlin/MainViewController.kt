@@ -1,4 +1,4 @@
-package sk.uplab.timotask
+package sk.uplab.pawbook
 
 import App
 import androidx.compose.ui.window.ComposeUIViewController

@@ -1,4 +1,4 @@
-rootProject.name = "TimoTask"
+rootProject.name = "PawBook"
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 pluginManagement {
