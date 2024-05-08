@@ -1,4 +1,4 @@
-package common.enums
+package core.enums
 
 enum class Gender {
     BOY,

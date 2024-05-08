@@ -47,7 +47,7 @@ import pawbook.composeapp.generated.resources.pawbook_logo
 import presentation.theme.colors.LocalAppColors
 
 @Composable
-fun LoginScreen(navController: NavController, onLoginSucces: () -> Unit ) {
+fun LoginScreen(viewModel: LoginViewModel, onLoginSucces: () -> Unit ) {
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier.fillMaxSize()
@@ -59,7 +59,7 @@ fun LoginScreen(navController: NavController, onLoginSucces: () -> Unit ) {
             Logo()
             Spacer(modifier = Modifier.height(20.dp))
             LogInForm(){ username, password ->
-                //viewModel.login(username, password)
+                viewModel.login(username, password)
                 onLoginSucces()
             }
             ForgotPassword()

@@ -20,6 +20,9 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import core.di.initKoin
+import core.di.provideKtorfit
+import core.di.provideLoginApi
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import presentation.theme.colors.LightThemeAppColors
@@ -29,6 +32,13 @@ import presentation.navigation.Navigation
 import presentation.screen.myPets.MyPets
 import presentation.screen.petDetail.PetDetail
 import core.util.PetUtils
+import data.remote.LoginApi
+import data.repository.LoginRepositoryImpl
+import domain.repository.LoginRepository
+import org.koin.core.KoinApplication
+import org.koin.dsl.module
+import presentation.screen.login.LoginScreen
+import presentation.screen.login.LoginViewModel
 
 enum class AppScreen() {
     Login(),
@@ -40,7 +50,9 @@ enum class AppScreen() {
 @Composable
 @Preview
 fun App(navController: NavHostController = rememberNavController()) {
-
+    initKoin(appDeclaration = {
+        modules(appModule())
+    })
     CompositionLocalProvider(
         LocalAppColors provides LightThemeAppColors
     ) {
@@ -50,7 +62,7 @@ fun App(navController: NavHostController = rememberNavController()) {
             val scope = rememberCoroutineScope()
 
             Navigation(drawerState, onNavigate = {
-                when(it) {
+                when (it) {
                     AppScreen.Login -> navController.navigate(AppScreen.Login.name)
                     AppScreen.PetDetail -> navController.navigate(AppScreen.PetDetail.name)
                     AppScreen.MyPets -> navController.navigate(AppScreen.MyPets.name)
@@ -84,19 +96,13 @@ fun App(navController: NavHostController = rememberNavController()) {
                             .padding(5.dp)
                     ) {
 
-
+                        val loginViewModel = LoginViewModel()
                         composable(route = AppScreen.Login.name) {
-                            PetDetailExtended(PetUtils.getTestPet()) {
+                            LoginScreen(loginViewModel) {
+                                navController.navigate(AppScreen.MyPets.name)
                             }
                         }
 
-                        /*
-                    composable(route = AppScreen.Login.name) {
-                        LoginScreen(navController) {
-                            navController.navigate(AppScreen.MyPets.name)
-                        }
-                    }
-                    */
 
                         composable(route = AppScreen.MyPets.name) {
                             MyPets(onItemClick = {
@@ -115,4 +121,12 @@ fun App(navController: NavHostController = rememberNavController()) {
         }
     }
 }
+
+fun appModule() = module {
+    factory { provideKtorfit() }
+    single<LoginRepositoryImpl> { LoginRepositoryImpl() }
+    single<LoginViewModel> { LoginViewModel()}
+    single { provideLoginApi(get()) }
+}
+
 

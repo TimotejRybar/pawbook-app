@@ -5,7 +5,8 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsCompose)
     //id("dev.icerock.mobile.multiplatform-resources")
-    alias(libs.plugins.kapt)
+    id("de.jensklingenberg.ktorfit") version "2.0.0-beta1"
+
 }
 
 kotlin {
@@ -49,7 +50,6 @@ kotlin {
             implementation("io.ktor:ktor-client-serialization:2.3.10")
             implementation("io.ktor:ktor-client-logging:2.3.10")
             implementation("io.ktor:ktor-client-okhttp:2.3.10")
-
         }
 
 
@@ -63,9 +63,10 @@ kotlin {
             implementation(libs.ktor.core)
             implementation("org.jetbrains.androidx.navigation:navigation-compose:2.8.0-alpha01")
             implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.5.0")
+            implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1-Beta")
             implementation("androidx.lifecycle:lifecycle-viewmodel:2.8.0-rc01")
-
-            implementation("me.tatarka.inject:kotlin-inject-runtime:0.6.3")
+            implementation("io.insert-koin:koin-core:3.5.6")
+            implementation("de.jensklingenberg.ktorfit:ktorfit-lib:2.0.0-beta1")
         }
 
         iosMain.dependencies {
@@ -131,19 +132,19 @@ android {
         debugImplementation(libs.compose.ui.tooling)
         //commonMainApi("dev.icerock.moko:resources-compose:0.24.0-alpha-4")
         //commonTestImplementation("dev.icerock.moko:resources-test:0.24.0-alpha-4")
-        androidTestDebugImplementation("androidx.compose.ui:ui-test-manifest:1.6.6")
-        androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.6.6")
-        androidTestImplementation("androidx.test.ext:junit:1.1.2")
-        androidTestImplementation("androidx.test.espresso:espresso-core:3.3.0")
+        androidTestDebugImplementation("androidx.compose.ui:ui-test-manifest:1.6.7")
+        androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.6.7")
+        androidTestImplementation("androidx.test.ext:junit:1.1.5")
+        androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
 
     }
 
 }
 dependencies {
-    testImplementation("junit:junit:4.12")
+    testImplementation("junit:junit:4.13.2")
     implementation(libs.androidx.junit.ktx)
     testImplementation("org.testng:testng:6.9.6")
-    commonTestImplementation("junit:junit:4.13.1")
+    commonTestImplementation("junit:junit:4.13.2")
 }
 
 /*

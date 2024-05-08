@@ -5,7 +5,8 @@ plugins {
     alias(libs.plugins.androidLibrary) apply false
     alias(libs.plugins.jetbrainsCompose) apply false
     alias(libs.plugins.kotlinMultiplatform) apply false
-    alias(libs.plugins.kapt) apply false
+    id("de.jensklingenberg.ktorfit") version "2.0.0-beta1"
+
 }
 
 buildscript {
@@ -15,8 +16,6 @@ buildscript {
         mavenCentral()
         google()
     }
-
-
 
     dependencies {
         //classpath("dev.icerock.moko:resources-generator:0.24.0-beta-1")
