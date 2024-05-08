@@ -5,7 +5,8 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsCompose)
     //id("dev.icerock.mobile.multiplatform-resources")
-    id("de.jensklingenberg.ktorfit") version "2.0.0-beta1"
+    alias(libs.plugins.ksp)
+    id("de.jensklingenberg.ktorfit")
 
 }
 
@@ -66,7 +67,7 @@ kotlin {
             implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1-Beta")
             implementation("androidx.lifecycle:lifecycle-viewmodel:2.8.0-rc01")
             implementation("io.insert-koin:koin-core:3.5.6")
-            implementation("de.jensklingenberg.ktorfit:ktorfit-lib:2.0.0-beta1")
+            implementation("de.jensklingenberg.ktorfit:ktorfit-lib:1.13.0")
         }
 
         iosMain.dependencies {
@@ -145,6 +146,11 @@ dependencies {
     implementation(libs.androidx.junit.ktx)
     testImplementation("org.testng:testng:6.9.6")
     commonTestImplementation("junit:junit:4.13.2")
+
+    val ktorfitVersion = "1.13.0"
+    add("kspCommonMainMetadata", "de.jensklingenberg.ktorfit:ktorfit-ksp:$ktorfitVersion")
+    add("kspAndroid","de.jensklingenberg.ktorfit:ktorfit-ksp:$ktorfitVersion")
+
 }
 
 /*

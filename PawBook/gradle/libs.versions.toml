@@ -53,8 +53,8 @@ kotest-property = { module = "io.kotest:kotest-property", version.ref = "kotest"
 turbine-turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
 
 [plugins]
-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 androidLibrary = { id = "com.android.library", version.ref = "agp" }
 jetbrainsCompose = { id = "org.jetbrains.compose", version.ref = "compose-plugin" }
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+ksp = { id ="com.google.devtools.ksp", version = "1.9.23-1.0.20" }

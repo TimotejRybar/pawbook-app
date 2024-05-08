@@ -5,8 +5,8 @@ plugins {
     alias(libs.plugins.androidLibrary) apply false
     alias(libs.plugins.jetbrainsCompose) apply false
     alias(libs.plugins.kotlinMultiplatform) apply false
-    id("de.jensklingenberg.ktorfit") version "2.0.0-beta1"
-
+    alias(libs.plugins.ksp) apply false
+    id("de.jensklingenberg.ktorfit") version "1.13.0"
 }
 
 buildscript {
