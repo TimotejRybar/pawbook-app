@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<resources>
+    <string name="app_name">TimoTask</string>
+    <string name="open_photo_detail">Zobrazit detail fotky</string>
+    <string name="gallery_title">Podívej se na fotku </string>
+    <string name="string_in">v</string>
+    <string name="string_in2">ve</string>
+    <string name="your_girl">tvé </string>
+    <string name="your_boy">tvého </string>
+    <string name="photo_description">fotka miminka</string>
+    <string name="gallery_subtitle">Zde můžeš sledovat růst tvého miminka měsíc po měsíci. Každý měsíc zadej fotku a pak si prohlížej, jak se mění!</string>
+    <string name="in_first_month"> měsíci</string>
+    <string name="in_second_month">v druhém</string>
+    <string name="in_third_month">v třetím</string>
+    <string name="in_fourt_month">v čtvrtém</string>
+    <string name="in_fifth_month">v pátém</string>
+    <string name="in_sixth_month">v šestém</string>
+    <string name="in_seventh_month">v sedmém</string>
+    <string name="in_eight_month">v osmém</string>
+    <string name="in_ninth_month">v devátém</string>
+    <string name="in_eleven_month">v desátém</string>
+    <string name="in_tenth_month">v jedenáctém</string>
+    <string name="in_eleventh_month">ve dvanáctém měsíci</string>
+    <string name="in_twelfth_month">ve třináctém</string>
+    <string name="in_thirteenth_month">ve čtrnáctém měsíci</string>
+    <string name="in_fourteenth_month">v patnáctém měsíci</string>
+
+</resources>

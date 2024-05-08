@@ -1,0 +1,157 @@
+import com.android.build.api.dsl.Packaging
+
+plugins {
+    alias(libs.plugins.kotlinMultiplatform)
+    alias(libs.plugins.androidApplication)
+    alias(libs.plugins.jetbrainsCompose)
+    //id("dev.icerock.mobile.multiplatform-resources")
+    alias(libs.plugins.kapt)
+}
+
+kotlin {
+    androidTarget {
+        compilations.all {
+            kotlinOptions {
+                jvmTarget = "11"
+            }
+        }
+    }
+
+    androidTarget()
+
+    task("testClasses")
+
+    listOf(
+        iosX64(),
+        iosArm64(),
+        iosSimulatorArm64()
+    ).forEach { iosTarget ->
+        iosTarget.binaries.framework {
+            baseName = "ComposeApp"
+            isStatic = true
+        }
+    }
+
+    sourceSets {
+
+        /*
+        getByName("androidMain").dependsOn(commonMain.get())
+        getByName("iosArm64Main").dependsOn(commonMain.get())
+        getByName("iosX64Main").dependsOn(commonMain.get())
+        getByName("iosSimulatorArm64Main").dependsOn(commonMain.get())
+        */
+
+        androidMain.dependencies {
+            implementation(libs.compose.ui.tooling.preview)
+            implementation(libs.androidx.activity.compose)
+            implementation("io.ktor:ktor-client-android:2.3.10")
+            implementation("io.ktor:ktor-client-json:2.3.10")
+            implementation("io.ktor:ktor-client-serialization:2.3.10")
+            implementation("io.ktor:ktor-client-logging:2.3.10")
+            implementation("io.ktor:ktor-client-okhttp:2.3.10")
+
+        }
+
+
+        commonMain.dependencies {
+            implementation(compose.runtime)
+            implementation(compose.foundation)
+            implementation(compose.material3)
+            implementation(compose.ui)
+            implementation(compose.components.resources)
+            implementation(compose.components.uiToolingPreview)
+            implementation(libs.ktor.core)
+            implementation("org.jetbrains.androidx.navigation:navigation-compose:2.8.0-alpha01")
+            implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.5.0")
+            implementation("androidx.lifecycle:lifecycle-viewmodel:2.8.0-rc01")
+
+            implementation("me.tatarka.inject:kotlin-inject-runtime:0.6.3")
+        }
+
+        iosMain.dependencies {
+            implementation(libs.ktor.ios)
+        }
+
+        commonTest {
+            dependencies {
+                implementation(kotlin("test"))
+                implementation(kotlin("test-common"))
+                implementation(kotlin("test-annotations-common"))
+
+                implementation(libs.kotest.framework.engine)
+                implementation(libs.kotest.assertions.core)
+                implementation(libs.kotest.property)
+                implementation(libs.ktor.mock)
+                implementation(libs.coroutines.test)
+                implementation(libs.turbine.turbine)
+
+                @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
+                implementation(compose.uiTest)
+
+            }
+        }
+    }
+}
+
+
+
+android {
+    namespace = "sk.uplab.timotask"
+    compileSdk = libs.versions.android.compileSdk.get().toInt()
+
+    sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
+    //sourceSets["main"].res.srcDirs("src/androidMain/res")
+    sourceSets["main"].res.srcDirs("src/commonMain/resources", "src/androidMain/resources")
+    sourceSets["test"].java.srcDirs("src/commonTest/kotlin")
+
+    defaultConfig {
+        applicationId = "sk.uplab.timotask"
+        minSdk = libs.versions.android.minSdk.get().toInt()
+        targetSdk = libs.versions.android.targetSdk.get().toInt()
+        versionCode = 1
+        versionName = "1.0"
+    }
+    packaging {
+
+        resources {
+            excludes += "/META-INF/{AL2.0,LGPL2.1}"
+        }
+    }
+    buildTypes {
+        getByName("release") {
+            isMinifyEnabled = false
+        }
+    }
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
+    }
+
+    dependencies {
+        debugImplementation(libs.compose.ui.tooling)
+        //commonMainApi("dev.icerock.moko:resources-compose:0.24.0-alpha-4")
+        //commonTestImplementation("dev.icerock.moko:resources-test:0.24.0-alpha-4")
+        androidTestDebugImplementation("androidx.compose.ui:ui-test-manifest:1.6.6")
+        androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.6.6")
+        androidTestImplementation("androidx.test.ext:junit:1.1.2")
+        androidTestImplementation("androidx.test.espresso:espresso-core:3.3.0")
+
+    }
+
+}
+dependencies {
+    testImplementation("junit:junit:4.12")
+    implementation(libs.androidx.junit.ktx)
+    testImplementation("org.testng:testng:6.9.6")
+    commonTestImplementation("junit:junit:4.13.1")
+}
+
+/*
+multiplatformResources {
+   resourcesPackage = "sk.uplab.timotask" // required
+   resourcesClassName = "MR" // optional, default MR
+   resourcesVisibility = MRVisibility.Internal
+}
+*/
+
+
