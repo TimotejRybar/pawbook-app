@@ -22,10 +22,12 @@ class LoginViewModel() : ViewModel(), KoinComponent {
     fun login(email: String, password: String) {
 
         viewModelScope.launch {
-            loginRepository.login(email, password).collect {
+            loginRepository.login(email, password).collect { it ->
                 when(it) {
                     is Resources.Error -> {
-
+                        if(it.message == "no_internet") _state.update { LoginState.NO_INTERNET }
+                        if(it.message == "internal_error") _state.update { LoginState.ERROR }
+                        if(it.message == "invalid_login") _state.update { LoginState.INVALID_LOGIN }
                     }
                     is Resources.Loading -> {
                         // show loading on UI

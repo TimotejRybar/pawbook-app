@@ -1,4 +1,5 @@
 package domain.model.request
 
 @kotlinx.serialization.Serializable
-data class LoginRequest(val email: String, val passsword: String)
+ class LoginRequest(val email: String? = null, val password: String? = null) {
+ }

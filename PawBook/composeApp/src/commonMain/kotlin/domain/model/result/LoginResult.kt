@@ -1,8 +1,11 @@
 package domain.model.result
 
-class LoginResult(
-    error: Boolean,
-    message: String,
-    val accessToken: String,
-    val refreshToken: String
-) : BaseResult(error, message)
+import kotlinx.serialization.Serializable
+
+@Serializable
+data class LoginResult(
+    //val error: Boolean,
+    val message: String,
+    //val accessToken: String,
+    //val refreshToken: String
+)

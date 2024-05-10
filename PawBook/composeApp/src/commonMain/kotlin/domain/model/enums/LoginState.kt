@@ -5,5 +5,6 @@ enum class LoginState {
     LOADING,
     ERROR,
     SUCCESS,
-    NO_INTERNET
+    NO_INTERNET,
+    INVALID_LOGIN
 }

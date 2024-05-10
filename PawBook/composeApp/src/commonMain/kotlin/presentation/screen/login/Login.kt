@@ -15,8 +15,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -41,7 +43,6 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 import domain.model.enums.LoginState
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
@@ -51,6 +52,7 @@ import pawbook.composeapp.generated.resources.pawbook_logo
 import presentation.components.loading.LoadingAnimation
 import presentation.theme.colors.LocalAppColors
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginScreen(viewModel: LoginViewModel = koinInject(), onLoginSucces: () -> Unit ) {
     val loginState by viewModel.state.collectAsState()
@@ -65,7 +67,7 @@ fun LoginScreen(viewModel: LoginViewModel = koinInject(), onLoginSucces: () -> U
         ) {
             Logo()
             Spacer(modifier = Modifier.height(20.dp))
-            LogInForm(){ username, password ->
+            LogInForm() { username, password ->
                 viewModel.login(username, password)
                 //onLoginSucces()
             }
@@ -77,10 +79,32 @@ fun LoginScreen(viewModel: LoginViewModel = koinInject(), onLoginSucces: () -> U
             Footer()
         }
         AnimatedContent(targetState = loginState) { targetCount ->
-            if(targetCount == LoginState.LOADING) {
+            if (targetCount == LoginState.LOADING) {
                 LoadingAnimation()
-            } else {
+            }
 
+            val openAlertDialog = remember { mutableStateOf(true) }
+
+            if (targetCount == LoginState.NO_INTERNET) {
+                if(openAlertDialog.value) {
+                    BasicAlertDialog(onDismissRequest = { openAlertDialog.value = false }) {
+                        Card {
+                            Text("Please check your internet connection", Modifier.padding(24.dp))
+                        }
+                    }
+                }
+            }
+
+            val openErrorDialog = remember { mutableStateOf(true) }
+
+            if(targetCount == LoginState.INVALID_LOGIN) {
+                if(openErrorDialog.value) {
+                    BasicAlertDialog(onDismissRequest = { openErrorDialog.value = false }) {
+                        Card {
+                            Text("Invalid e-mail or password", Modifier.padding(24.dp))
+                        }
+                    }
+                }
             }
         }
     }
@@ -116,11 +140,11 @@ fun ForgotPassword() {
 
 @Composable
 fun LogInForm(onLoginSubmit: (username: String, password: String) -> Unit) {
-    var userName = remember { mutableStateOf("")}
+    var email = remember { mutableStateOf("")}
     var password = remember { mutableStateOf("")}
 
-    InputField("Username", userName.value){
-        userName.value = it
+    InputField("E-mail", email.value){
+        email.value = it
     }
     Spacer(modifier = Modifier.height(10.dp))
     InputPasswordField("Password", password.value){
@@ -128,7 +152,7 @@ fun LogInForm(onLoginSubmit: (username: String, password: String) -> Unit) {
     }
     Spacer(modifier = Modifier.height(20.dp))
     LogInButton() {
-        onLoginSubmit(userName.value, password.value)
+        onLoginSubmit(email.value, password.value)
     }
 }
 
@@ -171,15 +195,19 @@ fun InputPasswordField(title: String, value: String, onTextChange: (String) -> U
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun InputField(title: String, value: String, onTextChange: (String) -> Unit) {
+    var isValid by remember { mutableStateOf(false) }
     TextField(
         label = {
             Text(title, color = Color.Black)
         },
         value = value,
-        onValueChange = onTextChange,
+        onValueChange = {
+            isValid = value.isNotEmpty()
+            onTextChange(it)
+        },
+        singleLine = true,
         colors = TextFieldDefaults.colors(
         cursorColor = Color.Black,
         focusedIndicatorColor =  LocalAppColors.current.primary,
@@ -187,8 +215,12 @@ fun InputField(title: String, value: String, onTextChange: (String) -> Unit) {
         focusedContainerColor = Color.Transparent,
         unfocusedContainerColor = Color.Transparent,
         disabledContainerColor = Color.Transparent,
-        )
+        ),
+        isError = !isValid,
     )
+    if (!isValid) {
+        Text(text = "Please enter valid text", color = Color.Red)
+    }
 }
 
 @OptIn(ExperimentalResourceApi::class)

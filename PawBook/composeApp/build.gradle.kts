@@ -7,6 +7,8 @@ plugins {
     //id("dev.icerock.mobile.multiplatform-resources")
     alias(libs.plugins.ksp)
     id("de.jensklingenberg.ktorfit")
+    kotlin("plugin.serialization") version "1.9.22"
+
 
 }
 
@@ -64,13 +66,18 @@ kotlin {
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
             implementation(libs.ktor.core)
+            implementation(libs.ktor.serialization)
+            implementation(libs.ktor.negotiation)
             implementation("org.jetbrains.androidx.navigation:navigation-compose:2.8.0-alpha01")
             implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.5.0")
             implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1-Beta")
             implementation("androidx.lifecycle:lifecycle-viewmodel:2.7.0")
             implementation("io.insert-koin:koin-core:3.5.1")
+            implementation("io.ktor:ktor-client-core:2.3.10")
             implementation("io.insert-koin:koin-compose:1.1.5")
             implementation("de.jensklingenberg.ktorfit:ktorfit-lib:1.13.0")
+            implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
+
         }
 
         iosMain.dependencies {
@@ -87,6 +94,8 @@ kotlin {
                 implementation(libs.kotest.assertions.core)
                 implementation(libs.kotest.property)
                 implementation(libs.ktor.mock)
+                implementation(libs.ktor.negotiation)
+                implementation(libs.ktor.serialization)
                 implementation(libs.coroutines.test)
                 implementation(libs.turbine.turbine)
 
