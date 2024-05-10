@@ -1,5 +1,6 @@
 package presentation.screen.login
 
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -23,6 +24,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -40,15 +42,19 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import domain.model.enums.LoginState
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.koinInject
 import pawbook.composeapp.generated.resources.Res
 import pawbook.composeapp.generated.resources.pawbook_logo
+import presentation.components.loading.LoadingAnimation
 import presentation.theme.colors.LocalAppColors
 
 @Composable
 fun LoginScreen(viewModel: LoginViewModel = koinInject(), onLoginSucces: () -> Unit ) {
+    val loginState by viewModel.state.collectAsState()
+
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier.fillMaxSize()
@@ -69,6 +75,13 @@ fun LoginScreen(viewModel: LoginViewModel = koinInject(), onLoginSucces: () -> U
             }
             Text("Don't Have an Account?", fontSize = 10.sp)
             Footer()
+        }
+        AnimatedContent(targetState = loginState) { targetCount ->
+            if(targetCount == LoginState.LOADING) {
+                LoadingAnimation()
+            } else {
+
+            }
         }
     }
 }

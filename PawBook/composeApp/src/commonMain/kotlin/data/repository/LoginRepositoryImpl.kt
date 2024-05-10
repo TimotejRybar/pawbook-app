@@ -16,8 +16,9 @@ class LoginRepositoryImpl : LoginRepository, KoinComponent {
     private val loginApi: LoginApi by inject()
     override suspend fun login(email: String, password: String): Flow<Resources<LoginResult>> = flow {
         emit(Resources.Loading(true))
-        val loginResult = loginApi.login(LoginRequest(email, password))
-        emit(Resources.Success(loginResult))
+        //val loginResult = loginApi.login(LoginRequest(email, password))
+        //if(loginResult.error) emit(Resources.Error("Invalid e-mail or password"))
+        //emit(Resources.Success(loginResult))
     }
 
     override suspend fun register(email: String, password: String): Flow<Resources<BaseResult>> = flow {
