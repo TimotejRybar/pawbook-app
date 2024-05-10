@@ -22,6 +22,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -37,6 +38,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -66,11 +68,12 @@ fun LoginScreen(viewModel: LoginViewModel = koinInject(), onLoginSucces: () -> U
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Logo()
-            Spacer(modifier = Modifier.height(20.dp))
-            LogInForm() { username, password ->
-                viewModel.login(username, password)
-                //onLoginSucces()
+                LogInForm() { username, password ->
+                viewModel.login(username, password) {
+                    onLoginSucces()
+                }
             }
+            LogInSocial()
             ForgotPassword()
             CreateAccount() {
                 //createAccount...
@@ -111,25 +114,56 @@ fun LoginScreen(viewModel: LoginViewModel = koinInject(), onLoginSucces: () -> U
 }
 
 @Composable
+fun LogInSocial() {
+    StyledButton("Log in with Google") {
+    }
+}
+
+@Composable
 fun Footer() {
     Text("www.pawbook.com", fontSize = 10.sp)
 }
 
 @Composable
 fun CreateAccount(onCreateClick: () -> Unit) {
-    StyledButton("Create", extraHorizontalPadding = 24.dp, onClick = onCreateClick)
+    StyledButton("Create account", extraHorizontalPadding = 24.dp, onClick = onCreateClick)
 }
 
+enum class ButtonStyle{
+    FillPrimary,
+    FillSecondary,
+    OutlinePrimary,
+    OutlineSecondary
+}
 @Composable
-fun StyledButton(text:String, extraHorizontalPadding: Dp, onClick: () -> Unit) {
-    Button(
-        onClick = onClick,
-        modifier = Modifier.shadow(0.dp).fillMaxWidth().padding(64.dp, 0.dp),
-        contentPadding = PaddingValues(12.dp),
-        colors = ButtonDefaults.buttonColors(containerColor = LocalAppColors.current.primary, contentColor = Color.White),
-        shape = RoundedCornerShape(50),
-    ){
-        Text(text, fontSize = 10.sp)
+fun StyledButton(text:String = "", buttonStyle: ButtonStyle = ButtonStyle.FillPrimary, extraHorizontalPadding: Dp = 0.dp, onClick: () -> Unit) {
+    val backgroundColor = if(buttonStyle == ButtonStyle.FillPrimary) LocalAppColors.current.primary else LocalAppColors.current.secondary
+    if(buttonStyle == ButtonStyle.OutlinePrimary || buttonStyle == ButtonStyle.OutlineSecondary) {
+        OutlinedButton(
+            onClick = onClick,
+            modifier = Modifier.shadow(0.dp).fillMaxWidth().padding(64.dp, 0.dp),
+            contentPadding = PaddingValues(12.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = backgroundColor,
+                contentColor = Color.White
+            ),
+            shape = RoundedCornerShape(50),
+        ) {
+            Text(text, fontSize = 10.sp)
+        }
+    } else {
+        Button(
+            onClick = onClick,
+            modifier = Modifier.shadow(0.dp).fillMaxWidth().padding(64.dp, 0.dp),
+            contentPadding = PaddingValues(12.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = backgroundColor,
+                contentColor = Color.White
+            ),
+            shape = RoundedCornerShape(50),
+        ) {
+            Text(text, fontSize = 10.sp)
+        }
     }
 }
 
@@ -143,7 +177,7 @@ fun LogInForm(onLoginSubmit: (username: String, password: String) -> Unit) {
     var email = remember { mutableStateOf("")}
     var password = remember { mutableStateOf("")}
 
-    InputField("E-mail", email.value){
+    InputField("E-mail", email.value, InputType.EMAIL){
         email.value = it
     }
     Spacer(modifier = Modifier.height(10.dp))
@@ -195,18 +229,32 @@ fun InputPasswordField(title: String, value: String, onTextChange: (String) -> U
     )
 }
 
+enum class InputType{
+    EMAIL,
+    PHONE
+}
+
+
 @Composable
-fun InputField(title: String, value: String, onTextChange: (String) -> Unit) {
+fun InputField(title: String, value: String, type: InputType, onTextChange: (String) -> Unit) {
+
     var isValid by remember { mutableStateOf(false) }
+    val keyboardType = when (type) {
+        InputType.EMAIL -> KeyboardType.Text
+        InputType.PHONE -> KeyboardType.Phone
+    }
     TextField(
         label = {
             Text(title, color = Color.Black)
         },
         value = value,
         onValueChange = {
-            isValid = value.isNotEmpty()
+            isValid = validateField(type, it)
             onTextChange(it)
         },
+        keyboardOptions = KeyboardOptions(
+            keyboardType = keyboardType
+        ),
         singleLine = true,
         colors = TextFieldDefaults.colors(
         cursorColor = Color.Black,
@@ -215,11 +263,20 @@ fun InputField(title: String, value: String, onTextChange: (String) -> Unit) {
         focusedContainerColor = Color.Transparent,
         unfocusedContainerColor = Color.Transparent,
         disabledContainerColor = Color.Transparent,
+        errorContainerColor = Color.Transparent,
+        errorIndicatorColor = LocalAppColors.current.error
         ),
         isError = !isValid,
     )
     if (!isValid) {
-        Text(text = "Please enter valid text", color = Color.Red)
+        Text(text = "Invalid value", color = Color.Red)
+    }
+}
+
+fun validateField(type: InputType, input: String): Boolean {
+    when(type) {
+        InputType.EMAIL -> return input.matches(Regex("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\$"))
+        InputType.PHONE -> return input.matches(Regex("09(0|1)[5678][0-9][0-9][0-9][0-9][0-9][0-9]")) // TODO: this is for Slovakia, use translation resources in the future
     }
 }
 

@@ -19,7 +19,7 @@ class LoginViewModel() : ViewModel(), KoinComponent {
     private val _state = MutableStateFlow(LoginState.IDLE)
     val state: StateFlow<LoginState> = _state
 
-    fun login(email: String, password: String) {
+    fun login(email: String, password: String, onLogin: () -> Unit) {
 
         viewModelScope.launch {
             loginRepository.login(email, password).collect { it ->
@@ -34,7 +34,7 @@ class LoginViewModel() : ViewModel(), KoinComponent {
                         _state.update { LoginState.LOADING }
                     }
                     is Resources.Success -> {
-
+                        onLogin()
                     }
                 }
             }

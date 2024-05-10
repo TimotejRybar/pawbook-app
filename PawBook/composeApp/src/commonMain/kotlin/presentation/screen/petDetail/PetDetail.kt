@@ -50,6 +50,7 @@ import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import pawbook.composeapp.generated.resources.Res
 import pawbook.composeapp.generated.resources.sofka
+import presentation.screen.login.ButtonStyle
 import presentation.theme.colors.LocalAppColors
 import presentation.screen.login.StyledButton
 import utils.compose.PetPropFieldUtils
@@ -82,7 +83,7 @@ fun PetInfo() {
 
 @Composable
 fun SaveButton(onFormSubmit: () -> Unit) {
-    StyledButton("Save",0.dp) {
+    StyledButton("Save", ButtonStyle.FillPrimary, 0.dp) {
 
     }
 }
