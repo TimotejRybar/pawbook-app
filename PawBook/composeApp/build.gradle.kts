@@ -18,7 +18,6 @@ kotlin {
             }
         }
     }
-
     androidTarget()
 
     task("testClasses")
@@ -51,7 +50,9 @@ kotlin {
             implementation("io.ktor:ktor-client-serialization:2.3.10")
             implementation("io.ktor:ktor-client-logging:2.3.10")
             implementation("io.ktor:ktor-client-okhttp:2.3.10")
-            implementation("io.insert-koin:koin-android:3.6.0-wasm-alpha2")
+            implementation("io.insert-koin:koin-android:3.5.3")
+            implementation("io.insert-koin:koin-androidx-compose:3.5.3")
+
         }
 
 
@@ -67,8 +68,8 @@ kotlin {
             implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.5.0")
             implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1-Beta")
             implementation("androidx.lifecycle:lifecycle-viewmodel:2.7.0")
-            implementation("io.insert-koin:koin-core:3.6.0-wasm-alpha2")
-            implementation("io.insert-koin:koin-compose:3.6.0-wasm-alpha2")
+            implementation("io.insert-koin:koin-core:3.5.1")
+            implementation("io.insert-koin:koin-compose:1.1.5")
             implementation("de.jensklingenberg.ktorfit:ktorfit-lib:1.13.0")
         }
 
@@ -137,6 +138,14 @@ android {
     }
 
     dependencies {
+
+        add("kspCommonMainMetadata", "de.jensklingenberg.ktorfit:ktorfit-ksp:1.13.0")
+        add("kspAndroid","de.jensklingenberg.ktorfit:ktorfit-ksp:1.13.0")
+        add("kspIosSimulatorArm64", "de.jensklingenberg.ktorfit:ktorfit-ksp:1.13.0")
+        add("kspIosX64", "de.jensklingenberg.ktorfit:ktorfit-ksp:1.13.0")
+        add("kspIosArm64", "de.jensklingenberg.ktorfit:ktorfit-ksp:1.13.0")
+
+
         debugImplementation(libs.compose.ui.tooling)
         //commonMainApi("dev.icerock.moko:resources-compose:0.24.0-alpha-4")
         //commonTestImplementation("dev.icerock.moko:resources-test:0.24.0-alpha-4")
