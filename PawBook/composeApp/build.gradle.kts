@@ -33,6 +33,8 @@ kotlin {
         iosTarget.binaries.framework {
             baseName = "ComposeApp"
             isStatic = true
+            export("io.github.hoc081098:kmp-viewmodel:0.7.1") // required to expose the classes to iOS.
+            export("io.github.hoc081098:kmp-viewmodel-savedstate:0.7.1") // required to expose the classes to iOS.
         }
     }
 
@@ -80,6 +82,9 @@ kotlin {
             implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
             implementation("com.russhwolf:multiplatform-settings:1.1.1")
             implementation("com.russhwolf:multiplatform-settings-no-arg:1.1.1")
+            api("io.github.hoc081098:kmp-viewmodel:0.7.1")
+            api("io.github.hoc081098:kmp-viewmodel-savedstate:0.7.1")
+            implementation("io.github.hoc081098:kmp-viewmodel-koin-compose:0.7.1")
 
         }
 

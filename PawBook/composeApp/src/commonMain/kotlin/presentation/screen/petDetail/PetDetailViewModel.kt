@@ -1,11 +1,12 @@
 package presentation.screen.petDetail
 
 import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import com.hoc081098.kmp.viewmodel.ViewModel
+import com.hoc081098.kmp.viewmodel.wrapper.wrap
 import core.util.Resources
 import data.repository.PetDetailRepositoryImpl
 import domain.model.PetBreed
+import domain.model.PetItem
 import domain.model.enums.PetDetailState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -14,7 +15,8 @@ import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
-class PetDetailViewModel(savedStateHandle: SavedStateHandle = SavedStateHandle()) : ViewModel(), KoinComponent {
+class PetDetailViewModel(savedStateHandle: SavedStateHandle, private val getPet: suspend () -> PetItem?) : ViewModel(), KoinComponent {
+    private val PET_KEY = "pet"
     private val petDetailRepository: PetDetailRepositoryImpl by inject()
 
     private val _state = MutableStateFlow(PetDetailState.INIT)
@@ -22,6 +24,8 @@ class PetDetailViewModel(savedStateHandle: SavedStateHandle = SavedStateHandle()
 
     private val petId: String = checkNotNull(savedStateHandle["petId"])
     var breeds = mutableListOf<PetBreed>()
+
+    val petStateFlow = savedStateHandle.getStateFlow<PetItem?>(PET_KEY, null).wrap()
 
     fun init() {
         if(petId.equals("CREATE")) {

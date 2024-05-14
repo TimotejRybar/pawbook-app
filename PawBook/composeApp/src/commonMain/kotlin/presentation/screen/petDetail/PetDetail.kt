@@ -44,12 +44,14 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
+import com.hoc081098.kmp.viewmodel.koin.compose.koinKmpViewModel
 import domain.model.PetBreed
 import io.ktor.util.date.GMTDate
 import domain.model.enums.PetPropFieldType
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.koinInject
+import org.koin.core.parameter.parametersOf
 import pawbook.composeapp.generated.resources.Res
 import pawbook.composeapp.generated.resources.sofka
 import presentation.screen.login.ButtonStyle
@@ -58,7 +60,10 @@ import presentation.screen.login.StyledButton
 import utils.compose.PetPropFieldUtils
 
 @Composable
-fun PetDetail(viewModel: PetDetailViewModel = koinInject(), onDismissClick: () -> Unit) {
+fun PetDetail(petId: String, viewModel: PetDetailViewModel = koinKmpViewModel(
+key = "PetDetailViewModel-$petId",
+parameters = { parametersOf(petId) }
+), onDismissClick: () -> Unit) {
     //Navbar()
     Box(
         modifier = Modifier.fillMaxSize(),

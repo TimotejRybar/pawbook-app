@@ -172,7 +172,7 @@ fun App(navController: NavHostController = rememberNavController()) {
 
                                 composable(route = AppScreen.PetDetail.name + "/" + selectedPet.value._id,
                                     arguments = listOf(navArgument("petId") { defaultValue = "CREATE" })) {
-                                    PetDetail(onDismissClick = {
+                                    PetDetail(selectedPet.value._id, onDismissClick = {
                                         navController.navigate(AppScreen.Login.name)
                                     })
                                 }
@@ -198,7 +198,7 @@ fun appModule() = module {
     single<PetsRepoitoryImpl> { PetsRepoitoryImpl() }
     single { providePetsApi(get()) }
 
-    single<PetDetailViewModel> { PetDetailViewModel(get()) }
+    single<PetDetailViewModel> { PetDetailViewModel(get(),get()) }
     single<PetDetailRepositoryImpl> { PetDetailRepositoryImpl() }
     single { provideBreedsApi(get()) }
 
