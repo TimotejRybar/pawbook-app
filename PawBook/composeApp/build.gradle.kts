@@ -8,6 +8,7 @@ plugins {
     alias(libs.plugins.ksp)
     id("de.jensklingenberg.ktorfit")
     kotlin("plugin.serialization") version "1.9.22"
+    id("kotlinx-serialization")
 
 
 }
@@ -77,6 +78,8 @@ kotlin {
             implementation("io.insert-koin:koin-compose:1.1.5")
             implementation("de.jensklingenberg.ktorfit:ktorfit-lib:1.13.0")
             implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
+            implementation("com.russhwolf:multiplatform-settings:1.1.1")
+            implementation("com.russhwolf:multiplatform-settings-no-arg:1.1.1")
 
         }
 

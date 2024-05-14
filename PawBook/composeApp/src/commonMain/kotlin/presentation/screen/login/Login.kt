@@ -56,7 +56,7 @@ import presentation.theme.colors.LocalAppColors
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LoginScreen(viewModel: LoginViewModel = koinInject(), onLoginSucces: () -> Unit ) {
+fun LoginScreen(viewModel: LoginViewModel = koinInject(), onLoginSucces: () -> Unit, onCreateAccount: () -> Unit ) {
     val loginState by viewModel.state.collectAsState()
 
     Box(
@@ -68,7 +68,7 @@ fun LoginScreen(viewModel: LoginViewModel = koinInject(), onLoginSucces: () -> U
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Logo()
-                LogInForm() { username, password ->
+            LogInForm() { username, password ->
                 viewModel.login(username, password) {
                     onLoginSucces()
                 }
@@ -76,7 +76,7 @@ fun LoginScreen(viewModel: LoginViewModel = koinInject(), onLoginSucces: () -> U
             LogInSocial()
             ForgotPassword()
             CreateAccount() {
-                //createAccount...
+                onCreateAccount()
             }
             Text("Don't Have an Account?", fontSize = 10.sp)
             Footer()
@@ -174,8 +174,8 @@ fun ForgotPassword() {
 
 @Composable
 fun LogInForm(onLoginSubmit: (username: String, password: String) -> Unit) {
-    var email = remember { mutableStateOf("")}
-    var password = remember { mutableStateOf("")}
+    var email = remember { mutableStateOf("timotej.rybar@uplab.sk")}
+    var password = remember { mutableStateOf("lokomotiva21")}
 
     InputField("E-mail", email.value, InputType.EMAIL){
         email.value = it
@@ -199,12 +199,17 @@ fun LogInButton(onLoginSubmit: () -> Unit) {
 @Composable
 fun InputPasswordField(title: String, value: String, onTextChange: (String) -> Unit) {
     var passwordVisible by rememberSaveable { mutableStateOf(false) }
+    var isValid by remember { mutableStateOf(false) }
+
     TextField(
         label = {
             Text(title, color = Color.Black)
         },
         value = value,
-        onValueChange = onTextChange,
+        onValueChange = {
+            isValid = validatePassword(it)
+            onTextChange(it)
+                        },
         visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
         colors = TextFieldDefaults.colors(
@@ -229,9 +234,14 @@ fun InputPasswordField(title: String, value: String, onTextChange: (String) -> U
     )
 }
 
+fun validatePassword(it: String): Boolean {
+    return it.length >= 8 && Regex("^(?=.*[A-Za-z])(?=.*\\d).{8,}\$").matches(it)
+}
+
 enum class InputType{
     EMAIL,
-    PHONE
+    PHONE,
+    TEXT
 }
 
 
@@ -242,6 +252,7 @@ fun InputField(title: String, value: String, type: InputType, onTextChange: (Str
     val keyboardType = when (type) {
         InputType.EMAIL -> KeyboardType.Text
         InputType.PHONE -> KeyboardType.Phone
+        else -> KeyboardType.Text
     }
     TextField(
         label = {
@@ -269,7 +280,7 @@ fun InputField(title: String, value: String, type: InputType, onTextChange: (Str
         isError = !isValid,
     )
     if (!isValid) {
-        Text(text = "Invalid value", color = Color.Red)
+        //Text(text = "Invalid value", color = Color.Red)
     }
 }
 
@@ -277,6 +288,7 @@ fun validateField(type: InputType, input: String): Boolean {
     when(type) {
         InputType.EMAIL -> return input.matches(Regex("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\$"))
         InputType.PHONE -> return input.matches(Regex("09(0|1)[5678][0-9][0-9][0-9][0-9][0-9][0-9]")) // TODO: this is for Slovakia, use translation resources in the future
+        InputType.TEXT -> return input.isNotEmpty()
     }
 }
 

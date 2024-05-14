@@ -8,7 +8,6 @@ plugins {
     alias(libs.plugins.ksp) apply false
     id("de.jensklingenberg.ktorfit") version "1.13.0"
     kotlin("plugin.serialization") version "1.9.22"
-
 }
 
 buildscript {

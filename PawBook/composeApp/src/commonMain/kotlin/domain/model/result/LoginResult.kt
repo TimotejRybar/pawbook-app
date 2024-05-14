@@ -4,8 +4,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class LoginResult(
-    //val error: Boolean,
-    val message: String,
-    //val accessToken: String,
-    //val refreshToken: String
+    val message: String? = null,
+    val user: User? = null,
+    val tokens: Tokens? = null
 )

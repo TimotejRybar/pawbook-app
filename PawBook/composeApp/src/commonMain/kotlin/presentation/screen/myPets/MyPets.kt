@@ -26,22 +26,27 @@ import org.jetbrains.compose.resources.painterResource
 import pawbook.composeapp.generated.resources.Res
 import pawbook.composeapp.generated.resources.sofka
 import presentation.theme.colors.LocalAppColors
-import presentation.navbar.Navbar
 import core.util.PetUtils
+import org.koin.compose.koinInject
+import presentation.screen.petDetail.MyPetsViewModel
 
 @Composable
-fun MyPets(onItemClick: (PetItem) -> Unit) {
-    Navbar()
+fun MyPets(viewModel: MyPetsViewModel = koinInject(),  onItemClick: (PetItem) -> Unit) {
+    //Navbar()
+
+    val myPets = viewModel.pets.toList()
+    viewModel.fetch()
+
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
-        Pets(onItemClick)
+        Pets(items = myPets, onItemClick)
     }
 }
 
 @Composable
-fun Pets(onItemClick: (PetItem) -> Unit) {
+fun Pets(items: List<PetItem>, onItemClick: (PetItem) -> Unit) {
 
     PetCard(
         petItem = PetUtils.getTestPet(),

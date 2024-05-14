@@ -2,13 +2,17 @@ package presentation.screen.login
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.russhwolf.settings.Settings
+import core.util.LocalDateTimeSerializer
 import core.util.Resources
+import data.remote.Preferences
 import data.repository.LoginRepositoryImpl
 import domain.model.enums.LoginState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.datetime.LocalDateTime
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
@@ -30,30 +34,14 @@ class LoginViewModel() : ViewModel(), KoinComponent {
                         if(it.message == "invalid_login") _state.update { LoginState.INVALID_LOGIN }
                     }
                     is Resources.Loading -> {
-                        // show loading on UI
                         _state.update { LoginState.LOADING }
                     }
                     is Resources.Success -> {
+                        _state.update { LoginState.SUCCESS }
                         onLogin()
                     }
                 }
             }
         }
-    }
-
-    fun register(email: String, password: String, repeatPassword: String) {
-
-    }
-
-    fun loginFacebook() {
-
-    }
-
-    fun loginGoogle() {
-
-    }
-
-    fun loginApple() {
-
     }
 }

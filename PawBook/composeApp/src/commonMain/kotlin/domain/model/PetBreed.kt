@@ -3,4 +3,4 @@ package domain.model
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class PetItem(var name: String, var shortDescription: String)
+data class PetBreed (val _id: String, val name: String, val key: String)
