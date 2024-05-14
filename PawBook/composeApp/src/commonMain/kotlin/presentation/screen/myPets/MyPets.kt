@@ -12,6 +12,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -34,24 +36,28 @@ import presentation.screen.petDetail.MyPetsViewModel
 fun MyPets(viewModel: MyPetsViewModel = koinInject(),  onItemClick: (PetItem) -> Unit) {
     //Navbar()
 
-    val myPets = viewModel.pets.toList()
-    viewModel.fetch()
+    LaunchedEffect(key1 = true){
+        viewModel.fetch()
+    }
 
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
-        Pets(items = myPets, onItemClick)
+        Pets(items = viewModel.pets, onItemClick)
     }
+
+
 }
 
 @Composable
 fun Pets(items: List<PetItem>, onItemClick: (PetItem) -> Unit) {
-
-    PetCard(
-        petItem = PetUtils.getTestPet(),
-        onItemClick = onItemClick
-    )
+    items.forEach {
+        PetCard(
+            petItem = it,
+            onItemClick = onItemClick
+        )
+    }
 }
 
 @Composable
