@@ -49,6 +49,7 @@ import data.repository.PetDetailRepositoryImpl
 import data.repository.PetsRepoitoryImpl
 import data.repository.RegisterRepositoryImpl
 import domain.model.PetItem
+import domain.model.enums.PetType
 import org.koin.dsl.module
 import presentation.screen.login.LoginScreen
 import presentation.screen.login.LoginViewModel
@@ -71,7 +72,7 @@ fun App(navController: NavHostController = rememberNavController()) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val topBarState = rememberSaveable { mutableStateOf(false) }
 
-    val selectedPet = remember { mutableStateOf(PetItem("CREATE","", "")) }
+    val selectedPet = remember { mutableStateOf(PetItem("CREATE","", "", PetType.Dog)) }
 
     when (navBackStackEntry?.destination?.route) {
         AppScreen.Login.name -> {
@@ -106,7 +107,7 @@ fun App(navController: NavHostController = rememberNavController()) {
                        if(navController.currentDestination?.route == AppScreen.MyPets.name) {
                            FloatingActionButton(containerColor = LocalAppColors.current.primary, shape = CircleShape, contentColor = LocalAppColors.current.secondary,
                                onClick = {
-                                    navController.navigate(AppScreen.PetDetail.name + "/" + "CREATE")
+                                    navController.navigate(AppScreen.PetDetail.name)
                            }){
                                Icon(Icons.Filled.Add,"")
                            }
@@ -170,9 +171,8 @@ fun App(navController: NavHostController = rememberNavController()) {
                                     })
                                 }
 
-                                composable(route = AppScreen.PetDetail.name + "/" + selectedPet.value._id,
-                                    arguments = listOf(navArgument("petId") { defaultValue = "CREATE" })) {
-                                    PetDetail(onDismissClick = {
+                                composable(route = AppScreen.PetDetail.name) {
+                                    PetDetail(selectedPet.value, onDismissClick = {
                                         navController.navigate(AppScreen.Login.name)
                                     })
                                 }
@@ -198,7 +198,7 @@ fun appModule() = module {
     single<PetsRepoitoryImpl> { PetsRepoitoryImpl() }
     single { providePetsApi(get()) }
 
-    single<PetDetailViewModel> { PetDetailViewModel(get()) }
+    single<PetDetailViewModel> { PetDetailViewModel() }
     single<PetDetailRepositoryImpl> { PetDetailRepositoryImpl() }
     single { provideBreedsApi(get()) }
 

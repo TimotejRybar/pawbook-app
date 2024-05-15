@@ -9,8 +9,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -31,7 +33,10 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -45,6 +50,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
 import domain.model.PetBreed
+import domain.model.PetItem
 import io.ktor.util.date.GMTDate
 import domain.model.enums.PetPropFieldType
 import org.jetbrains.compose.resources.ExperimentalResourceApi
@@ -58,20 +64,23 @@ import presentation.screen.login.StyledButton
 import utils.compose.PetPropFieldUtils
 
 @Composable
-fun PetDetail(viewModel: PetDetailViewModel = koinInject(), onDismissClick: () -> Unit) {
-    //Navbar()
+fun PetDetail(pet: PetItem, viewModel: PetDetailViewModel = koinInject(), onDismissClick: () -> Unit) {
+    val breeds by viewModel.breeds.collectAsState()
+
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
-        PetInfo(viewModel)
+        PetInfo(viewModel, breeds)
     }
-
-    viewModel.init()
+    LaunchedEffect(key1 = true) {
+        viewModel.pet.value.id = "CREATE"
+        viewModel.init()
+    }
 }
 
 @Composable
-fun PetInfo(viewModel: PetDetailViewModel) {
+fun PetInfo(viewModel: PetDetailViewModel, breeds: List<PetBreed>) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         Column(
             verticalArrangement = Arrangement.Center,
@@ -79,7 +88,7 @@ fun PetInfo(viewModel: PetDetailViewModel) {
         ) {
             Spacer(modifier = Modifier.height(50.dp))
             PetPhoto()
-            PetProps(viewModel)
+            PetProps(viewModel, breeds)
             Spacer(modifier = Modifier.height(20.dp))
         }
     }
@@ -128,7 +137,7 @@ fun PetPhoto() {
 }
 
 @Composable
-fun PetProps(viewModel: PetDetailViewModel) {
+fun PetProps(viewModel: PetDetailViewModel, breeds: List<PetBreed>) {
     val name = mutableStateOf("")
     val weight = mutableStateOf("")
 
@@ -142,7 +151,7 @@ fun PetProps(viewModel: PetDetailViewModel) {
     PetPropField(PetPropFieldType.COLOR) {
 
     }
-    BreedSpinner(viewModel.breeds)
+    BreedSpinner(breeds)
     GenderSpinner()
     Spacer(modifier = Modifier.height(20.dp))
     SaveButton() {
@@ -163,7 +172,11 @@ fun BreedSpinner(breeds: List<PetBreed>) {
 
     val breedsStrings = breeds.map { it.name }
 
-    Spinner(text = "Breed", options = breedsStrings, autoComplete = true) {
+    Spinner(
+        text = "Breed",
+        options = breedsStrings,
+        autoComplete = true,
+        ) {
 
     }
 }
@@ -326,7 +339,7 @@ fun Spinner(
     ExposedDropdownMenuBox(
         expanded = expanded,
         onExpandedChange = {
-            expanded = it
+            expanded = !expanded // Toggle the dropdown menu
         }
     ) {
         TextField(
@@ -369,6 +382,7 @@ fun Spinner(
         ) {
             filteredOptions.forEach { selectionOption ->
                 DropdownMenuItem(
+                    modifier = Modifier.fillMaxHeight(),
                     text = {
                         Text(text = selectionOption)
                     },
@@ -382,6 +396,7 @@ fun Spinner(
         }
     }
 }
+
 
 
 inline fun Modifier.noRippleClickable(crossinline onClick: () -> Unit): Modifier =

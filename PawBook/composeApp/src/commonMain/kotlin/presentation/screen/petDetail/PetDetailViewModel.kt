@@ -6,7 +6,9 @@ import androidx.lifecycle.viewModelScope
 import core.util.Resources
 import data.repository.PetDetailRepositoryImpl
 import domain.model.PetBreed
+import domain.model.PetItem
 import domain.model.enums.PetDetailState
+import domain.model.enums.PetType
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
@@ -14,28 +16,26 @@ import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
-class PetDetailViewModel(savedStateHandle: SavedStateHandle = SavedStateHandle()) : ViewModel(), KoinComponent {
+class PetDetailViewModel() : ViewModel(), KoinComponent {
     private val petDetailRepository: PetDetailRepositoryImpl by inject()
 
     private val _state = MutableStateFlow(PetDetailState.INIT)
     val state: StateFlow<PetDetailState> = _state
 
-    private val petId: String = checkNotNull(savedStateHandle["petId"])
-    var breeds = mutableListOf<PetBreed>()
+    val pet = MutableStateFlow(PetItem("","","", PetType.Dog))
+    private val _breeds = MutableStateFlow<ArrayList<PetBreed>>(arrayListOf())
+    val breeds: StateFlow<ArrayList<PetBreed>> = _breeds
 
     fun init() {
-        if(petId.equals("CREATE")) {
-            fetchBreeds {
-                breeds.clear()
-                breeds.addAll(it)
-            }
+        if(pet.value.id == "CREATE") {
+            fetchBreeds(pet.value.petType)
         }
     }
 
-    fun fetchBreeds(onPrepared: (List<PetBreed>) -> Unit) {
+    private fun fetchBreeds(petType: PetType) {
 
         viewModelScope.launch {
-            petDetailRepository.fetchBreeds().collect { it ->
+            petDetailRepository.fetchBreeds(petType).collect { it ->
                 when(it) {
                     is Resources.Error -> {
                         if(it.message == "no_internet") _state.update { PetDetailState.NO_INTERNET }
@@ -45,7 +45,8 @@ class PetDetailViewModel(savedStateHandle: SavedStateHandle = SavedStateHandle()
                         _state.update { PetDetailState.LOADING }
                     }
                     is Resources.Success -> {
-                        onPrepared(it.data?.breeds as List<PetBreed>)
+                        it.data?.breeds?.let { it1 -> breeds.value.addAll(it1) }
+
                     }
                 }
             }
