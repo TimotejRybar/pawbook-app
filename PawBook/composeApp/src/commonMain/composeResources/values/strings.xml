@@ -1,30 +1,5 @@
 <resources>
     <string name="app_name">pawbook</string>
-    <string name="open_photo_detail">Zobrazit detail fotky</string>
-    <string name="gallery_title">Podívej se na fotku </string>
-    <string name="_in">v</string>
-    <string name="_in2">ve</string>
-    <string name="your_girl">tvé </string>
-    <string name="your_boy">tvého </string>
-    <string name="photo_description">fotka miminka</string>
-    <string name="gallery_subtitle">Zde můžeš sledovat růst tvého miminka měsíc po měsíci. Každý měsíc zadej fotku a pak si prohlížej, jak se mění!</string>
-    <string name="gallery_title"></string>
-    <string name="in_first_month"> měsíci</string>
-    <string name="second">v druhém</string>
-    <string name="third">v třetím</string>
-    <string name="fourth">v čtvrtém</string>
-    <string name="fifth">v pátém</string>
-    <string name="sixth">v šestém</string>
-    <string name="séventh">v sedmém</string>
-    <string name="eight">v osmém</string>
-    <string name="ninth">v devátém</string>
-    <string name="eleven">v desátém</string>
-    <string name="tenth">v jedenáctém</string>
-    <string name="eleventh">ve dvanáctém měsíci</string>
-    <string name="twelfth">ve třináctém</string>
-    <string name="thirteenth">ve čtrnáctém měsíci</string>
-    <string name="fourteenth">v patnáctém měsíci</string>
-    <string name="close_detail">Zavřít detail</string>
     <string name="question1">Je to sofinka?</string>
     <string name="question1answer1">Ano</string>
     <string name="question1answer2">Iba nekedy</string>
@@ -36,5 +11,5 @@
     <string name="friday">Fri</string>
     <string name="saturday">Sat</string>
     <string name="sunday">Sun</string>
-
+    <string name="breed">Breed</string>
 </resources>

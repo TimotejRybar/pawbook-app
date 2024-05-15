@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -36,7 +35,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -53,11 +51,17 @@ import domain.model.PetBreed
 import domain.model.PetItem
 import io.ktor.util.date.GMTDate
 import domain.model.enums.PetPropFieldType
+import kotlinx.datetime.Clock
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
 import pawbook.composeapp.generated.resources.Res
+import pawbook.composeapp.generated.resources.breed
 import pawbook.composeapp.generated.resources.sofka
+import presentation.components.autocomplete.AutoComplete
 import presentation.screen.login.ButtonStyle
 import presentation.theme.colors.LocalAppColors
 import presentation.screen.login.StyledButton
@@ -65,22 +69,22 @@ import utils.compose.PetPropFieldUtils
 
 @Composable
 fun PetDetail(pet: PetItem, viewModel: PetDetailViewModel = koinInject(), onDismissClick: () -> Unit) {
-    val breeds by viewModel.breeds.collectAsState()
 
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
-        PetInfo(viewModel, breeds)
+        PetInfo(viewModel, pet)
     }
     LaunchedEffect(key1 = true) {
-        viewModel.pet.value.id = "CREATE"
+        viewModel.pet.value?.id = "CREATE"
         viewModel.init()
     }
 }
 
 @Composable
-fun PetInfo(viewModel: PetDetailViewModel, breeds: List<PetBreed>) {
+fun PetInfo(viewModel: PetDetailViewModel, pet: PetItem) {
+    val breeds by viewModel.breeds.collectAsState() // Collecting state as a Composable
     Row(verticalAlignment = Alignment.CenterVertically) {
         Column(
             verticalArrangement = Arrangement.Center,
@@ -88,7 +92,7 @@ fun PetInfo(viewModel: PetDetailViewModel, breeds: List<PetBreed>) {
         ) {
             Spacer(modifier = Modifier.height(50.dp))
             PetPhoto()
-            PetProps(viewModel, breeds)
+            PetProps(viewModel, breeds, pet)
             Spacer(modifier = Modifier.height(20.dp))
         }
     }
@@ -97,13 +101,13 @@ fun PetInfo(viewModel: PetDetailViewModel, breeds: List<PetBreed>) {
 @Composable
 fun SaveButton(onFormSubmit: () -> Unit) {
     StyledButton("Save", ButtonStyle.FillPrimary, 0.dp) {
-
+        onFormSubmit()
     }
 }
 
 @Composable
 fun PetPhoto() {
-    var openDialog = remember { mutableStateOf(true) }
+    var openDialog = remember { mutableStateOf(false) }
     CirclePhoto() {
         openDialog.value = true
     }
@@ -137,9 +141,16 @@ fun PetPhoto() {
 }
 
 @Composable
-fun PetProps(viewModel: PetDetailViewModel, breeds: List<PetBreed>) {
-    val name = mutableStateOf("")
-    val weight = mutableStateOf("")
+fun PetProps(viewModel: PetDetailViewModel, breeds: List<PetBreed>, pet: PetItem) {
+    val name = remember { mutableStateOf("") }
+    val weight = remember { mutableStateOf("") }
+    val now = Clock.System.now()
+    val tz = TimeZone.currentSystemDefault()
+    val today = now.toLocalDateTime(tz).date
+    val birhtDay = remember { mutableStateOf(today) }
+    val breed = remember { mutableStateOf("") }
+    val gender = remember { mutableStateOf("") }
+    val color = remember { mutableStateOf("") }
 
     PetPropField(PetPropFieldType.NAME) {
         name.value = it
@@ -149,35 +160,35 @@ fun PetProps(viewModel: PetDetailViewModel, breeds: List<PetBreed>) {
         weight.value = it
     }
     PetPropField(PetPropFieldType.COLOR) {
-
+        color.value = it
     }
-    BreedSpinner(breeds)
-    GenderSpinner()
+    BreedSpinner(breeds) {
+        breed.value = it
+    }
+    GenderSpinner() {
+        gender.value = it
+    }
     Spacer(modifier = Modifier.height(20.dp))
     SaveButton() {
-        // save + check errors
+       // create new pet
+       viewModel.createPet(pet)
     }
 }
 
 @Composable
-fun GenderSpinner() {
+fun GenderSpinner(onSelected: (String) -> Unit) {
     val genderOptions = arrayListOf("Male", "Female")
-    Spinner(text = "Gender", options = genderOptions, autoComplete = false) {
-
+    Spinner(text = "Gender", options = genderOptions) {
+        onSelected(it)
     }
 }
 
+@OptIn(ExperimentalResourceApi::class)
 @Composable
-fun BreedSpinner(breeds: List<PetBreed>) {
-
+fun BreedSpinner(breeds: List<PetBreed>, onSelected: (String) -> Unit) {
     val breedsStrings = breeds.map { it.name }
-
-    Spinner(
-        text = "Breed",
-        options = breedsStrings,
-        autoComplete = true,
-        ) {
-
+    AutoComplete(stringResource(Res.string.breed),breedsStrings) {
+        onSelected(it)
     }
 }
 
@@ -329,7 +340,6 @@ fun CustomDatePickerDialog(
 @Composable
 fun Spinner(
     text: String,
-    autoComplete: Boolean,
     options: List<String>,
     onSelected: (String) -> Unit
 ) {
@@ -343,11 +353,9 @@ fun Spinner(
         }
     ) {
         TextField(
-            readOnly = !autoComplete,
             value = selectedOptionText,
             onValueChange = {
                 selectedOptionText = it
-                if(autoComplete) expanded = true // Always expand when typing in autocomplete mode
             },
             label = { Text(text, color = Color.Black) },
             modifier = Modifier.menuAnchor(),
@@ -367,12 +375,6 @@ fun Spinner(
             )
         )
 
-        val filteredOptions = if (autoComplete && selectedOptionText.isNotEmpty()) {
-            options.filter { it.contains(selectedOptionText, ignoreCase = true) }
-        } else {
-            options
-        }
-
         ExposedDropdownMenu(
             expanded = expanded,
             onDismissRequest = {
@@ -380,7 +382,7 @@ fun Spinner(
             },
             modifier = Modifier.background(LocalAppColors.current.secondary)
         ) {
-            filteredOptions.forEach { selectionOption ->
+            options.forEach { selectionOption ->
                 DropdownMenuItem(
                     modifier = Modifier.fillMaxHeight(),
                     text = {

@@ -72,7 +72,7 @@ fun App(navController: NavHostController = rememberNavController()) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val topBarState = rememberSaveable { mutableStateOf(false) }
 
-    val selectedPet = remember { mutableStateOf(PetItem("CREATE","", "", PetType.Dog)) }
+    val selectedPet = remember { mutableStateOf(PetItem.empty()) }
 
     when (navBackStackEntry?.destination?.route) {
         AppScreen.Login.name -> {

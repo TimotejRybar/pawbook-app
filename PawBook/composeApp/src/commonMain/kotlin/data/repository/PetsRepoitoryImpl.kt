@@ -1,7 +1,7 @@
 package data.repository
 
 import core.util.Resources
-import data.remote.PetsApi
+import data.remote.PetApi
 import domain.model.PetItem
 import domain.repository.PetsRepository
 import kotlinx.coroutines.flow.Flow
@@ -11,11 +11,11 @@ import org.koin.core.component.inject
 
 class PetsRepoitoryImpl: PetsRepository, KoinComponent {
 
-    private val petsApi: PetsApi by inject()
+    private val petsApi: PetApi by inject()
     override suspend fun create(pet: PetItem): Flow<Resources<PetItem>> = flow {
         emit(Resources.Loading(true))
         try {
-            val fetchResult = petsApi.create(pet.name, pet.shortDescription)
+            val fetchResult = petsApi.create(pet)
             emit(Resources.Success(fetchResult.pet))
         } catch (e: NetworkException) {
             emit(Resources.Error("no_internet"))

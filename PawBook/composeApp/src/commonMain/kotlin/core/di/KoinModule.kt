@@ -4,13 +4,16 @@ import com.russhwolf.settings.Settings
 import core.util.LocalDateTimeSerializer
 import data.remote.BreedApi
 import data.remote.LoginApi
-import data.remote.PetsApi
+import data.remote.PetApi
 import data.remote.Preferences
 import de.jensklingenberg.ktorfit.Ktorfit
+import domain.model.PetItem
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.DefaultRequest
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.header
+import io.ktor.http.ContentType
+import io.ktor.http.HttpHeaders
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.datetime.LocalDateTime
 import kotlinx.serialization.KSerializer
@@ -46,18 +49,18 @@ fun provideKtorfit(): Ktorfit {
                         prettyPrint = true
                         isLenient = true
                         ignoreUnknownKeys = true
-                    },
+                    }
                 )
             }
             install(DefaultRequest) {
                 header("Authorization", "Bearer $token")
-
+                header(HttpHeaders.ContentType, ContentType.Application.Json)
             }
         }).build()
 }
 
 fun provideLoginApi(ktorfit: Ktorfit): LoginApi = ktorfit.create()
-fun providePetsApi(ktorfit: Ktorfit): PetsApi = ktorfit.create()
+fun providePetsApi(ktorfit: Ktorfit): PetApi = ktorfit.create()
 fun provideBreedsApi(ktorfit: Ktorfit): BreedApi = ktorfit.create()
 
 fun provideSettings(): Settings = Settings()
