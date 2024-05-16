@@ -36,19 +36,21 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.toLowerCase
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toSize
+import domain.Selectable
 import presentation.theme.colors.LocalAppColors
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AutoComplete(
     label: String,
-    options: List<String>,
-    onItemSelected: (String) -> Unit
+    options: List<Selectable>,
+    onItemSelected: (Selectable) -> Unit
 ) {
-    var selectedValue by remember { mutableStateOf("") }
+    var selectedValue by remember { mutableStateOf<Selectable?>(null) }
     var textFieldSize by remember { mutableStateOf(Size.Zero) }
     var expanded by remember { mutableStateOf(false) }
 
@@ -76,7 +78,7 @@ fun AutoComplete(
                     value = selectedValue,
                     isError = options.indexOf(selectedValue) == -1,
                     onValueChange = {
-                        selectedValue = it
+                        selectedValue = findOptionSelectable(options, it)
                         expanded = true
                     },
                     placeholder = { Text("Enter any Animals Name") },
@@ -119,11 +121,9 @@ fun AutoComplete(
                             .background(LocalAppColors.current.primary)
                     ) {
                         val filteredOptions = options
-                            .filter { it.contains(selectedValue, ignoreCase = true) }
-                            .sorted()
-
+                            .filter { it.name.contains(selectedValue?.localizedName() as String, ignoreCase = true) }
                         items(filteredOptions) { item ->
-                            ItemCategory(title = item) { selectedTitle ->
+                            ItemCategory(selectable = item) { selectedTitle ->
                                 selectedValue = selectedTitle
                                 expanded = false
                                 onItemSelected(selectedTitle)
@@ -136,17 +136,22 @@ fun AutoComplete(
     }
 }
 
+fun findOptionSelectable(options: List<Selectable>, it: String): Selectable? {
+    val selectable: Selectable? = options.find { key -> key.localizedName().toLowerCase().contains(it) }
+    return selectable
+}
+
 @Composable
 fun ItemCategory(
-    title: String,
-    onSelect: (String) -> Unit
+    selectable: Selectable,
+    onSelect: (Selectable) -> Unit
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { onSelect(title) }
+            .clickable { onSelect(selectable) }
             .padding(10.dp)
     ) {
-        Text(text = title, fontSize = 16.sp)
+        Text(text = selectable.localizedName(), fontSize = 16.sp)
     }
 }

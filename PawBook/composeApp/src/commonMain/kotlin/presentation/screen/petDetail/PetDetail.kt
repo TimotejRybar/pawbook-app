@@ -187,10 +187,8 @@ fun GenderSpinner(onSelected: (String) -> Unit) {
 @OptIn(ExperimentalResourceApi::class)
 @Composable
 fun BreedSpinner(breeds: List<PetBreed>, onSelected: (PetBreed) -> Unit) {
-
-    val breedsStrings = breeds.map { it.name }
-    AutoComplete(stringResource(Res.string.breed),breedsStrings) {
-        onSelected(it)
+    AutoComplete(stringResource(Res.string.breed), breeds) {
+        onSelected(it as PetBreed)
     }
 }
 
