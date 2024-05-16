@@ -171,7 +171,8 @@ fun PetProps(viewModel: PetDetailViewModel, breeds: List<PetBreed>, pet: PetItem
     Spacer(modifier = Modifier.height(20.dp))
     SaveButton() {
        // create new pet
-       viewModel.createPet(pet)
+       viewModel.createPet(PetItem("", name.value, "", pet.petType, "", birhtDay.value.toString(), weight.value.toFloat(),
+           color.value,breed.value,""))
     }
 }
 
@@ -185,7 +186,8 @@ fun GenderSpinner(onSelected: (String) -> Unit) {
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
-fun BreedSpinner(breeds: List<PetBreed>, onSelected: (String) -> Unit) {
+fun BreedSpinner(breeds: List<PetBreed>, onSelected: (PetBreed) -> Unit) {
+
     val breedsStrings = breeds.map { it.name }
     AutoComplete(stringResource(Res.string.breed),breedsStrings) {
         onSelected(it)
