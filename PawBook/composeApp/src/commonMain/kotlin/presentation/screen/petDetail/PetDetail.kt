@@ -360,6 +360,7 @@ fun Spinner(
         }
     ) {
         TextField(
+            readOnly = true,
             value = selectedOptionText,
             onValueChange = {
                 selectedOptionText = it

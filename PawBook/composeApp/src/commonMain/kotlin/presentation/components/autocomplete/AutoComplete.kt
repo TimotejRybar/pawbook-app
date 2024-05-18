@@ -139,6 +139,7 @@ fun AutoComplete(
                     items(filteredOptions) { item ->
                         ItemCategory(selectable = item) { selectedTitle ->
                             selectedValue = selectedTitle
+                            inputValue = selectedTitle.name
                             expanded = false
                             onItemSelected(selectedTitle)
                         }

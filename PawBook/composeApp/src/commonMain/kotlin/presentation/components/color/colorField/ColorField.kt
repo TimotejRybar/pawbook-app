@@ -1,19 +1,27 @@
 package presentation.components.color.colorField
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import domain.model.PetColor
 import presentation.components.color.colorPicker.ColorCircle
 import presentation.components.color.colorPicker.ColorPicker
@@ -23,13 +31,14 @@ import presentation.theme.colors.LocalAppColors
 fun ColorField(title: String, onColorSelected: (List<PetColor>) -> Unit) {
     var showDialog by remember { mutableStateOf(false) }
     val colors = remember { mutableStateListOf<PetColor>() }
+    val newColors = remember { mutableStateListOf<PetColor>() }
 
+    Title(title)
     Row(
-        modifier = Modifier
-
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        colors.forEach { petColor ->
-            ColorCircle(petColor, false) { color: PetColor, selected: Boolean ->
+        newColors.forEach { petColor ->
+            ColorCircle(petColor, 24.dp, true, false) { color: PetColor, selected: Boolean ->
 
             }
         }
@@ -47,13 +56,21 @@ fun ColorField(title: String, onColorSelected: (List<PetColor>) -> Unit) {
     if (showDialog) {
         ColorPicker(
             title = title,
-            onColorsSelected = { newColors ->
-                colors.clear()
-                colors.addAll(newColors)
+            onColorsSelected = { updatedColors ->
+                newColors.clear()
+                newColors.addAll(updatedColors)
                 showDialog = false
             },
             selectedColors = colors,
             onDismissRequest = { showDialog = false }
         )
+    }
+}
+
+@Composable
+fun Title(title: String) {
+    Spacer(modifier = Modifier.height(12.dp))
+    Column {
+        Text(title, fontSize = 16.sp, color = Color.Black, textAlign = TextAlign.Center)
     }
 }
