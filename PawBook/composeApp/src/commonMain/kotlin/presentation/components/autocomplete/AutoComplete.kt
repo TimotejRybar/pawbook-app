@@ -25,10 +25,12 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalContext
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
@@ -36,98 +38,109 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.toLowerCase
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toSize
+import core.util.stringByKey.StringByKey
+import core.util.stringByKey.StringType
 import domain.Selectable
+import org.jetbrains.compose.resources.ExperimentalResourceApi
+import org.jetbrains.compose.resources.stringResource
 import presentation.theme.colors.LocalAppColors
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalResourceApi::class)
 @Composable
 fun AutoComplete(
     label: String,
+    hint: String,
     options: List<Selectable>,
     onItemSelected: (Selectable) -> Unit
 ) {
     var selectedValue by remember { mutableStateOf<Selectable?>(null) }
     var textFieldSize by remember { mutableStateOf(Size.Zero) }
     var expanded by remember { mutableStateOf(false) }
+    var inputValue by remember { mutableStateOf("") }
 
     Column(
-        modifier = Modifier.padding()
-            .clickable(onClick = { expanded = false })
+        modifier = Modifier.padding().padding(horizontal = 32.dp)
     ) {
-
-        Column() {
-            Row() {
-                TextField(
-                    modifier = Modifier
-                        .height(55.dp)
-                        .onGloballyPositioned { coordinates ->
-                            textFieldSize = coordinates.size.toSize()
-                        },
-                    label = {
-                        Text(
-                            modifier = Modifier.padding(start = 3.dp, bottom = 2.dp),
-                            text = label,
-                            fontSize = 16.sp,
-                            color = Color.Black,
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            TextField(
+                modifier = Modifier
+                    .weight(1f)
+                    .height(55.dp)
+                    .onGloballyPositioned { coordinates ->
+                        textFieldSize = coordinates.size.toSize()
+                    },
+                label = {
+                    Text(
+                        modifier = Modifier.padding(start = 3.dp, bottom = 2.dp),
+                        text = label,
+                        fontSize = 16.sp,
+                        color = Color.Black,
+                    )
+                },
+                value = inputValue,
+                isError = inputValue.isNotEmpty() && options.none {
+                    stringResource(
+                        StringByKey.getStringValue(
+                            StringType.BREED,
+                            it.key
                         )
-                    },
-                    value = selectedValue,
-                    isError = options.indexOf(selectedValue) == -1,
-                    onValueChange = {
-                        selectedValue = findOptionSelectable(options, it)
-                        expanded = true
-                    },
-                    placeholder = { Text("Enter any Animals Name") },
-                    colors = TextFieldDefaults.textFieldColors(
-                        containerColor = Color.Transparent,
-                        cursorColor = Color.Black,
-                        focusedIndicatorColor =  LocalAppColors.current.primary,
-                        unfocusedIndicatorColor = LocalAppColors.current.primary,
-                        errorContainerColor = Color.Transparent,
-                        errorIndicatorColor = LocalAppColors.current.error,
-                        errorTextColor = LocalAppColors.current.error),
-                    textStyle = TextStyle(color = Color.Black, fontSize = 16.sp),
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Text,
-                        imeAction = ImeAction.Done
-                    ),
-                    singleLine = true,
-                    trailingIcon = {
-                        IconButton(onClick = { expanded = !expanded }) {
-                            Icon(
-                                modifier = Modifier.size(24.dp),
-                                imageVector = Icons.Rounded.KeyboardArrowDown,
-                                contentDescription = "arrow",
-                                tint = Color.Black
-                            )
-                        }
+                    ).contains(inputValue, ignoreCase = true)
+                },
+                onValueChange = {
+                    inputValue = it
+                    selectedValue =
+                        options.find { option -> option.name.equals(it, ignoreCase = true) }
+                    expanded = it.isNotEmpty()
+                },
+                placeholder = { Text(hint) },
+                colors = TextFieldDefaults.textFieldColors(
+                    containerColor = Color.Transparent,
+                    cursorColor = Color.Black,
+                    focusedIndicatorColor = LocalAppColors.current.primary,
+                    unfocusedIndicatorColor = LocalAppColors.current.primary,
+                    errorContainerColor = Color.Transparent,
+                    errorIndicatorColor = LocalAppColors.current.error,
+                    errorTextColor = LocalAppColors.current.error
+                ),
+                textStyle = TextStyle(color = Color.Black, fontSize = 16.sp),
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Text,
+                    imeAction = ImeAction.Done
+                ),
+                singleLine = true,
+                trailingIcon = {
+                    IconButton(onClick = { expanded = !expanded }) {
+                        Icon(
+                            modifier = Modifier.size(24.dp),
+                            imageVector = Icons.Rounded.KeyboardArrowDown,
+                            contentDescription = "arrow",
+                            tint = Color.Black
+                        )
                     }
-                )
-            }
+                }
+            )
+        }
 
-            AnimatedVisibility(visible = expanded) {
-                Card(
-                    modifier = Modifier.padding(horizontal = 5.dp),
-                       // .width(textFieldSize.width.dp),
-                        shape = RoundedCornerShape(10.dp)
+        AnimatedVisibility(visible = expanded) {
+            Card(
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 5.dp),
+                shape = RoundedCornerShape(10.dp)
+            ) {
+                LazyColumn(
+                    modifier = Modifier
+                        .heightIn(max = 150.dp)
+                        .background(LocalAppColors.current.primary)
                 ) {
-                    LazyColumn(
-                        modifier = Modifier
-                            .heightIn(max = 150.dp)
-                            .background(LocalAppColors.current.primary)
-                    ) {
-                        val filteredOptions = options
-                            .filter { it.name.contains(selectedValue?.localizedName() as String, ignoreCase = true) }
-                        items(filteredOptions) { item ->
-                            ItemCategory(selectable = item) { selectedTitle ->
-                                selectedValue = selectedTitle
-                                expanded = false
-                                onItemSelected(selectedTitle)
-                            }
+                    val filteredOptions = options
+                        .filter { it.name.contains(inputValue, ignoreCase = true) }
+                    items(filteredOptions) { item ->
+                        ItemCategory(selectable = item) { selectedTitle ->
+                            selectedValue = selectedTitle
+                            expanded = false
+                            onItemSelected(selectedTitle)
                         }
                     }
                 }
@@ -136,11 +149,9 @@ fun AutoComplete(
     }
 }
 
-fun findOptionSelectable(options: List<Selectable>, it: String): Selectable? {
-    val selectable: Selectable? = options.find { key -> key.localizedName().toLowerCase().contains(it) }
-    return selectable
-}
 
+
+@OptIn(ExperimentalResourceApi::class)
 @Composable
 fun ItemCategory(
     selectable: Selectable,
@@ -150,8 +161,8 @@ fun ItemCategory(
         modifier = Modifier
             .fillMaxWidth()
             .clickable { onSelect(selectable) }
-            .padding(10.dp)
+            .padding(30.dp, 10.dp)
     ) {
-        Text(text = selectable.localizedName(), fontSize = 16.sp)
+        Text(text = stringResource(StringByKey.getStringValue(StringType.BREED, selectable.key)), fontSize = 16.sp)
     }
 }

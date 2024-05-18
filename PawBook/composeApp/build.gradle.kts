@@ -13,6 +13,8 @@ plugins {
 
 }
 
+
+
 kotlin {
     androidTarget {
         compilations.all {
@@ -45,8 +47,9 @@ kotlin {
         getByName("iosSimulatorArm64Main").dependsOn(commonMain.get())
         */
 
+
+
         androidMain.dependencies {
-            implementation(libs.compose.ui.tooling.preview)
             implementation(libs.androidx.activity.compose)
             implementation("io.ktor:ktor-client-android:2.3.10")
             implementation("io.ktor:ktor-client-json:2.3.10")
@@ -55,6 +58,7 @@ kotlin {
             implementation("io.ktor:ktor-client-okhttp:2.3.10")
             implementation("io.insert-koin:koin-android:3.5.3")
             implementation("io.insert-koin:koin-androidx-compose:3.5.3")
+            implementation(libs.compose.ui.tooling.preview)
 
         }
 
@@ -80,6 +84,8 @@ kotlin {
             implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
             implementation("com.russhwolf:multiplatform-settings:1.1.1")
             implementation("com.russhwolf:multiplatform-settings-no-arg:1.1.1")
+
+
 
         }
 

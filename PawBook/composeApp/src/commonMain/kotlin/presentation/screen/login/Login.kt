@@ -78,7 +78,7 @@ fun LoginScreen(viewModel: LoginViewModel = koinInject(), onLoginSucces: () -> U
             CreateAccount() {
                 onCreateAccount()
             }
-            Text("Don't Have an Account?", fontSize = 10.sp)
+            Text("Ešte nemáte účet?", fontSize = 10.sp)
             Footer()
         }
         AnimatedContent(targetState = loginState) { targetCount ->
@@ -92,7 +92,7 @@ fun LoginScreen(viewModel: LoginViewModel = koinInject(), onLoginSucces: () -> U
                 if(openAlertDialog.value) {
                     BasicAlertDialog(onDismissRequest = { openAlertDialog.value = false }) {
                         Card {
-                            Text("Please check your internet connection", Modifier.padding(24.dp))
+                            Text("Skontrolujte prosím svoje pripojenie k internetu", Modifier.padding(24.dp))
                         }
                     }
                 }
@@ -104,7 +104,7 @@ fun LoginScreen(viewModel: LoginViewModel = koinInject(), onLoginSucces: () -> U
                 if(openErrorDialog.value) {
                     BasicAlertDialog(onDismissRequest = { openErrorDialog.value = false }) {
                         Card {
-                            Text("Invalid e-mail or password", Modifier.padding(24.dp))
+                            Text("Neplatný e-mail alebo heslo", Modifier.padding(24.dp))
                         }
                     }
                 }
@@ -115,7 +115,7 @@ fun LoginScreen(viewModel: LoginViewModel = koinInject(), onLoginSucces: () -> U
 
 @Composable
 fun LogInSocial() {
-    StyledButton("Log in with Google") {
+    StyledButton("Prihlásiť cez Google") {
     }
 }
 
@@ -126,7 +126,7 @@ fun Footer() {
 
 @Composable
 fun CreateAccount(onCreateClick: () -> Unit) {
-    StyledButton("Create account", extraHorizontalPadding = 24.dp, onClick = onCreateClick)
+    StyledButton("Vytvoriť účet", extraHorizontalPadding = 24.dp, onClick = onCreateClick)
 }
 
 enum class ButtonStyle{
@@ -169,7 +169,7 @@ fun StyledButton(text:String = "", buttonStyle: ButtonStyle = ButtonStyle.FillPr
 
 @Composable
 fun ForgotPassword() {
-    Text("Forgot password", fontSize = 12.sp)
+    Text("Zabudnuté heslo", fontSize = 12.sp)
 }
 
 @Composable
@@ -181,7 +181,7 @@ fun LogInForm(onLoginSubmit: (username: String, password: String) -> Unit) {
         email.value = it
     }
     Spacer(modifier = Modifier.height(10.dp))
-    InputPasswordField("Password", password.value){
+    InputPasswordField("Heslo", password.value){
         password.value = it
     }
     Spacer(modifier = Modifier.height(20.dp))
@@ -193,7 +193,7 @@ fun LogInForm(onLoginSubmit: (username: String, password: String) -> Unit) {
 @Composable
 fun LogInButton(onLoginSubmit: () -> Unit) {
     // call submit on click
-    StyledButton(text = "Log in", extraHorizontalPadding = 0.dp, onClick = onLoginSubmit)
+    StyledButton(text = "Prihlásiť", extraHorizontalPadding = 0.dp, onClick = onLoginSubmit)
 }
 
 @Composable
@@ -224,7 +224,7 @@ fun InputPasswordField(title: String, value: String, onTextChange: (String) -> U
                 Icons.Filled.Lock
             else Icons.Filled.Lock
 
-            val description = if (passwordVisible) "Hide password" else "Show password"
+            val description = if (passwordVisible) "Skryť heslo" else "Zobraziť heslo"
 
             IconButton(onClick = {passwordVisible = !passwordVisible}){
                 Icon(imageVector  = image, description)

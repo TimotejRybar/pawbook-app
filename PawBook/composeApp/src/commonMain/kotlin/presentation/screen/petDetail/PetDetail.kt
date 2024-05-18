@@ -77,7 +77,7 @@ fun PetDetail(pet: PetItem, viewModel: PetDetailViewModel = koinInject(), onDism
         PetInfo(viewModel, pet)
     }
     LaunchedEffect(key1 = true) {
-        viewModel.pet.value?.id = "CREATE"
+        viewModel.pet.value.id = "CREATE"
         viewModel.init()
     }
 }
@@ -100,7 +100,7 @@ fun PetInfo(viewModel: PetDetailViewModel, pet: PetItem) {
 
 @Composable
 fun SaveButton(onFormSubmit: () -> Unit) {
-    StyledButton("Save", ButtonStyle.FillPrimary, 0.dp) {
+    StyledButton("Uložiť", ButtonStyle.FillPrimary, 0.dp) {
         onFormSubmit()
     }
 }
@@ -120,20 +120,20 @@ fun PetPhoto() {
                     onClick = {
                         //openDialog.value = false
                     }) {
-                    Text("Select")
+                    Text("Vybrať")
                 }
             },
             icon = {
                 Icon(imageVector = Icons.Default.Star, "dialog icon")
             },
-            title = { Text("Select photo") },
-            text = { Text("Continue If you want to upload new main pet photo") },
+            title = { Text("Vyberte fotku") },
+            text = { Text("Pokračujte ak chcete nahrať novú profilovú fotku zvieratka") },
             dismissButton = {
                 Button(
                     onClick = {
                         openDialog.value = false
                     }) {
-                    Text("Cancel")
+                    Text("Zrušiť")
                 }
             }
         )
@@ -148,7 +148,7 @@ fun PetProps(viewModel: PetDetailViewModel, breeds: List<PetBreed>, pet: PetItem
     val tz = TimeZone.currentSystemDefault()
     val today = now.toLocalDateTime(tz).date
     val birhtDay = remember { mutableStateOf(today) }
-    val breed = remember { mutableStateOf("") }
+    val breed = remember { mutableStateOf<PetBreed?>(null) }
     val gender = remember { mutableStateOf("") }
     val color = remember { mutableStateOf("") }
 
@@ -172,14 +172,14 @@ fun PetProps(viewModel: PetDetailViewModel, breeds: List<PetBreed>, pet: PetItem
     SaveButton() {
        // create new pet
        viewModel.createPet(PetItem("", name.value, "", pet.petType, "", birhtDay.value.toString(), weight.value.toFloat(),
-           color.value,breed.value,""))
+           color.value,breed.value?.key as String,""))
     }
 }
 
 @Composable
 fun GenderSpinner(onSelected: (String) -> Unit) {
-    val genderOptions = arrayListOf("Male", "Female")
-    Spinner(text = "Gender", options = genderOptions) {
+    val genderOptions = arrayListOf("Pes", "Fenka")
+    Spinner(text = "Pohlavie", options = genderOptions) {
         onSelected(it)
     }
 }
@@ -187,7 +187,7 @@ fun GenderSpinner(onSelected: (String) -> Unit) {
 @OptIn(ExperimentalResourceApi::class)
 @Composable
 fun BreedSpinner(breeds: List<PetBreed>, onSelected: (PetBreed) -> Unit) {
-    AutoComplete(stringResource(Res.string.breed), breeds) {
+    AutoComplete(stringResource(Res.string.breed), "Vyhľadajte plemeno zvieratka",breeds) {
         onSelected(it as PetBreed)
     }
 }
