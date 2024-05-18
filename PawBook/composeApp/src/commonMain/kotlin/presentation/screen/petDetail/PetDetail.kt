@@ -62,6 +62,7 @@ import pawbook.composeapp.generated.resources.Res
 import pawbook.composeapp.generated.resources.breed
 import pawbook.composeapp.generated.resources.sofka
 import presentation.components.autocomplete.AutoComplete
+import presentation.components.color.colorField.ColorField
 import presentation.screen.login.ButtonStyle
 import presentation.theme.colors.LocalAppColors
 import presentation.screen.login.StyledButton
@@ -159,9 +160,7 @@ fun PetProps(viewModel: PetDetailViewModel, breeds: List<PetBreed>, pet: PetItem
     PetPropField(PetPropFieldType.WEIGHT) {
         weight.value = it
     }
-    PetPropField(PetPropFieldType.COLOR) {
-        color.value = it
-    }
+    ColorSpinner()
     BreedSpinner(breeds) {
         breed.value = it
     }
@@ -173,6 +172,14 @@ fun PetProps(viewModel: PetDetailViewModel, breeds: List<PetBreed>, pet: PetItem
        // create new pet
        viewModel.createPet(PetItem("", name.value, "", pet.petType, "", birhtDay.value.toString(), weight.value.toFloat(),
            color.value,breed.value?.key as String,""))
+    }
+}
+
+@Composable
+fun ColorSpinner() {
+
+    ColorField("Farba zvieratka") {
+
     }
 }
 

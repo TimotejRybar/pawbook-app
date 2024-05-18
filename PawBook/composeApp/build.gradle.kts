@@ -59,6 +59,8 @@ kotlin {
             implementation("io.insert-koin:koin-android:3.5.3")
             implementation("io.insert-koin:koin-androidx-compose:3.5.3")
             implementation(libs.compose.ui.tooling.preview)
+            implementation("com.revenuecat.purchases:purchases:7.5.2")
+            implementation("com.revenuecat.purchases:purchases-ui:7.5.2")
 
         }
 
