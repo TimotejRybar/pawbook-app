@@ -1,6 +1,7 @@
 package data.repository
 
 import com.russhwolf.settings.Settings
+import core.enums.SocialLogin
 import core.util.Resources
 import data.remote.LoginApi
 import data.remote.Preferences
@@ -13,11 +14,6 @@ import kotlinx.coroutines.flow.flow
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
-enum class SocialLogin {
-    none,
-    facebook,
-    google,
-}
 class RegisterRepositoryImpl : RegisterRepository, KoinComponent {
 
     private val loginApi: LoginApi by inject()

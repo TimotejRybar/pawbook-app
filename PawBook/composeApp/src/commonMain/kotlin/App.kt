@@ -1,6 +1,7 @@
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import core.di.provideBreedsApi
+import core.di.provideColorsApi
 import core.di.provideDoctorsApi
 import core.di.provideKtorfit
 import core.di.provideLoginApi
@@ -34,6 +35,8 @@ fun App() {
 
 fun appModule() = module {
     factory { provideKtorfit() }
+
+    single { provideColorsApi(get()) }
 
     single<RegisterViewModel> { RegisterViewModel()}
     single<RegisterRepositoryImpl> { RegisterRepositoryImpl() }

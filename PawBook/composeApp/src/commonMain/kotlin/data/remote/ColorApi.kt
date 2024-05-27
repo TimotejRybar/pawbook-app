@@ -3,11 +3,12 @@ package data.remote
 import de.jensklingenberg.ktorfit.http.GET
 import de.jensklingenberg.ktorfit.http.Query
 import domain.model.enums.PetType
+import domain.model.result.FetchColorsResult
 import domain.model.result.FetchDoctorsResult
 
-interface DoctorApi
+interface ColorApi
 {
-    @GET("doctors")
-    suspend fun fetch(): FetchDoctorsResult
+    @GET("colors")
+    suspend fun fetch(): FetchColorsResult
 
 }

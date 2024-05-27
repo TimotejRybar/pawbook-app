@@ -3,6 +3,7 @@ package core.di
 import com.russhwolf.settings.Settings
 import core.util.LocalDateTimeSerializer
 import data.remote.BreedApi
+import data.remote.ColorApi
 import data.remote.DoctorApi
 import data.remote.LoginApi
 import data.remote.PetApi
@@ -63,6 +64,7 @@ fun provideLoginApi(ktorfit: Ktorfit): LoginApi = ktorfit.create()
 fun providePetsApi(ktorfit: Ktorfit): PetApi = ktorfit.create()
 fun provideBreedsApi(ktorfit: Ktorfit): BreedApi = ktorfit.create()
 fun provideDoctorsApi(ktorfit: Ktorfit): DoctorApi = ktorfit.create()
+fun provideColorsApi(ktorfit: Ktorfit): ColorApi = ktorfit.create()
 
 fun provideSettings(): Settings = Settings()
 

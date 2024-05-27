@@ -14,6 +14,6 @@ import domain.model.result.RegisterResult
 interface BreedApi
 {
     @GET("breeds")
-    suspend fun fetch(@Query("petType") petType: PetType): FetchBreedsResult
+    suspend fun fetch(): FetchBreedsResult
 
 }

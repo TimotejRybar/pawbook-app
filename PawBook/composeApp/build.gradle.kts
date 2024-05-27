@@ -9,6 +9,7 @@ plugins {
     id("de.jensklingenberg.ktorfit")
     kotlin("plugin.serialization") version "1.9.22"
     id("kotlinx-serialization")
+    alias(libs.plugins.room)
 }
 
 
@@ -59,7 +60,7 @@ kotlin {
             implementation(libs.compose.ui.tooling.preview)
             implementation("com.revenuecat.purchases:purchases:7.5.2")
             implementation("com.revenuecat.purchases:purchases-ui:7.5.2")
-
+            implementation(libs.androidx.room.paging)
         }
 
 
@@ -78,15 +79,13 @@ kotlin {
             implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1-Beta")
             implementation("androidx.lifecycle:lifecycle-viewmodel:2.7.0")
             implementation("io.insert-koin:koin-core:3.5.1")
-            implementation("io.ktor:ktor-client-core:2.3.10")
+            implementation(libs.ktor.core)
             implementation("io.insert-koin:koin-compose:1.1.5")
             implementation("de.jensklingenberg.ktorfit:ktorfit-lib:1.13.0")
             implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
             implementation("com.russhwolf:multiplatform-settings:1.1.1")
             implementation("com.russhwolf:multiplatform-settings-no-arg:1.1.1")
-
-
-
+            implementation(libs.androidx.room.runtime)
         }
 
         iosMain.dependencies {
@@ -184,7 +183,15 @@ dependencies {
     val ktorfitVersion = "1.13.0"
     add("kspCommonMainMetadata", "de.jensklingenberg.ktorfit:ktorfit-ksp:$ktorfitVersion")
     add("kspAndroid","de.jensklingenberg.ktorfit:ktorfit-ksp:$ktorfitVersion")
+    add("kspAndroid", libs.androidx.room.compiler)
+    add("kspIosSimulatorArm64", libs.androidx.room.compiler)
+    add("kspIosX64", libs.androidx.room.compiler)
+    add("kspIosArm64", libs.androidx.room.compiler)
 
+}
+
+room {
+    schemaDirectory("$projectDir/schemas")
 }
 
 /*
