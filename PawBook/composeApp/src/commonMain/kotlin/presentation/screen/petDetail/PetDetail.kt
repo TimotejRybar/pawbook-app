@@ -47,6 +47,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
+import domain.model.Doctor
 import domain.model.PetBreed
 import domain.model.PetItem
 import io.ktor.util.date.GMTDate
@@ -60,6 +61,7 @@ import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
 import pawbook.composeapp.generated.resources.Res
 import pawbook.composeapp.generated.resources.breed
+import pawbook.composeapp.generated.resources.doctor
 import pawbook.composeapp.generated.resources.sofka
 import presentation.components.autocomplete.AutoComplete
 import presentation.components.color.colorField.ColorField
@@ -85,7 +87,9 @@ fun PetDetail(pet: PetItem, viewModel: PetDetailViewModel = koinInject(), onDism
 
 @Composable
 fun PetInfo(viewModel: PetDetailViewModel, pet: PetItem) {
-    val breeds by viewModel.breeds.collectAsState() // Collecting state as a Composable
+    val breeds by viewModel.breeds.collectAsState()
+    val doctors by viewModel.doctors.collectAsState()
+
     Row(verticalAlignment = Alignment.CenterVertically) {
         Column(
             verticalArrangement = Arrangement.Center,
@@ -93,7 +97,7 @@ fun PetInfo(viewModel: PetDetailViewModel, pet: PetItem) {
         ) {
             Spacer(modifier = Modifier.height(50.dp))
             PetPhoto()
-            PetProps(viewModel, breeds, pet)
+            PetProps(viewModel, breeds, doctors, pet)
             Spacer(modifier = Modifier.height(20.dp))
         }
     }
@@ -142,7 +146,7 @@ fun PetPhoto() {
 }
 
 @Composable
-fun PetProps(viewModel: PetDetailViewModel, breeds: List<PetBreed>, pet: PetItem) {
+fun PetProps(viewModel: PetDetailViewModel, breeds: List<PetBreed>, doctors: List<Doctor>, pet: PetItem) {
     val name = remember { mutableStateOf("") }
     val weight = remember { mutableStateOf("") }
     val now = Clock.System.now()
@@ -152,6 +156,7 @@ fun PetProps(viewModel: PetDetailViewModel, breeds: List<PetBreed>, pet: PetItem
     val breed = remember { mutableStateOf<PetBreed?>(null) }
     val gender = remember { mutableStateOf("") }
     val color = remember { mutableStateOf("") }
+    val doctor = remember { mutableStateOf<Doctor?>(null) }
 
     PetPropField(PetPropFieldType.NAME) {
         name.value = it
@@ -167,11 +172,22 @@ fun PetProps(viewModel: PetDetailViewModel, breeds: List<PetBreed>, pet: PetItem
     GenderSpinner() {
         gender.value = it
     }
+    DoctorSpinner(doctors) {
+        doctor.value = it
+    }
     Spacer(modifier = Modifier.height(20.dp))
     SaveButton() {
        // create new pet
        viewModel.createPet(PetItem("", name.value, "", pet.petType, "", birhtDay.value.toString(), weight.value.toFloat(),
            color.value,breed.value?.key as String,""))
+    }
+}
+
+@OptIn(ExperimentalResourceApi::class)
+@Composable
+fun DoctorSpinner(doctors: List<Doctor>, onSelected: (Doctor) -> Unit) {
+    AutoComplete(stringResource(Res.string.doctor), "Vyhľadajte plemeno zvieratka", doctors) {
+        onSelected(it as Doctor)
     }
 }
 

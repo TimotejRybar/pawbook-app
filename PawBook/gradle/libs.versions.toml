@@ -18,6 +18,7 @@ junitKtx = "1.1.5"
 kotest = "5.8.0"
 turbine = "1.0.0"
 ktor = "2.3.10"
+roomKtx = "2.6.1"
 
 coroutines-test-ver = "1.8.0"
 
@@ -52,9 +53,15 @@ kotest-assertions-core = { module = "io.kotest:kotest-assertions-core", version.
 kotest-property = { module = "io.kotest:kotest-property", version.ref = "kotest" }
 turbine-turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
 
+androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "androidx-room" }
+androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "androidx-room" }
+androidx-room-paging = { group = "androidx.room", name = "room-paging", version.ref = "androidx-room" }
+androidx-room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "androidx-room" }
+
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 androidLibrary = { id = "com.android.library", version.ref = "agp" }
 jetbrainsCompose = { id = "org.jetbrains.compose", version.ref = "compose-plugin" }
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 ksp = { id ="com.google.devtools.ksp", version = "1.9.23-1.0.20" }
+room = { id = "androidx.room", version.ref = "androidx-room" }

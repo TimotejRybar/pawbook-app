@@ -9,8 +9,6 @@ plugins {
     id("de.jensklingenberg.ktorfit")
     kotlin("plugin.serialization") version "1.9.22"
     id("kotlinx-serialization")
-
-
 }
 
 

@@ -3,6 +3,7 @@ package core.di
 import com.russhwolf.settings.Settings
 import core.util.LocalDateTimeSerializer
 import data.remote.BreedApi
+import data.remote.DoctorApi
 import data.remote.LoginApi
 import data.remote.PetApi
 import data.remote.Preferences
@@ -32,7 +33,6 @@ fun initKoin(appDeclaration: KoinAppDeclaration = {}): KoinApplication {
 }
 
 fun provideKtorfit(): Ktorfit {
-
     val prefs = Preferences()
     val token = prefs.getAccessToken()
     return Ktorfit.Builder()
@@ -62,6 +62,7 @@ fun provideKtorfit(): Ktorfit {
 fun provideLoginApi(ktorfit: Ktorfit): LoginApi = ktorfit.create()
 fun providePetsApi(ktorfit: Ktorfit): PetApi = ktorfit.create()
 fun provideBreedsApi(ktorfit: Ktorfit): BreedApi = ktorfit.create()
+fun provideDoctorsApi(ktorfit: Ktorfit): DoctorApi = ktorfit.create()
 
 fun provideSettings(): Settings = Settings()
 

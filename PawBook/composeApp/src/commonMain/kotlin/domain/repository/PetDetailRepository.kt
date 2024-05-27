@@ -5,10 +5,12 @@ import domain.model.PetItem
 import domain.model.enums.PetType
 import domain.model.result.CreatePetResult
 import domain.model.result.FetchBreedsResult
+import domain.model.result.FetchDoctorsResult
 import domain.model.result.LoginResult
 import kotlinx.coroutines.flow.Flow
 
 interface PetDetailRepository {
+    suspend fun fetchDoctors(petType: PetType): Flow<Resources<FetchDoctorsResult>>
     suspend fun fetchBreeds(petType: PetType): Flow<Resources<FetchBreedsResult>>
     suspend fun createPet(pet: PetItem): Flow<Resources<CreatePetResult>>
 }

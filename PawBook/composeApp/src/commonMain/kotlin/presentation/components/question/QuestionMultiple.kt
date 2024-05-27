@@ -55,7 +55,6 @@ fun Answer(answer: AnswerItem, onClick: (AnswerItem)-> Unit) {
     } else {
         LocalAppColors.current.primary
     }
-
     Box(modifier = Modifier.padding(4.dp)) {
         Button(
             onClick =

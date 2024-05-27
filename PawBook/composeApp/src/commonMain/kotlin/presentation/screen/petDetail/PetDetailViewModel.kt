@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import core.util.Resources
 import data.repository.PetDetailRepositoryImpl
+import domain.model.Doctor
 import domain.model.PetBreed
 import domain.model.PetItem
 import domain.model.enums.PetDetailState
@@ -23,21 +24,22 @@ class PetDetailViewModel() : ViewModel(), KoinComponent {
     private val _state = MutableStateFlow(PetDetailState.INIT)
     val state: StateFlow<PetDetailState> = _state
 
-    //private val _pet = MutableStateFlow(PetItem.empty())
-    //val pet: StateFlow<PetItem> = _pet
     val pet = mutableStateOf(PetItem.empty())
 
     private val _breeds = MutableStateFlow<ArrayList<PetBreed>>(arrayListOf())
     val breeds: StateFlow<ArrayList<PetBreed>> = _breeds
 
+    private val _doctors = MutableStateFlow<ArrayList<Doctor>>(arrayListOf())
+    val doctors: StateFlow<ArrayList<Doctor>> = _doctors
+
     fun init() {
         if(pet.value.id == "CREATE") {
             fetchBreeds(pet.value.petType)
+            fetchDoctors(pet.value.petType)
         }
     }
 
     private fun fetchBreeds(petType: PetType) {
-
         viewModelScope.launch {
             petDetailRepository.fetchBreeds(petType).collect { it ->
                 when(it) {
@@ -50,6 +52,26 @@ class PetDetailViewModel() : ViewModel(), KoinComponent {
                     }
                     is Resources.Success -> {
                         it.data?.breeds?.let { it1 -> breeds.value.addAll(it1) }
+
+                    }
+                }
+            }
+        }
+    }
+
+    private fun fetchDoctors(petType: PetType) {
+        viewModelScope.launch {
+            petDetailRepository.fetchDoctors(petType).collect { it ->
+                when(it) {
+                    is Resources.Error -> {
+                        if(it.message == "no_internet") _state.update { PetDetailState.NO_INTERNET }
+                        if(it.message == "internal_error") _state.update { PetDetailState.ERROR }
+                    }
+                    is Resources.Loading -> {
+                        _state.update { PetDetailState.LOADING }
+                    }
+                    is Resources.Success -> {
+                        it.data?.doctors?.let { it1 -> doctors.value.addAll(it1) }
 
                     }
                 }
