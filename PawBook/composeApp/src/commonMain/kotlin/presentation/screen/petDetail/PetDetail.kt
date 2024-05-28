@@ -35,6 +35,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -47,9 +48,11 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
+import data.model.entity.BreedEntity
+import data.model.entity.ColorEntity
+import data.model.entity.DoctorEntity
 import domain.model.Doctor
 import domain.model.PetBreed
-import domain.model.PetColor
 import domain.model.PetItem
 import io.ktor.util.date.GMTDate
 import domain.model.enums.PetPropFieldType
@@ -57,12 +60,14 @@ import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import org.jetbrains.compose.resources.ExperimentalResourceApi
+import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
 import pawbook.composeapp.generated.resources.Res
 import pawbook.composeapp.generated.resources.breed
 import pawbook.composeapp.generated.resources.doctor
+import pawbook.composeapp.generated.resources.search_pet_breed
 import pawbook.composeapp.generated.resources.sofka
 import presentation.components.autocomplete.AutoComplete
 import presentation.components.color.colorField.ColorField
@@ -148,17 +153,17 @@ fun PetPhoto() {
 }
 
 @Composable
-fun PetProps(viewModel: PetDetailViewModel, breeds: List<PetBreed>, colors: List<PetColor>, doctors: List<Doctor>, pet: PetItem) {
+fun PetProps(viewModel: PetDetailViewModel, breeds: List<BreedEntity>, colors: List<ColorEntity>, doctors: List<DoctorEntity>, pet: PetItem) {
     val name = remember { mutableStateOf("") }
     val weight = remember { mutableStateOf("") }
     val now = Clock.System.now()
     val tz = TimeZone.currentSystemDefault()
     val today = now.toLocalDateTime(tz).date
     val birthDay = remember { mutableStateOf(today) }
-    val breed = remember { mutableStateOf<PetBreed?>(null) }
+    val breed = remember { mutableStateOf<BreedEntity?>(null) }
     val gender = remember { mutableStateOf("") }
-    val color = remember { mutableStateOf("") }
-    val doctor = remember { mutableStateOf<Doctor?>(null) }
+    val color = remember { mutableStateListOf("") }
+    val doctor = remember { mutableStateOf<DoctorEntity?>(null) }
 
     PetPropField(PetPropFieldType.NAME) {
         name.value = it
@@ -167,7 +172,10 @@ fun PetProps(viewModel: PetDetailViewModel, breeds: List<PetBreed>, colors: List
     PetPropField(PetPropFieldType.WEIGHT) {
         weight.value = it
     }
-    ColorSpinner(colors)
+    ColorSpinner(colors) { it1 ->
+        color.clear()
+        color.addAll(it1.map{it.color})
+    }
     BreedSpinner(breeds) {
         breed.value = it
     }
@@ -180,24 +188,23 @@ fun PetProps(viewModel: PetDetailViewModel, breeds: List<PetBreed>, colors: List
     Spacer(modifier = Modifier.height(20.dp))
     SaveButton() {
        // create new pet
-       viewModel.createPet(PetItem("", name.value, "", pet.petType, "", birthDay.value.toString(), weight.value.toFloat(),
-           color.value,breed.value?.key as String,""))
+       viewModel.createPet(PetItem(null, name.value, "", pet.petType, null, birthDay.value.toString(), weight.value.toFloat(),
+           color,breed.value?.id as String,""))
     }
 }
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
-fun DoctorSpinner(doctors: List<Doctor>, onSelected: (Doctor) -> Unit) {
+fun DoctorSpinner(doctors: List<DoctorEntity>, onSelected: (DoctorEntity) -> Unit) {
     AutoComplete(stringResource(Res.string.doctor), "Vyhľadajte plemeno zvieratka", doctors) {
-        onSelected(it as Doctor)
+        onSelected(it as DoctorEntity)
     }
 }
 
 @Composable
-fun ColorSpinner(colors: List<PetColor>) {
-
+fun ColorSpinner(colors: List<ColorEntity>, onColorSelected: (colors: List<ColorEntity>) -> Unit) {
     ColorField("Farba zvieratka", colors) {
-
+        onColorSelected(colors)
     }
 }
 
@@ -211,9 +218,10 @@ fun GenderSpinner(onSelected: (String) -> Unit) {
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
-fun BreedSpinner(breeds: List<PetBreed>, onSelected: (PetBreed) -> Unit) {
-    AutoComplete(stringResource(Res.string.breed), "Vyhľadajte plemeno zvieratka",breeds) {
-        onSelected(it as PetBreed)
+fun BreedSpinner(breeds: List<BreedEntity>, onSelected: (BreedEntity) -> Unit) {
+    AutoComplete(stringResource(Res.string.breed),
+        stringResource(Res.string.search_pet_breed), breeds) {
+        onSelected(it as BreedEntity)
     }
 }
 

@@ -54,6 +54,10 @@ fun AppContent(navController: NavHostController = rememberNavController()) {
     val selectedPet = remember { mutableStateOf(PetItem.empty()) }
 
     when (navBackStackEntry?.destination?.route) {
+        AppScreen.Splash.name -> {
+            topBarState.value = false
+        }
+
         AppScreen.Login.name -> {
             topBarState.value = false
         }
@@ -136,7 +140,7 @@ fun AppContent(navController: NavHostController = rememberNavController()) {
 
                         composable(route = AppScreen.Splash.name) {
                             Splash{
-                                navController.navigate(AppScreen.Register.name)
+                                navController.navigate(AppScreen.Login.name)
                             }
                         }
 

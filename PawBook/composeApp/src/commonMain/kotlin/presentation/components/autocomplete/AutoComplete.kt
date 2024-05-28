@@ -41,6 +41,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toSize
 import core.util.stringByKey.StringByKey
 import core.util.stringByKey.StringType
+import data.model.entity.BreedEntity
 import domain.model.Selectable
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.stringResource
@@ -79,14 +80,7 @@ fun AutoComplete(
                     )
                 },
                 value = inputValue,
-                isError = inputValue.isNotEmpty() && options.none {
-                    stringResource(
-                        StringByKey.getStringValue(
-                            StringType.BREED,
-                            it.key
-                        )
-                    ).contains(inputValue, ignoreCase = true)
-                },
+                isError = inputValue.isNotEmpty() && (options.find {it.name == inputValue} == null),
                 onValueChange = {
                     inputValue = it
                     selectedValue =
@@ -148,8 +142,6 @@ fun AutoComplete(
     }
 }
 
-
-
 @OptIn(ExperimentalResourceApi::class)
 @Composable
 fun Option(
@@ -162,6 +154,6 @@ fun Option(
             .clickable { onSelect(selectable) }
             .padding(30.dp, 10.dp)
     ) {
-        Text(text = stringResource(StringByKey.getStringValue(StringType.BREED, selectable.key)), fontSize = 16.sp)
+        Text(text = if(selectable.id != selectable.key) stringResource(StringByKey.getStringValue(StringType.BREED, selectable.key)) else selectable.name, fontSize = 16.sp)
     }
 }

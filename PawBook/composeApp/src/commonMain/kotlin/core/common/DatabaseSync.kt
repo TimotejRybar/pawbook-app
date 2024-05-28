@@ -8,7 +8,6 @@ import data.model.entity.DoctorEntity
 import data.remote.BreedApi
 import data.remote.ColorApi
 import data.remote.DoctorApi
-import domain.model.PetBreed
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import org.koin.core.component.KoinComponent
@@ -42,13 +41,13 @@ class DatabaseSync: KoinComponent {
         val doctors = doctorApi.fetch()
         // update db
         val petBreeds = breeds.breeds.map {
-            BreedEntity(it.id, it.petType, it.name, it.key, it.updated, it.created)
+            BreedEntity(it._id, it.petType, it.name, it.key, it.updatedAt, it.createdAt)
         }
         val petColors = colors.colors.map {
-            ColorEntity(it.id, it.petType, it.name, it.id, it.color, it.created, it.updated)
+            ColorEntity(it._id, it.petType, it.name, it._id, it.color, it.createdAt, it.updatedAt)
         }
         val petDoctors = doctors.doctors.map {
-            DoctorEntity(it.id, it.name, it.address, it.skills, it.gps, it.created, it.updated)
+            DoctorEntity(it._id, it.name, it.address, it.skills, it.gps, it.createdAt, it.updatedAt)
         }
         // save all
         database.getBreedDao().insertAll(petBreeds)

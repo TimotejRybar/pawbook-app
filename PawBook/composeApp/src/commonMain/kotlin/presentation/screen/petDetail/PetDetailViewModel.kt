@@ -4,7 +4,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.room.RoomDatabase
 import core.util.Resources
+import data.local.AppDatabase
+import data.model.entity.BreedEntity
+import data.model.entity.ColorEntity
+import data.model.entity.DoctorEntity
 import data.repository.PetDetailRepositoryImpl
 import domain.model.Doctor
 import domain.model.PetBreed
@@ -27,14 +32,14 @@ class PetDetailViewModel() : ViewModel(), KoinComponent {
 
     val pet = mutableStateOf(PetItem.empty())
 
-    private val _breeds = MutableStateFlow<ArrayList<PetBreed>>(arrayListOf())
-    val breeds: StateFlow<ArrayList<PetBreed>> = _breeds
+    private val _breeds = MutableStateFlow<ArrayList<BreedEntity>>(arrayListOf())
+    val breeds: StateFlow<ArrayList<BreedEntity>> = _breeds
 
-    private val _doctors = MutableStateFlow<ArrayList<Doctor>>(arrayListOf())
-    val doctors: StateFlow<ArrayList<Doctor>> = _doctors
+    private val _doctors = MutableStateFlow<ArrayList<DoctorEntity>>(arrayListOf())
+    val doctors: StateFlow<ArrayList<DoctorEntity>> = _doctors
 
-    private val _colors = MutableStateFlow<ArrayList<PetColor>>(arrayListOf())
-    val colors: StateFlow<ArrayList<PetColor>> = _colors
+    private val _colors = MutableStateFlow<ArrayList<ColorEntity>>(arrayListOf())
+    val colors: StateFlow<ArrayList<ColorEntity>> = _colors
 
 
     fun init() {
@@ -48,19 +53,8 @@ class PetDetailViewModel() : ViewModel(), KoinComponent {
     private fun fetchBreeds() {
         // get from database
         viewModelScope.launch {
-            petDetailRepository.fetchBreeds().collect { it ->
-                when(it) {
-                    is Resources.Error -> {
-                        if(it.message == "no_internet") _state.update { PetDetailState.NO_INTERNET }
-                        if(it.message == "internal_error") _state.update { PetDetailState.ERROR }
-                    }
-                    is Resources.Loading -> {
-                        _state.update { PetDetailState.LOADING }
-                    }
-                    is Resources.Success -> {
-                        it.data?.breeds?.let { it1 -> breeds.value.addAll(it1) }
-                    }
-                }
+            petDetailRepository.fetchBreeds().collect {
+                breeds.value.addAll(it)
             }
         }
     }
@@ -68,37 +62,15 @@ class PetDetailViewModel() : ViewModel(), KoinComponent {
     private fun fetchColors() {
         viewModelScope.launch {
             petDetailRepository.fetchColors().collect {
-                when(it) {
-                    is Resources.Error -> {
-                        if(it.message == "no_internet") _state.update { PetDetailState.NO_INTERNET }
-                        if(it.message == "internal_error") _state.update { PetDetailState.ERROR }
-                    }
-                    is Resources.Loading -> {
-                        _state.update { PetDetailState.LOADING }
-                    }
-                    is Resources.Success -> {
-                        it.data?.colors?.let { it1 -> colors.value.addAll(it1) }
-                    }
-                }
+                colors.value.addAll(it)
             }
         }
     }
 
     private fun fetchDoctors() {
         viewModelScope.launch {
-            petDetailRepository.fetchDoctors().collect { it ->
-                when(it) {
-                    is Resources.Error -> {
-                        if(it.message == "no_internet") _state.update { PetDetailState.NO_INTERNET }
-                        if(it.message == "internal_error") _state.update { PetDetailState.ERROR }
-                    }
-                    is Resources.Loading -> {
-                        _state.update { PetDetailState.LOADING }
-                    }
-                    is Resources.Success -> {
-                        it.data?.doctors?.let { it1 -> doctors.value.addAll(it1) }
-                    }
-                }
+            petDetailRepository.fetchDoctors().collect {
+                doctors.value.addAll(it)
             }
         }
     }

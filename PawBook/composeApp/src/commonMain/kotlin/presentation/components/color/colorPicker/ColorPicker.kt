@@ -37,6 +37,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import core.util.HexColorConverter
+import data.model.entity.ColorEntity
 import domain.model.PetColor
 import domain.model.enums.PetType
 import presentation.screen.login.StyledButton
@@ -45,9 +46,9 @@ import presentation.theme.colors.LocalAppColors
 @Composable
 fun ColorPicker(
     title: String,
-    availableColors: List<PetColor>,
-    selectedColors: SnapshotStateList<PetColor>,
-    onColorsSelected: (List<PetColor>) -> Unit,
+    availableColors: List<ColorEntity>,
+    selectedColors: SnapshotStateList<ColorEntity>,
+    onColorsSelected: (List<ColorEntity>) -> Unit,
     onDismissRequest: () -> Unit
 ) {
     val cellCount = 4
@@ -76,7 +77,7 @@ fun ColorPicker(
                     columns = GridCells.Fixed(cellCount)
                 ) {
                     items(availableColors) { color ->
-                        ColorCircle(color, 50.dp, false, newColors.value.contains(color)) { petColor: PetColor, selected: Boolean ->
+                        ColorCircle(color, 50.dp, false, newColors.value.contains(color)) { petColor: ColorEntity, selected: Boolean ->
                             if(selected) {
                                 newColors.value.add(petColor)
                             } else {
@@ -101,7 +102,7 @@ fun DialogTitle(title: String) {
 }
 
 @Composable
-fun ColorCircle(petColor: PetColor, circleSize: Dp = 50.dp, displayOnly: Boolean, isDefaultSelected: Boolean, onColorSelected: (PetColor, Boolean) -> Unit) {
+fun ColorCircle(petColor: ColorEntity, circleSize: Dp = 50.dp, displayOnly: Boolean, isDefaultSelected: Boolean, onColorSelected: (ColorEntity, Boolean) -> Unit) {
 
     val isSelected = remember { mutableStateOf(isDefaultSelected) }
 

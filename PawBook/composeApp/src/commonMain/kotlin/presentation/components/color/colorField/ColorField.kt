@@ -22,23 +22,24 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import data.model.entity.ColorEntity
 import domain.model.PetColor
 import presentation.components.color.colorPicker.ColorCircle
 import presentation.components.color.colorPicker.ColorPicker
 import presentation.theme.colors.LocalAppColors
 
 @Composable
-fun ColorField(title: String, availableColors: List<PetColor> , onColorSelected: (List<PetColor>) -> Unit) {
+fun ColorField(title: String, availableColors: List<ColorEntity>, onColorSelected: (List<ColorEntity>) -> Unit) {
     var showDialog by remember { mutableStateOf(false) }
-    val colors = remember { mutableStateListOf<PetColor>() }
-    val newColors = remember { mutableStateListOf<PetColor>() }
+    val colors = remember { mutableStateListOf<ColorEntity>() }
+    val newColors = remember { mutableStateListOf<ColorEntity>() }
 
     Title(title)
     Row(
         verticalAlignment = Alignment.CenterVertically
     ) {
         newColors.forEach { petColor ->
-            ColorCircle(petColor, 24.dp, true, false) { color: PetColor, selected: Boolean ->
+            ColorCircle(petColor, 24.dp, true, false) { color: ColorEntity, selected: Boolean ->
 
             }
         }
@@ -60,6 +61,7 @@ fun ColorField(title: String, availableColors: List<PetColor> , onColorSelected:
                 newColors.clear()
                 newColors.addAll(updatedColors)
                 showDialog = false
+                onColorSelected(newColors)
             },
             selectedColors = colors,
             availableColors = availableColors,

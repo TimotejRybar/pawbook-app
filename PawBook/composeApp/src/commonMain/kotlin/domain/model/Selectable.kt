@@ -1,9 +1,11 @@
 package domain.model
 
+import kotlinx.datetime.LocalDateTime
+
 interface Selectable {
     val id: String
     val name: String
     val key: String
-    val updated: Long
-    val created: Long
+    val updatedAt: LocalDateTime
+    val createdAt: LocalDateTime
 }

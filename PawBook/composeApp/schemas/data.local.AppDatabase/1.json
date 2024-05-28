@@ -2,15 +2,15 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "19c932039e4fc80f3dd0411fc5d6187e",
+    "identityHash": "1bc8dfc8b26cbdc45386850fd5749197",
     "entities": [
       {
         "tableName": "BreedEntity",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`_id` TEXT NOT NULL, `petType` TEXT NOT NULL, `name` TEXT NOT NULL, `key` TEXT NOT NULL, `created` INTEGER NOT NULL, `updated` INTEGER NOT NULL, PRIMARY KEY(`_id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `petType` TEXT NOT NULL, `name` TEXT NOT NULL, `key` TEXT NOT NULL, `createdAt` TEXT NOT NULL, `updatedAt` TEXT NOT NULL, PRIMARY KEY(`id`))",
         "fields": [
           {
-            "fieldPath": "_id",
-            "columnName": "_id",
+            "fieldPath": "id",
+            "columnName": "id",
             "affinity": "TEXT",
             "notNull": true
           },
@@ -33,28 +33,28 @@
             "notNull": true
           },
           {
-            "fieldPath": "created",
-            "columnName": "created",
-            "affinity": "INTEGER",
+            "fieldPath": "createdAt",
+            "columnName": "createdAt",
+            "affinity": "TEXT",
             "notNull": true
           },
           {
-            "fieldPath": "updated",
-            "columnName": "updated",
-            "affinity": "INTEGER",
+            "fieldPath": "updatedAt",
+            "columnName": "updatedAt",
+            "affinity": "TEXT",
             "notNull": true
           }
         ],
         "primaryKey": {
           "autoGenerate": false,
           "columnNames": [
-            "_id"
+            "id"
           ]
         }
       },
       {
         "tableName": "ColorEntity",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `petType` TEXT NOT NULL, `name` TEXT NOT NULL, `key` TEXT NOT NULL, `color` TEXT NOT NULL, `created` INTEGER NOT NULL, `updated` INTEGER NOT NULL, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `petType` TEXT NOT NULL, `name` TEXT NOT NULL, `key` TEXT NOT NULL, `color` TEXT NOT NULL, `createdAt` TEXT NOT NULL, `updatedAt` TEXT NOT NULL, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -87,15 +87,15 @@
             "notNull": true
           },
           {
-            "fieldPath": "created",
-            "columnName": "created",
-            "affinity": "INTEGER",
+            "fieldPath": "createdAt",
+            "columnName": "createdAt",
+            "affinity": "TEXT",
             "notNull": true
           },
           {
-            "fieldPath": "updated",
-            "columnName": "updated",
-            "affinity": "INTEGER",
+            "fieldPath": "updatedAt",
+            "columnName": "updatedAt",
+            "affinity": "TEXT",
             "notNull": true
           }
         ],
@@ -108,7 +108,7 @@
       },
       {
         "tableName": "DoctorEntity",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `name` TEXT NOT NULL, `address` TEXT NOT NULL, `skills` TEXT NOT NULL, `gps` TEXT NOT NULL, `created` INTEGER NOT NULL, `updated` INTEGER NOT NULL, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `name` TEXT NOT NULL, `address` TEXT NOT NULL, `skills` TEXT NOT NULL, `gps` TEXT NOT NULL, `createdAt` TEXT NOT NULL, `updatedAt` TEXT NOT NULL, `key` TEXT NOT NULL, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -141,15 +141,21 @@
             "notNull": true
           },
           {
-            "fieldPath": "created",
-            "columnName": "created",
-            "affinity": "INTEGER",
+            "fieldPath": "createdAt",
+            "columnName": "createdAt",
+            "affinity": "TEXT",
             "notNull": true
           },
           {
-            "fieldPath": "updated",
-            "columnName": "updated",
-            "affinity": "INTEGER",
+            "fieldPath": "updatedAt",
+            "columnName": "updatedAt",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "key",
+            "columnName": "key",
+            "affinity": "TEXT",
             "notNull": true
           }
         ],
@@ -163,7 +169,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '19c932039e4fc80f3dd0411fc5d6187e')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '1bc8dfc8b26cbdc45386850fd5749197')"
     ]
   }
 }

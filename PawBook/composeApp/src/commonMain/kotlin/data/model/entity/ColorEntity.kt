@@ -2,6 +2,7 @@ package data.model.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import kotlinx.datetime.LocalDateTime
 
 @Entity
 data class ColorEntity(
@@ -10,6 +11,6 @@ data class ColorEntity(
     val name: String,
     val key: String,
     val color: String, // HEX color
-    val created: Long,
-    val updated: Long
+    val createdAt: LocalDateTime,
+    val updatedAt: LocalDateTime
 )

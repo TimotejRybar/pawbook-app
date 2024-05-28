@@ -34,20 +34,15 @@ import presentation.screen.petDetail.MyPetsViewModel
 
 @Composable
 fun MyPets(viewModel: MyPetsViewModel = koinInject(),  onItemClick: (PetItem) -> Unit) {
-    //Navbar()
-
     LaunchedEffect(key1 = true){
         viewModel.fetch()
     }
-
     Box(
         modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
+        contentAlignment = Alignment.CenterStart,
     ) {
         Pets(items = viewModel.pets, onItemClick)
     }
-
-
 }
 
 @Composable

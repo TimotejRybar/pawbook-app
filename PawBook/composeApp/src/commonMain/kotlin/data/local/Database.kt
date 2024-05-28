@@ -10,9 +10,11 @@ import data.model.entity.DoctorEntity
 import domain.model.Address
 import domain.model.Location
 import domain.model.enums.PetType
+import kotlinx.datetime.LocalDateTime
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import kotlin.jvm.JvmStatic
+
 
 expect fun getDatabase(): AppDatabase
 
@@ -49,4 +51,20 @@ object Converters {
     @JvmStatic
     @TypeConverter
     fun toSkills(value: String): List<PetType> = Json.decodeFromString(value)
+
+    @JvmStatic
+    @TypeConverter
+    fun toDate(dateString: String?): LocalDateTime? {
+        return if (dateString == null) {
+            null
+        } else {
+            LocalDateTime.parse(dateString)
+        }
+    }
+
+    @JvmStatic
+    @TypeConverter
+    fun toDateString(date: LocalDateTime?): String? {
+        return date?.toString()
+    }
 }

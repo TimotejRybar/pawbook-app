@@ -4,15 +4,18 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import domain.model.Address
 import domain.model.Location
+import domain.model.Selectable
 import domain.model.enums.PetType
+import kotlinx.datetime.LocalDateTime
 
 @Entity
 data class DoctorEntity(
-    @PrimaryKey val id: String,
-    val name: String,
+    @PrimaryKey override val id: String,
+    override val name: String,
     val address: Address,
     val skills: List<PetType>,
     val gps: Location,
-    val created: Long,
-    val updated: Long
-)
+    override val createdAt: LocalDateTime,
+    override val updatedAt: LocalDateTime,
+    override val key: String = id
+): Selectable
