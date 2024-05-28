@@ -6,7 +6,16 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -39,7 +48,12 @@ fun PetCalendar() {
     val _uiState = MutableStateFlow(CalendarUiState(yearMonth.value, dataSource.getDates(yearMonth.value)))
     val uiState: StateFlow<CalendarUiState> = _uiState.asStateFlow()
 
-    PetCalendarContent(dataSource.getDates(yearMonth.value)) {
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.CenterStart,
+    ) {
+        PetCalendarContent(dataSource.getDates(yearMonth.value)) {
+        }
     }
 }
 
@@ -64,7 +78,7 @@ fun PetCalendarContent(
                     PetCalendarItem(
                         date = item,
                         onClickListener = onDateClickListener,
-                        modifier = Modifier.weight(1f)
+                        modifier = Modifier.weight(1f).heightIn(48.dp, 128.dp)
                     )
                     index++
                 }
@@ -79,7 +93,8 @@ fun PetCalendarWeekDay(s: String, modifier: Modifier) {
         .background(
             color = LocalAppColors.current.primary
         )
-        .border(1.dp, Color.Black)
+        .border(1.dp, Color.Black),
+        contentAlignment = Alignment.Center
     ) {
         Text(
             text = s,
@@ -104,7 +119,7 @@ fun PetCalendarItem(
         modifier = modifier
             .background(
                 color = if (true) {
-                    LocalAppColors.current.secondary
+                    LocalAppColors.current.darkGray
                 } else {
                     Color.Transparent
                 }
@@ -114,6 +129,9 @@ fun PetCalendarItem(
                 onClickListener(date)
             }
     ) {
+        Box(contentAlignment = Alignment.Center, modifier = Modifier.padding(32.dp)){
+            Icon(Icons.Filled.Warning, "", tint = LocalAppColors.current.primary, modifier = Modifier.align(Alignment.Center))
+        }
         Text(
             text = date.dayOfMonth,
             fontSize = 10.sp,

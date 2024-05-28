@@ -36,6 +36,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import domain.model.PetItem
 import kotlinx.coroutines.launch
+import presentation.components.calendar.PetCalendar
 import presentation.navigation.Navigation
 import presentation.screen.login.LoginScreen
 import presentation.screen.myPets.MyPets
@@ -86,6 +87,7 @@ fun AppContent(navController: NavHostController = rememberNavController()) {
                     AppScreen.MyPets -> navController.navigate(AppScreen.MyPets.name)
                     AppScreen.Register -> navController.navigate(AppScreen.Register.name)
                     AppScreen.Splash -> navController.navigate(AppScreen.Splash.name)
+                    AppScreen.Calendar -> navController.navigate(AppScreen.Calendar.name)
                 }
             }) {
                 Scaffold(
@@ -170,6 +172,10 @@ fun AppContent(navController: NavHostController = rememberNavController()) {
                             PetDetail(selectedPet.value, onDismissClick = {
                                 navController.navigate(AppScreen.Login.name)
                             })
+                        }
+
+                        composable(route = AppScreen.Calendar.name) {
+                            PetCalendar()
                         }
                     }
                 }

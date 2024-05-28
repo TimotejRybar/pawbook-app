@@ -54,6 +54,16 @@ fun Navigation(
                         onNavigate(AppScreen.MyPets)
                     }
                 )
+                NavigationDrawerItem(
+                    label = { Text(text = "Calendar") },
+                    selected = false,
+                    onClick = {
+                        scope.launch {
+                            drawerState.close()
+                        }
+                        onNavigate(AppScreen.Calendar)
+                    }
+                )
             }
         }
     ) {

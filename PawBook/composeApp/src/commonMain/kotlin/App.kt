@@ -27,6 +27,7 @@ enum class AppScreen() {
     Login(),
     PetDetail(),
     MyPets(),
+    Calendar(),
     Register()
 }
 @Composable
