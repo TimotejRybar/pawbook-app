@@ -26,50 +26,55 @@ import org.koin.core.context.startKoin
 import org.koin.dsl.KoinAppDeclaration
 import org.koin.dsl.module
 
-fun initKoin(appDeclaration: KoinAppDeclaration = {}): KoinApplication {
-    return startKoin {
-        appDeclaration()
-        modules(commonModule())
+object KoinModule {
+
+    fun initKoin(appDeclaration: KoinAppDeclaration = {}): KoinApplication {
+        return startKoin {
+            appDeclaration()
+            modules(commonModule())
+        }
+    }
+
+    fun provideKtorfit(): Ktorfit {
+        val prefs = Preferences()
+        val token = prefs.getAccessToken()
+        return Ktorfit.Builder()
+            .baseUrl("http://10.0.2.2:3000/v1/")
+            .httpClient(HttpClient {
+                // install(HttpCache)
+                install(ContentNegotiation)
+                {
+                    json(
+                        Json {
+                            prettyPrint = true
+                            isLenient = true
+                            ignoreUnknownKeys = true
+                            explicitNulls = false
+                        }
+                    )
+                }
+                install(DefaultRequest) {
+                    header("Authorization", "Bearer $token")
+                    header(HttpHeaders.ContentType, ContentType.Application.Json)
+                }
+            }).build()
+    }
+
+    fun provideLoginApi(ktorfit: Ktorfit): LoginApi = ktorfit.create()
+    fun providePetsApi(ktorfit: Ktorfit): PetApi = ktorfit.create()
+    fun provideBreedsApi(ktorfit: Ktorfit): BreedApi = ktorfit.create()
+    fun provideDoctorsApi(ktorfit: Ktorfit): DoctorApi = ktorfit.create()
+    fun provideColorsApi(ktorfit: Ktorfit): ColorApi = ktorfit.create()
+    fun provideSettings(): Settings = Settings()
+    fun provideDatabase(): AppDatabase = getDatabase()
+    fun provideDatabaseSync(): DatabaseSync = DatabaseSync()
+
+    // called by iOS
+    fun initKoin() = initKoin {}
+
+    fun commonModule() = module {
+        //factory { Greeting() }
     }
 }
 
-fun provideKtorfit(): Ktorfit {
-    val prefs = Preferences()
-    val token = prefs.getAccessToken()
-    return Ktorfit.Builder()
-        .baseUrl("http://10.0.2.2:3000/v1/")
-        .httpClient(HttpClient {
-            // install(HttpCache)
-            install(ContentNegotiation)
-            {
-                json(
-                    Json {
-                        prettyPrint = true
-                        isLenient = true
-                        ignoreUnknownKeys = true
-                        explicitNulls = false
-                    }
-                )
-            }
-            install(DefaultRequest) {
-                header("Authorization", "Bearer $token")
-                header(HttpHeaders.ContentType, ContentType.Application.Json)
-            }
-        }).build()
-}
 
-fun provideLoginApi(ktorfit: Ktorfit): LoginApi = ktorfit.create()
-fun providePetsApi(ktorfit: Ktorfit): PetApi = ktorfit.create()
-fun provideBreedsApi(ktorfit: Ktorfit): BreedApi = ktorfit.create()
-fun provideDoctorsApi(ktorfit: Ktorfit): DoctorApi = ktorfit.create()
-fun provideColorsApi(ktorfit: Ktorfit): ColorApi = ktorfit.create()
-fun provideSettings(): Settings = Settings()
-fun provideDatabase(): AppDatabase = getDatabase()
-fun provideDatabaseSync(): DatabaseSync = DatabaseSync()
-
-// called by iOS
-fun initKoin() = initKoin{}
-
-fun commonModule() = module {
-    //factory { Greeting() }
-}

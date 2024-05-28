@@ -10,6 +10,7 @@ plugins {
     kotlin("plugin.serialization") version "1.9.22"
     id("kotlinx-serialization")
     alias(libs.plugins.room)
+    alias(libs.plugins.sqldelight) //Plugin of SQLDelight.
 }
 
 
@@ -18,6 +19,7 @@ kotlin {
     androidTarget {
         compilations.all {
             kotlinOptions {
+                verbose = true
                 jvmTarget = "11"
                 freeCompilerArgs += "-Xexpect-actual-classes"
             }
@@ -57,12 +59,13 @@ kotlin {
             implementation("io.ktor:ktor-client-serialization:2.3.10")
             implementation("io.ktor:ktor-client-logging:2.3.10")
             implementation("io.ktor:ktor-client-okhttp:2.3.10")
-            implementation("io.insert-koin:koin-android:3.5.3")
-            implementation("io.insert-koin:koin-androidx-compose:3.5.3")
+            implementation("io.insert-koin:koin-android:3.5.6")
+            implementation("io.insert-koin:koin-androidx-compose:3.5.6")
             implementation(libs.compose.ui.tooling.preview)
             implementation("com.revenuecat.purchases:purchases:7.5.2")
             implementation("com.revenuecat.purchases:purchases-ui:7.5.2")
             implementation(libs.androidx.room.paging)
+            implementation(libs.sqldelight.android.driver)
         }
 
 
@@ -80,7 +83,7 @@ kotlin {
             implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.5.0")
             implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1-Beta")
             implementation("androidx.lifecycle:lifecycle-viewmodel:2.7.0")
-            implementation("io.insert-koin:koin-core:3.5.1")
+            implementation("io.insert-koin:koin-core:3.5.6")
             implementation(libs.ktor.core)
             implementation("io.insert-koin:koin-compose:1.1.5")
             implementation("de.jensklingenberg.ktorfit:ktorfit-lib:1.13.0")
@@ -90,11 +93,23 @@ kotlin {
             implementation(libs.androidx.room.runtime)
             implementation("androidx.sqlite:sqlite-framework:2.5.0-alpha02")
             implementation("androidx.sqlite:sqlite:2.5.0-alpha02")
+            //implementation(libs.sqldelight.coroutines.extensions)
 
         }
 
+        sqldelight {
+            databases {
+                create("Pawbook") {
+                    packageName.set("sk.uplab.pawbook")
+                }
+            }
+            linkSqlite.set(true)
+        }
+
+
         iosMain.dependencies {
             implementation(libs.ktor.ios)
+            implementation(libs.sqldelight.ios.driver)
         }
 
         commonTest {
@@ -114,6 +129,7 @@ kotlin {
 
                 @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
                 implementation(compose.uiTest)
+                //implementation(libs.sqldelight.ios.driver)
 
             }
         }

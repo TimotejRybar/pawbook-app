@@ -1,14 +1,6 @@
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
-import core.di.provideBreedsApi
-import core.di.provideColorsApi
-import core.di.provideDatabase
-import core.di.provideDatabaseSync
-import core.di.provideDoctorsApi
-import core.di.provideKtorfit
-import core.di.provideLoginApi
-import core.di.providePetsApi
-import core.di.provideSettings
+import core.di.KoinModule
 import data.remote.Preferences
 import data.repository.LoginRepositoryImpl
 import data.repository.PetDetailRepositoryImpl
@@ -37,11 +29,11 @@ fun App() {
 }
 
 fun appModule() = module {
-    factory { provideKtorfit() }
+    factory { KoinModule.provideKtorfit() }
 
-    single { provideColorsApi(get()) }
+    single { KoinModule.provideColorsApi(get()) }
 
-    single { provideDatabase() }
+    single { KoinModule.provideDatabase() }
 
     single<SplashViewModel> { SplashViewModel() }
 
@@ -51,20 +43,20 @@ fun appModule() = module {
     single<LoginRepositoryImpl> { LoginRepositoryImpl() }
     single<LoginViewModel> { LoginViewModel()}
 
-    single { provideLoginApi(get()) }
+    single { KoinModule.provideLoginApi(get()) }
 
     single<MyPetsViewModel> { MyPetsViewModel()}
     single<PetsRepoitoryImpl> { PetsRepoitoryImpl() }
-    single { providePetsApi(get()) }
+    single { KoinModule.providePetsApi(get()) }
 
     single<PetDetailViewModel> { PetDetailViewModel() }
     single<PetDetailRepositoryImpl> { PetDetailRepositoryImpl() }
-    single { provideBreedsApi(get()) }
-    single { provideDoctorsApi(get()) }
+    single { KoinModule.provideBreedsApi(get()) }
+    single { KoinModule.provideDoctorsApi(get()) }
 
     single<Preferences> { Preferences() }
-    single { provideSettings() }
-    single { provideDatabaseSync() }
+    single { KoinModule.provideSettings() }
+    single { KoinModule.provideDatabaseSync() }
 }
 
 

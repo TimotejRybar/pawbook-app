@@ -8,19 +8,20 @@ androidx-appcompat = "1.6.1"
 androidx-constraintlayout = "2.1.4"
 androidx-core-ktx = "1.13.1"
 androidx-espresso-core = "3.5.1"
-androidx-material = "1.11.0"
+androidx-material = "1.12.0"
 androidx-test-junit = "1.1.5"
-compose = "1.6.5"
+compose = "1.6.7"
 compose-plugin = "1.6.2"
 junit = "4.13.2"
 kotlin = "1.9.23"
 junitKtx = "1.1.5"
-kotest = "5.8.0"
-turbine = "1.0.0"
+kotest = "5.8.1"
+turbine = "1.1.0"
 ktor = "2.3.10"
 roomKtx = "2.7.0-alpha02"
-
+sqldelightVersion = "2.0.1"
 coroutines-test-ver = "1.8.0"
+
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -58,6 +59,11 @@ androidx-room-compiler = { group = "androidx.room", name = "room-compiler", vers
 androidx-room-paging = { group = "androidx.room", name = "room-paging", version.ref = "roomKtx" }
 androidx-room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "roomKtx" }
 
+sqldelight-android-driver = { module = "app.cash.sqldelight:android-driver", version.ref = "sqldelightVersion" }
+sqldelight-coroutines-extensions = { module = "app.cash.sqldelight:coroutines-extensions", version.ref = "sqldelightVersion" }
+sqldelight-ios-driver = { module = "app.cash.sqldelight:native-driver", version.ref = "sqldelightVersion" }
+
+
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 androidLibrary = { id = "com.android.library", version.ref = "agp" }
@@ -65,3 +71,4 @@ jetbrainsCompose = { id = "org.jetbrains.compose", version.ref = "compose-plugin
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 ksp = { id ="com.google.devtools.ksp", version = "1.9.23-1.0.20" }
 room = { id = "androidx.room", version.ref = "roomKtx" }
+sqldelight = { id = "app.cash.sqldelight", version.ref = "sqldelightVersion" }
