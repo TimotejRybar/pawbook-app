@@ -38,6 +38,7 @@ kotlin {
             baseName = "ComposeApp"
             isStatic = true
             linkerOpts.add("-lsqlite3")
+            binaryOption("bundleId", "sk.uplab.pawbook.shared")
         }
     }
 

@@ -70,7 +70,7 @@ object KoinModule {
     fun provideDatabaseSync(): DatabaseSync = DatabaseSync()
 
     // called by iOS
-    fun initKoin() = initKoin {}
+    fun doInitKoin() = initKoin {}
 
     fun commonModule() = module {
         //factory { Greeting() }
