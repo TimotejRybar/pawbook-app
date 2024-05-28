@@ -10,6 +10,6 @@ actual fun getDatabase(): AppDatabase {
     return Room.databaseBuilder(
         context,
         AppDatabase::class.java,
-        dbFile.absolutePath
-    ).build()
+        dbFile.absolutePath)
+        .build()
 }

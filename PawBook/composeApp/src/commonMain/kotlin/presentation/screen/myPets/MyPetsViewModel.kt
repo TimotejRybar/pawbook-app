@@ -3,18 +3,14 @@ package presentation.screen.petDetail
 import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import core.util.LocalDateTimeSerializer
 import core.util.Resources
-import data.repository.LoginRepositoryImpl
 import data.repository.PetsRepoitoryImpl
 import domain.model.PetItem
-import domain.model.enums.LoginState
 import domain.model.enums.MyPetsState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.datetime.LocalDateTime
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 

@@ -2,7 +2,6 @@ package core.di
 
 import com.russhwolf.settings.Settings
 import core.common.DatabaseSync
-import core.util.LocalDateTimeSerializer
 import data.local.AppDatabase
 import data.local.getDatabase
 import data.remote.BreedApi
@@ -45,9 +44,6 @@ fun provideKtorfit(): Ktorfit {
             {
                 json(
                     Json {
-                        serializersModule = SerializersModule {
-                            contextual(LocalDateTime::class, LocalDateTimeSerializer)
-                        }
                         prettyPrint = true
                         isLenient = true
                         ignoreUnknownKeys = true

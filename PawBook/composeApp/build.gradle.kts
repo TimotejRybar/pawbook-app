@@ -19,6 +19,7 @@ kotlin {
         compilations.all {
             kotlinOptions {
                 jvmTarget = "11"
+                freeCompilerArgs += "-Xexpect-actual-classes"
             }
         }
     }
@@ -34,6 +35,7 @@ kotlin {
         iosTarget.binaries.framework {
             baseName = "ComposeApp"
             isStatic = true
+            linkerOpts.add("-lsqlite3")
         }
     }
 
@@ -86,6 +88,9 @@ kotlin {
             implementation("com.russhwolf:multiplatform-settings:1.1.1")
             implementation("com.russhwolf:multiplatform-settings-no-arg:1.1.1")
             implementation(libs.androidx.room.runtime)
+            implementation("androidx.sqlite:sqlite-framework:2.5.0-alpha02")
+            implementation("androidx.sqlite:sqlite:2.5.0-alpha02")
+
         }
 
         iosMain.dependencies {
