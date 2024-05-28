@@ -1,5 +1,5 @@
 package core.common
 
 object Config {
-    val CURRENT_DATABASE_VERSION = DATABASE_VERSION.BETA
+    val CURRENT_DATABASE_VERSION = DatabaseVersion.VANILLA
 }

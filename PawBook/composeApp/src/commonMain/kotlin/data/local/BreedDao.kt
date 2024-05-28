@@ -12,5 +12,5 @@ interface BreedDao {
     suspend fun insertAll(items: List<BreedEntity>)
 
     @Query("SELECT * FROM BreedEntity")
-    suspend fun getAllAsFlow(): Flow<List<BreedEntity>>
+    fun getAllAsFlow(): Flow<List<BreedEntity>>
 }

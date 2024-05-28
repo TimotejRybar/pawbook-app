@@ -41,7 +41,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toSize
 import core.util.stringByKey.StringByKey
 import core.util.stringByKey.StringType
-import domain.Selectable
+import domain.model.Selectable
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.stringResource
 import presentation.theme.colors.LocalAppColors

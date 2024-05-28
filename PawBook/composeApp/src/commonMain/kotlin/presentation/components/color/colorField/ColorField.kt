@@ -28,7 +28,7 @@ import presentation.components.color.colorPicker.ColorPicker
 import presentation.theme.colors.LocalAppColors
 
 @Composable
-fun ColorField(title: String, onColorSelected: (List<PetColor>) -> Unit) {
+fun ColorField(title: String, availableColors: List<PetColor> , onColorSelected: (List<PetColor>) -> Unit) {
     var showDialog by remember { mutableStateOf(false) }
     val colors = remember { mutableStateListOf<PetColor>() }
     val newColors = remember { mutableStateListOf<PetColor>() }
@@ -62,6 +62,7 @@ fun ColorField(title: String, onColorSelected: (List<PetColor>) -> Unit) {
                 showDialog = false
             },
             selectedColors = colors,
+            availableColors = availableColors,
             onDismissRequest = { showDialog = false }
         )
     }

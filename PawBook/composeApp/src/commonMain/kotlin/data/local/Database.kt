@@ -4,7 +4,6 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverter
 import androidx.room.TypeConverters
-import core.common.Config
 import data.model.entity.BreedEntity
 import data.model.entity.ColorEntity
 import data.model.entity.DoctorEntity
@@ -15,8 +14,10 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import kotlin.jvm.JvmStatic
 
+expect fun getDatabase(): AppDatabase
+
 @TypeConverters(value = [Converters::class])
-@Database(entities = [BreedEntity::class, ColorEntity::class, DoctorEntity::class], version = 0)
+@Database(entities = [BreedEntity::class, ColorEntity::class, DoctorEntity::class], version = 1)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun getDoctorDao(): DoctorDao
     abstract fun getBreedDao(): BreedDao

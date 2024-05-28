@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import appModule
 import core.di.initKoin
+import org.koin.android.ext.koin.androidContext
 
 class MainActivity : ComponentActivity() {
 
@@ -13,6 +14,7 @@ class MainActivity : ComponentActivity() {
 
         initKoin(appDeclaration = {
             modules(appModule())
+            androidContext(this@MainActivity)
         })
 
         setContent {
@@ -24,3 +26,4 @@ class MainActivity : ComponentActivity() {
         super.onDestroy()
     }
 }
+

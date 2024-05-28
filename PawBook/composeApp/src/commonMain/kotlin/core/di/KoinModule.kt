@@ -1,7 +1,10 @@
 package core.di
 
 import com.russhwolf.settings.Settings
+import core.common.DatabaseSync
 import core.util.LocalDateTimeSerializer
+import data.local.AppDatabase
+import data.local.getDatabase
 import data.remote.BreedApi
 import data.remote.ColorApi
 import data.remote.DoctorApi
@@ -9,7 +12,6 @@ import data.remote.LoginApi
 import data.remote.PetApi
 import data.remote.Preferences
 import de.jensklingenberg.ktorfit.Ktorfit
-import domain.model.PetItem
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.DefaultRequest
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
@@ -18,7 +20,6 @@ import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.datetime.LocalDateTime
-import kotlinx.serialization.KSerializer
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.modules.SerializersModule
 import org.koin.core.KoinApplication
@@ -65,8 +66,9 @@ fun providePetsApi(ktorfit: Ktorfit): PetApi = ktorfit.create()
 fun provideBreedsApi(ktorfit: Ktorfit): BreedApi = ktorfit.create()
 fun provideDoctorsApi(ktorfit: Ktorfit): DoctorApi = ktorfit.create()
 fun provideColorsApi(ktorfit: Ktorfit): ColorApi = ktorfit.create()
-
 fun provideSettings(): Settings = Settings()
+fun provideDatabase(): AppDatabase = getDatabase()
+fun provideDatabaseSync(): DatabaseSync = DatabaseSync()
 
 // called by iOS
 fun initKoin() = initKoin{}

@@ -45,25 +45,13 @@ import presentation.theme.colors.LocalAppColors
 @Composable
 fun ColorPicker(
     title: String,
+    availableColors: List<PetColor>,
     selectedColors: SnapshotStateList<PetColor>,
     onColorsSelected: (List<PetColor>) -> Unit,
     onDismissRequest: () -> Unit
 ) {
     val cellCount = 4
-
-    var availableColors = remember { mutableStateListOf<PetColor>() }
-    var newColors = remember { mutableStateOf(selectedColors) }
-
-    LaunchedEffect(Unit) {
-        availableColors.addAll(
-            listOf(
-                PetColor(PetType.Dog.name, "#000000", "0", "Čierna", "black"),
-                PetColor(PetType.Dog.name, "#FFFFFF", "1", "Biela", "white"),
-                PetColor(PetType.Dog.name, "#562b00", "2", "Hnedá", "brown"),
-                PetColor(PetType.Dog.name, "#4C4C4C", "3", "Šedá", "gray")
-            )
-        )
-    }
+    val newColors = remember { mutableStateOf(selectedColors) }
 
     Dialog(
         onDismissRequest = onDismissRequest,

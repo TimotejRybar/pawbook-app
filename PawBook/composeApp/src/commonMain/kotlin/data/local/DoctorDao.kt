@@ -11,6 +11,6 @@ interface DoctorDao {
     @Insert
     suspend fun insertAll(items: List<DoctorEntity>)
 
-    @Query("SELECT * FROM BreedEntity")
-    suspend fun getAllAsFlow(): Flow<List<DoctorEntity>>
+    @Query("SELECT * FROM DoctorEntity")
+    fun getAllAsFlow(): Flow<List<DoctorEntity>>
 }

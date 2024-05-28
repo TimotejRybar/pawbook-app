@@ -2,6 +2,8 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import core.di.provideBreedsApi
 import core.di.provideColorsApi
+import core.di.provideDatabase
+import core.di.provideDatabaseSync
 import core.di.provideDoctorsApi
 import core.di.provideKtorfit
 import core.di.provideLoginApi
@@ -18,15 +20,15 @@ import presentation.screen.login.LoginViewModel
 import presentation.screen.petDetail.MyPetsViewModel
 import presentation.screen.petDetail.PetDetailViewModel
 import presentation.screen.register.RegisterViewModel
+import presentation.screen.splash.SplashViewModel
 
 enum class AppScreen() {
+    Splash(),
     Login(),
     PetDetail(),
     MyPets(),
     Register()
 }
-
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 @Preview
 fun App() {
@@ -37,6 +39,10 @@ fun appModule() = module {
     factory { provideKtorfit() }
 
     single { provideColorsApi(get()) }
+
+    single { provideDatabase() }
+
+    single<SplashViewModel> { SplashViewModel() }
 
     single<RegisterViewModel> { RegisterViewModel()}
     single<RegisterRepositoryImpl> { RegisterRepositoryImpl() }
@@ -57,6 +63,7 @@ fun appModule() = module {
 
     single<Preferences> { Preferences() }
     single { provideSettings() }
+    single { provideDatabaseSync() }
 }
 
 

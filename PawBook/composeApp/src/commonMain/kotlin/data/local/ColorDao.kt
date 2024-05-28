@@ -12,5 +12,5 @@ interface ColorDao {
     suspend fun insertAll(items: List<ColorEntity>)
 
     @Query("SELECT * FROM ColorEntity")
-    suspend fun getAllAsFlow(): Flow<List<ColorEntity>>
+    fun getAllAsFlow(): Flow<List<ColorEntity>>
 }

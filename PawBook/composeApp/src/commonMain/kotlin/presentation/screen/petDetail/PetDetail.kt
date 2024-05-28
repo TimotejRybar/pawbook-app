@@ -49,6 +49,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
 import domain.model.Doctor
 import domain.model.PetBreed
+import domain.model.PetColor
 import domain.model.PetItem
 import io.ktor.util.date.GMTDate
 import domain.model.enums.PetPropFieldType
@@ -89,6 +90,7 @@ fun PetDetail(pet: PetItem, viewModel: PetDetailViewModel = koinInject(), onDism
 fun PetInfo(viewModel: PetDetailViewModel, pet: PetItem) {
     val breeds by viewModel.breeds.collectAsState()
     val doctors by viewModel.doctors.collectAsState()
+    val colors by viewModel.colors.collectAsState()
 
     Row(verticalAlignment = Alignment.CenterVertically) {
         Column(
@@ -97,7 +99,7 @@ fun PetInfo(viewModel: PetDetailViewModel, pet: PetItem) {
         ) {
             Spacer(modifier = Modifier.height(50.dp))
             PetPhoto()
-            PetProps(viewModel, breeds, doctors, pet)
+            PetProps(viewModel, breeds, colors, doctors, pet)
             Spacer(modifier = Modifier.height(20.dp))
         }
     }
@@ -146,13 +148,13 @@ fun PetPhoto() {
 }
 
 @Composable
-fun PetProps(viewModel: PetDetailViewModel, breeds: List<PetBreed>, doctors: List<Doctor>, pet: PetItem) {
+fun PetProps(viewModel: PetDetailViewModel, breeds: List<PetBreed>, colors: List<PetColor>, doctors: List<Doctor>, pet: PetItem) {
     val name = remember { mutableStateOf("") }
     val weight = remember { mutableStateOf("") }
     val now = Clock.System.now()
     val tz = TimeZone.currentSystemDefault()
     val today = now.toLocalDateTime(tz).date
-    val birhtDay = remember { mutableStateOf(today) }
+    val birthDay = remember { mutableStateOf(today) }
     val breed = remember { mutableStateOf<PetBreed?>(null) }
     val gender = remember { mutableStateOf("") }
     val color = remember { mutableStateOf("") }
@@ -165,7 +167,7 @@ fun PetProps(viewModel: PetDetailViewModel, breeds: List<PetBreed>, doctors: Lis
     PetPropField(PetPropFieldType.WEIGHT) {
         weight.value = it
     }
-    ColorSpinner()
+    ColorSpinner(colors)
     BreedSpinner(breeds) {
         breed.value = it
     }
@@ -178,7 +180,7 @@ fun PetProps(viewModel: PetDetailViewModel, breeds: List<PetBreed>, doctors: Lis
     Spacer(modifier = Modifier.height(20.dp))
     SaveButton() {
        // create new pet
-       viewModel.createPet(PetItem("", name.value, "", pet.petType, "", birhtDay.value.toString(), weight.value.toFloat(),
+       viewModel.createPet(PetItem("", name.value, "", pet.petType, "", birthDay.value.toString(), weight.value.toFloat(),
            color.value,breed.value?.key as String,""))
     }
 }
@@ -192,9 +194,9 @@ fun DoctorSpinner(doctors: List<Doctor>, onSelected: (Doctor) -> Unit) {
 }
 
 @Composable
-fun ColorSpinner() {
+fun ColorSpinner(colors: List<PetColor>) {
 
-    ColorField("Farba zvieratka") {
+    ColorField("Farba zvieratka", colors) {
 
     }
 }

@@ -41,6 +41,7 @@ import presentation.screen.login.LoginScreen
 import presentation.screen.myPets.MyPets
 import presentation.screen.petDetail.PetDetail
 import presentation.screen.register.RegisterScreen
+import presentation.screen.splash.Splash
 import presentation.theme.colors.LightThemeAppColors
 import presentation.theme.colors.LocalAppColors
 
@@ -80,6 +81,7 @@ fun AppContent(navController: NavHostController = rememberNavController()) {
                     AppScreen.PetDetail -> navController.navigate(AppScreen.PetDetail.name)
                     AppScreen.MyPets -> navController.navigate(AppScreen.MyPets.name)
                     AppScreen.Register -> navController.navigate(AppScreen.Register.name)
+                    AppScreen.Splash -> navController.navigate(AppScreen.Splash.name)
                 }
             }) {
                 Scaffold(
@@ -124,13 +126,19 @@ fun AppContent(navController: NavHostController = rememberNavController()) {
                     }) {
                     NavHost(
                         navController = navController,
-                        startDestination = AppScreen.Login.name,
+                        startDestination = AppScreen.Splash.name,
                         modifier = Modifier
                             .fillMaxSize()
                             .background(LocalAppColors.current.secondary)
                             .verticalScroll(rememberScrollState())
                             .padding(5.dp)
                     ) {
+
+                        composable(route = AppScreen.Splash.name) {
+                            Splash{
+                                navController.navigate(AppScreen.Register.name)
+                            }
+                        }
 
                         composable(route = AppScreen.Register.name) {
                             RegisterScreen {

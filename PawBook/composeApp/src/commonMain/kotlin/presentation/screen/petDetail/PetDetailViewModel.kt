@@ -8,6 +8,7 @@ import core.util.Resources
 import data.repository.PetDetailRepositoryImpl
 import domain.model.Doctor
 import domain.model.PetBreed
+import domain.model.PetColor
 import domain.model.PetItem
 import domain.model.enums.PetDetailState
 import domain.model.enums.PetType
@@ -32,16 +33,22 @@ class PetDetailViewModel() : ViewModel(), KoinComponent {
     private val _doctors = MutableStateFlow<ArrayList<Doctor>>(arrayListOf())
     val doctors: StateFlow<ArrayList<Doctor>> = _doctors
 
+    private val _colors = MutableStateFlow<ArrayList<PetColor>>(arrayListOf())
+    val colors: StateFlow<ArrayList<PetColor>> = _colors
+
+
     fun init() {
         if(pet.value.id == "CREATE") {
-            fetchBreeds(pet.value.petType)
-            fetchDoctors(pet.value.petType)
+            fetchBreeds()
+            fetchDoctors()
+            fetchColors()
         }
     }
 
-    private fun fetchBreeds(petType: PetType) {
+    private fun fetchBreeds() {
+        // get from database
         viewModelScope.launch {
-            petDetailRepository.fetchBreeds(petType).collect { it ->
+            petDetailRepository.fetchBreeds().collect { it ->
                 when(it) {
                     is Resources.Error -> {
                         if(it.message == "no_internet") _state.update { PetDetailState.NO_INTERNET }
@@ -52,16 +59,34 @@ class PetDetailViewModel() : ViewModel(), KoinComponent {
                     }
                     is Resources.Success -> {
                         it.data?.breeds?.let { it1 -> breeds.value.addAll(it1) }
-
                     }
                 }
             }
         }
     }
 
-    private fun fetchDoctors(petType: PetType) {
+    private fun fetchColors() {
         viewModelScope.launch {
-            petDetailRepository.fetchDoctors(petType).collect { it ->
+            petDetailRepository.fetchColors().collect {
+                when(it) {
+                    is Resources.Error -> {
+                        if(it.message == "no_internet") _state.update { PetDetailState.NO_INTERNET }
+                        if(it.message == "internal_error") _state.update { PetDetailState.ERROR }
+                    }
+                    is Resources.Loading -> {
+                        _state.update { PetDetailState.LOADING }
+                    }
+                    is Resources.Success -> {
+                        it.data?.colors?.let { it1 -> colors.value.addAll(it1) }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun fetchDoctors() {
+        viewModelScope.launch {
+            petDetailRepository.fetchDoctors().collect { it ->
                 when(it) {
                     is Resources.Error -> {
                         if(it.message == "no_internet") _state.update { PetDetailState.NO_INTERNET }
@@ -72,7 +97,6 @@ class PetDetailViewModel() : ViewModel(), KoinComponent {
                     }
                     is Resources.Success -> {
                         it.data?.doctors?.let { it1 -> doctors.value.addAll(it1) }
-
                     }
                 }
             }
@@ -91,7 +115,7 @@ class PetDetailViewModel() : ViewModel(), KoinComponent {
                         _state.update { PetDetailState.LOADING }
                     }
                     is Resources.Success -> {
-                        //it.data?.pet?.let { it1 -> breeds.value.addAll(it1) }
+                        // TODO
                     }
                 }
             }
