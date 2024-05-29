@@ -1,7 +1,6 @@
 package presentation.screen.calendar
 
 import androidx.lifecycle.ViewModel
-import data.model.entity.DoctorEntity
 import data.model.entity.PetEntity
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

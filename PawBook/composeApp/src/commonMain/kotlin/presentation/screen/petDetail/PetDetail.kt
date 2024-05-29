@@ -60,7 +60,6 @@ import domain.model.PetPhoto
 import domain.model.enums.PetDetailState
 import io.ktor.util.date.GMTDate
 import domain.model.enums.PetPropFieldType
-import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
@@ -142,7 +141,7 @@ fun PetPhoto(viewModel: PetDetailViewModel) {
             viewModel.uploadProfilePicture(context, files)
         })
 
-    CirclePhoto() {
+    CirclePhoto {
         openDialog.value = true
     }
     if (openDialog.value) {
@@ -201,14 +200,14 @@ fun PetProps(viewModel: PetDetailViewModel, breeds: List<BreedEntity>, colors: L
     BreedSpinner(breeds) {
         breed.value = it
     }
-    GenderSpinner() {
+    GenderSpinner {
         gender.value = it
     }
     DoctorSpinner(doctors) {
         doctor.value = it
     }
     Spacer(modifier = Modifier.height(20.dp))
-    SaveButton() {
+    SaveButton {
        // create new pet
        viewModel.createPet(PetItem(null, name.value, "", pet.petType, null, birthDay.value.toString(), weight.value.toFloat(),
            color,breed.value?.id as String, PetPhoto(null, null, null), arrayListOf()))

@@ -18,9 +18,7 @@ import io.ktor.client.request.header
 import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
 import io.ktor.serialization.kotlinx.json.json
-import kotlinx.datetime.LocalDateTime
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.modules.SerializersModule
 import org.koin.core.KoinApplication
 import org.koin.core.context.startKoin
 import org.koin.dsl.KoinAppDeclaration
@@ -72,7 +70,7 @@ object KoinModule {
     // called by iOS
     fun doInitKoin() = initKoin {}
 
-    fun commonModule() = module {
+    private fun commonModule() = module {
         //factory { Greeting() }
     }
 }

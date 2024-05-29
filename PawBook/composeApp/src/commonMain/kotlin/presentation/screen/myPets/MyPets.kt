@@ -13,7 +13,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -25,12 +24,11 @@ import androidx.compose.ui.unit.sp
 import domain.model.PetItem
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
+import org.koin.compose.koinInject
 import pawbook.composeapp.generated.resources.Res
 import pawbook.composeapp.generated.resources.sofka
-import presentation.theme.colors.LocalAppColors
-import core.util.PetUtils
-import org.koin.compose.koinInject
 import presentation.screen.petDetail.MyPetsViewModel
+import presentation.theme.colors.LocalAppColors
 
 @Composable
 fun MyPets(viewModel: MyPetsViewModel = koinInject(),  onItemClick: (PetItem) -> Unit) {
@@ -60,8 +58,7 @@ fun PetCard(petItem: PetItem, onItemClick: (PetItem) -> Unit) {
     Row (horizontalArrangement = Arrangement.Center,
         modifier = Modifier.clickable { onItemClick(petItem) }.padding(16.dp, 16.dp),
         ) {
-        Column (
-        ){
+        Column {
             CirclePhoto()
         }
         Column(

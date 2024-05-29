@@ -3,7 +3,6 @@ package presentation.screen.register
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import core.util.Resources
-import data.repository.LoginRepositoryImpl
 import data.repository.RegisterRepositoryImpl
 import domain.model.enums.RegisterState
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,7 +13,7 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
 
-class RegisterViewModel() : ViewModel(), KoinComponent {
+class RegisterViewModel : ViewModel(), KoinComponent {
     private val registerRepoitory: RegisterRepositoryImpl by inject()
 
     private val _state = MutableStateFlow(RegisterState.IDLE)

@@ -1,6 +1,5 @@
 package data.repository
 
-import com.russhwolf.settings.Settings
 import core.enums.SocialLogin
 import core.util.Resources
 import data.remote.LoginApi

@@ -1,15 +1,12 @@
 package presentation.screen.calendar
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -21,25 +18,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import data.model.entity.ColorEntity
-import domain.model.enums.PetPropFieldType
 import io.ktor.util.date.GMTDate
 import kotlinx.datetime.LocalTime
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
 import pawbook.composeapp.generated.resources.Res
-import pawbook.composeapp.generated.resources.activity_planning_dialog_title
 import pawbook.composeapp.generated.resources.add
 import pawbook.composeapp.generated.resources.select_date
 import pawbook.composeapp.generated.resources.select_time
-import presentation.components.color.colorPicker.DialogTitle
 import presentation.screen.login.StyledButton
-import presentation.screen.myPets.Pets
 import presentation.screen.petDetail.CustomDatePickerDialog
 import presentation.screen.petDetail.noRippleClickable
 import presentation.theme.colors.LocalAppColors
-import utils.compose.PetPropFieldUtils
 
 
 @OptIn(ExperimentalResourceApi::class)
