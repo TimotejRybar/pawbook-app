@@ -9,7 +9,8 @@ import data.model.entity.ColorEntity
 import data.model.entity.DoctorEntity
 import domain.model.Address
 import domain.model.Location
-import domain.model.enums.PetType
+import core.enums.PetType
+import data.model.entity.CalendarActivityEntity
 import kotlinx.datetime.LocalDateTime
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -19,7 +20,7 @@ import kotlin.jvm.JvmStatic
 expect fun getDatabase(): AppDatabase
 
 @TypeConverters(value = [Converters::class])
-@Database(entities = [BreedEntity::class, ColorEntity::class, DoctorEntity::class], version = 1)
+@Database(entities = [BreedEntity::class, ColorEntity::class, DoctorEntity::class, CalendarActivityEntity::class], version = 1)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun getDoctorDao(): DoctorDao
     abstract fun getBreedDao(): BreedDao

@@ -23,7 +23,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import data.model.entity.ColorEntity
-import domain.model.PetColor
 import presentation.components.color.colorPicker.ColorCircle
 import presentation.components.color.colorPicker.ColorPicker
 import presentation.theme.colors.LocalAppColors
@@ -34,7 +33,7 @@ fun ColorField(title: String, availableColors: List<ColorEntity>, onColorSelecte
     val colors = remember { mutableStateListOf<ColorEntity>() }
     val newColors = remember { mutableStateListOf<ColorEntity>() }
 
-    Title(title)
+    presentation.components.petField.Title(title)
     Row(
         verticalAlignment = Alignment.CenterVertically
     ) {

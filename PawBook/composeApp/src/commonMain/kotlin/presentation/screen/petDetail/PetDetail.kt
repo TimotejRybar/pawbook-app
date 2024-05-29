@@ -56,7 +56,6 @@ import data.model.entity.BreedEntity
 import data.model.entity.ColorEntity
 import data.model.entity.DoctorEntity
 import domain.model.PetItem
-import domain.model.PetPhoto
 import domain.model.enums.PetDetailState
 import io.ktor.util.date.GMTDate
 import domain.model.enums.PetPropFieldType
@@ -69,8 +68,14 @@ import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
 import pawbook.composeapp.generated.resources.Res
 import pawbook.composeapp.generated.resources.breed
+import pawbook.composeapp.generated.resources.continue_pet_upload_profile_photo
 import pawbook.composeapp.generated.resources.doctor
+import pawbook.composeapp.generated.resources.gender
+import pawbook.composeapp.generated.resources.save
+import pawbook.composeapp.generated.resources.search_doctor
 import pawbook.composeapp.generated.resources.search_pet_breed
+import pawbook.composeapp.generated.resources.select
+import pawbook.composeapp.generated.resources.select_photo
 import pawbook.composeapp.generated.resources.sofka
 import presentation.components.autocomplete.AutoComplete
 import presentation.components.color.colorField.ColorField
@@ -122,13 +127,15 @@ fun PetInfo(viewModel: PetDetailViewModel, pet: PetItem) {
     }
 }
 
+@OptIn(ExperimentalResourceApi::class)
 @Composable
 fun SaveButton(onFormSubmit: () -> Unit) {
-    StyledButton("Uložiť", ButtonStyle.FillPrimary, 0.dp) {
+    StyledButton(stringResource(Res.string.save), ButtonStyle.FillPrimary, 0.dp) {
         onFormSubmit()
     }
 }
 
+@OptIn(ExperimentalResourceApi::class)
 @Composable
 fun PetPhoto(viewModel: PetDetailViewModel) {
     val openDialog = remember { mutableStateOf(false) }
@@ -153,14 +160,14 @@ fun PetPhoto(viewModel: PetDetailViewModel) {
                     onClick = {
                         pickerLauncher.launch()
                     }) {
-                    Text("Vybrať")
+                    Text(stringResource(Res.string.select))
                 }
             },
             icon = {
                 Icon(imageVector = Icons.Default.Star, "dialog icon")
             },
-            title = { Text("Vyberte fotku") },
-            text = { Text("Pokračujte ak chcete nahrať novú profilovú fotku zvieratka") },
+            title = { Text(stringResource(Res.string.select_photo)) },
+            text = { Text(stringResource(Res.string.continue_pet_upload_profile_photo)) },
             dismissButton = {
                 Button(
                     onClick = {
@@ -210,14 +217,14 @@ fun PetProps(viewModel: PetDetailViewModel, breeds: List<BreedEntity>, colors: L
     SaveButton {
        // create new pet
        viewModel.createPet(PetItem(null, name.value, "", pet.petType, null, birthDay.value.toString(), weight.value.toFloat(),
-           color,breed.value?.id as String, PetPhoto(null, null, null), arrayListOf()))
+           color,breed.value?.id as String, null, arrayListOf()))
     }
 }
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
 fun DoctorSpinner(doctors: List<DoctorEntity>, onSelected: (DoctorEntity) -> Unit) {
-    AutoComplete(stringResource(Res.string.doctor), "Vyhľadajte plemeno zvieratka", doctors) {
+    AutoComplete(stringResource(Res.string.doctor), stringResource(Res.string.search_doctor), doctors) {
         onSelected(it as DoctorEntity)
     }
 }
@@ -229,10 +236,11 @@ fun ColorSpinner(colors: List<ColorEntity>, onColorSelected: (colors: List<Color
     }
 }
 
+@OptIn(ExperimentalResourceApi::class)
 @Composable
 fun GenderSpinner(onSelected: (String) -> Unit) {
     val genderOptions = arrayListOf("Pes", "Fenka")
-    Spinner(text = "Pohlavie", options = genderOptions) {
+    Spinner(text = stringResource(Res.string.gender), options = genderOptions) {
         onSelected(it)
     }
 }

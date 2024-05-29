@@ -1,6 +1,5 @@
-package presentation.components.color.petPicker
+package presentation.components.petField
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -37,16 +36,10 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import core.common.Config
-import core.util.HexColorConverter
-import data.model.entity.ColorEntity
 import data.model.entity.PetEntity
 import io.kamel.core.utils.URI
 import io.kamel.image.KamelImage
 import io.kamel.image.asyncPainterResource
-import org.jetbrains.compose.resources.ExperimentalResourceApi
-import org.jetbrains.compose.resources.painterResource
-import pawbook.composeapp.generated.resources.Res
-import pawbook.composeapp.generated.resources.sofka
 import presentation.screen.login.StyledButton
 import presentation.theme.colors.LocalAppColors
 

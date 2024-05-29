@@ -52,8 +52,20 @@ import presentation.theme.colors.LocalAppColors
 fun AppContent(navController: NavHostController = rememberNavController()) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val topBarState = rememberSaveable { mutableStateOf(false) }
-
     val selectedPet = remember { mutableStateOf(PetItem.empty()) }
+
+    val routeToLabelMap = mapOf(
+        AppScreen.Splash.name to "Načítavam",
+        AppScreen.Login.name to "Prihlásenie",
+        AppScreen.Register.name to "Registrácia",
+        AppScreen.MyPets.name to "Moje zvieratká",
+        AppScreen.PetDetail.name to "Detail zvieratka",
+        AppScreen.Calendar.name to "Kalendár",
+        AppScreen.CalendarActivity.name to "Plánovanie aktivity"
+    )
+
+    val currentRoute = navBackStackEntry?.destination?.route
+    val label = remember(currentRoute) { mutableStateOf(routeToLabelMap[currentRoute] ?: "Unknown") }
 
     when (navBackStackEntry?.destination?.route) {
         AppScreen.Splash.name -> {
@@ -78,7 +90,7 @@ fun AppContent(navController: NavHostController = rememberNavController()) {
     ) {
         MaterialTheme(
         ) {
-            var drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+            val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
             val scope = rememberCoroutineScope()
 
             Navigation(drawerState, onNavigate = {
@@ -123,7 +135,7 @@ fun AppContent(navController: NavHostController = rememberNavController()) {
                             content = {
                                 if (topBarState.value) {
                                     TopAppBar(
-                                        title = { Text("My Pets") },
+                                        title = { Text(label.value) },
                                         navigationIcon = {
                                             IconButton(onClick = {
                                                 scope.launch {
@@ -192,7 +204,7 @@ fun AppContent(navController: NavHostController = rememberNavController()) {
 
                         composable(route = AppScreen.CalendarActivity.name) {
                             PetCalendarActivity() {
-
+                                navController.navigate(AppScreen.Calendar.name)
                             }
                         }
                     }

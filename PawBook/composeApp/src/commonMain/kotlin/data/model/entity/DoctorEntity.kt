@@ -2,10 +2,10 @@ package data.model.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import core.enums.PetType
 import domain.model.Address
 import domain.model.Location
 import domain.model.Selectable
-import domain.model.enums.PetType
 import kotlinx.datetime.LocalDateTime
 
 @Entity

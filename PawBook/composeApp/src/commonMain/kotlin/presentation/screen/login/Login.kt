@@ -263,7 +263,7 @@ enum class InputType{
 
 
 @Composable
-fun InputField(title: String, value: String, type: InputType, onTextChange: (String) -> Unit) {
+fun InputField(title: String, value: String, type: InputType, maxLines: Int = 1, onTextChange: (String) -> Unit) {
 
     var isValid by remember { mutableStateOf(false) }
     val keyboardType = when (type) {
@@ -272,6 +272,7 @@ fun InputField(title: String, value: String, type: InputType, onTextChange: (Str
         else -> KeyboardType.Text
     }
     TextField(
+        maxLines = maxLines,
         label = {
             Text(title, color = Color.Black)
         },
@@ -283,7 +284,7 @@ fun InputField(title: String, value: String, type: InputType, onTextChange: (Str
         keyboardOptions = KeyboardOptions(
             keyboardType = keyboardType
         ),
-        singleLine = true,
+        singleLine = maxLines == 1,
         colors = TextFieldDefaults.colors(
         cursorColor = Color.Black,
         focusedIndicatorColor =  LocalAppColors.current.primary,

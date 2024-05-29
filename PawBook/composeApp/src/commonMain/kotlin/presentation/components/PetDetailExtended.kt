@@ -109,14 +109,14 @@ fun PetPhoto() {
             icon = {
                 Icon(imageVector = Icons.Default.Star, "dialog icon")
             },
-            title = { Text("Select photo") },
-            text = { Text("Continue If you want to upload new main pet photo") },
+            title = { Text("Vyberte fotku") },
+            text = { Text("Pokračujte, ak chcete nahrať novú profilovú fotku zvieratka") },
             dismissButton = {
                 Button(
                     onClick = {
                         openDialog.value = false
                     }) {
-                    Text("Cancel")
+                    Text("Zatvoriť")
                 }
             }
         )

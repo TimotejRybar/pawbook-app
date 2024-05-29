@@ -1,6 +1,6 @@
 package domain.model
 
-import domain.model.enums.PetType
+import core.enums.PetType
 import kotlinx.datetime.LocalDateTime
 import kotlinx.serialization.Serializable
 

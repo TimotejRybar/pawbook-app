@@ -45,7 +45,7 @@ fun Navigation(
                 }
                 HorizontalDivider()
                 NavigationDrawerItem(
-                    label = { Text(text = "My pets") },
+                    label = { Text(text = "Moje zvieratká") },
                     selected = false,
                     onClick = {
                         scope.launch {
@@ -55,7 +55,7 @@ fun Navigation(
                     }
                 )
                 NavigationDrawerItem(
-                    label = { Text(text = "Calendar") },
+                    label = { Text(text = "Kalendár") },
                     selected = false,
                     onClick = {
                         scope.launch {
