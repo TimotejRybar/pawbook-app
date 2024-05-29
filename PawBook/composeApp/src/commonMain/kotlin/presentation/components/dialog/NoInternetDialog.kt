@@ -15,9 +15,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import org.jetbrains.compose.resources.ExperimentalResourceApi
+import org.jetbrains.compose.resources.stringResource
+import pawbook.composeapp.generated.resources.Res
+import pawbook.composeapp.generated.resources.error_occured
+import pawbook.composeapp.generated.resources.error_please_check_internet
+import pawbook.composeapp.generated.resources.try_again
 import presentation.screen.login.StyledButton
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalResourceApi::class)
 @Composable
 fun NoInternetDialog(onRetry: () -> Unit, onDismissRequest: () -> Unit) {
     BasicAlertDialog(onDismissRequest = { onDismissRequest() }) {
@@ -26,12 +32,14 @@ fun NoInternetDialog(onRetry: () -> Unit, onDismissRequest: () -> Unit) {
                 modifier = Modifier.align(Alignment.CenterHorizontally).padding(24.dp, 16.dp, 24.dp, 5.dp),
                 textAlign = TextAlign.Center,
                 fontSize = 24.sp,
-                text = "Vyskytla sa chyba")
+                text = stringResource(Res.string.error_occured)
+            )
             Text(
                 modifier = Modifier.align(Alignment.CenterHorizontally).padding(24.dp, 5.dp),
                 textAlign = TextAlign.Center,
-                text = "Skontrolujte prosím svoje pripojenie k internetu")
-            StyledButton("Skúsiť znovu") {
+                text = stringResource(Res.string.error_please_check_internet)
+            )
+            StyledButton(stringResource(Res.string.try_again)) {
                 onRetry()
             }
             Spacer(Modifier.height(20.dp))

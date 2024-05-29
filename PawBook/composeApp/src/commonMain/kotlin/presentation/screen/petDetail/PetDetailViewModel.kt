@@ -38,11 +38,9 @@ class PetDetailViewModel() : ViewModel(), KoinComponent {
     val colors: StateFlow<ArrayList<ColorEntity>> = _colors
 
     fun init() {
-        if(pet.value.id == "CREATE") {
-            fetchBreeds()
-            fetchDoctors()
-            fetchColors()
-        }
+        fetchBreeds()
+        fetchDoctors()
+        fetchColors()
     }
 
     private fun fetchBreeds() {
@@ -72,7 +70,7 @@ class PetDetailViewModel() : ViewModel(), KoinComponent {
 
     fun createPet(pet: PetItem) {
         viewModelScope.launch {
-            petDetailRepository.createPet(pet).collect { it ->
+            petDetailRepository.createPet(pet).collect {
                 when(it) {
                     is Resources.Error -> {
                         if(it.message == "no_internet") _state.update { PetDetailState.NO_INTERNET }
@@ -83,7 +81,6 @@ class PetDetailViewModel() : ViewModel(), KoinComponent {
                     }
                     is Resources.Success -> {
                         _state.update { PetDetailState.SAVED }
-
                     }
                 }
             }

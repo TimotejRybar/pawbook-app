@@ -48,13 +48,24 @@ import androidx.compose.ui.unit.sp
 import domain.model.enums.LoginState
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
 import pawbook.composeapp.generated.resources.Res
+import pawbook.composeapp.generated.resources.create_account
+import pawbook.composeapp.generated.resources.dont_have_an_account
+import pawbook.composeapp.generated.resources.email
+import pawbook.composeapp.generated.resources.error_please_check_internet
+import pawbook.composeapp.generated.resources.forgot_password
+import pawbook.composeapp.generated.resources.hide_password
+import pawbook.composeapp.generated.resources.invalid_email_or_password
+import pawbook.composeapp.generated.resources.login
+import pawbook.composeapp.generated.resources.login_with_google
 import pawbook.composeapp.generated.resources.pawbook_logo
+import pawbook.composeapp.generated.resources.show_password
 import presentation.components.loading.LoadingAnimation
 import presentation.theme.colors.LocalAppColors
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalResourceApi::class)
 @Composable
 fun LoginScreen(viewModel: LoginViewModel = koinInject(), onLoginSucces: () -> Unit, onCreateAccount: () -> Unit ) {
     val loginState by viewModel.state.collectAsState()
@@ -78,7 +89,7 @@ fun LoginScreen(viewModel: LoginViewModel = koinInject(), onLoginSucces: () -> U
             CreateAccount() {
                 onCreateAccount()
             }
-            Text("Ešte nemáte účet?", fontSize = 10.sp)
+            Text(stringResource(Res.string.dont_have_an_account), fontSize = 10.sp)
             Footer()
         }
         AnimatedContent(targetState = loginState) { targetCount ->
@@ -92,7 +103,7 @@ fun LoginScreen(viewModel: LoginViewModel = koinInject(), onLoginSucces: () -> U
                 if(openAlertDialog.value) {
                     BasicAlertDialog(onDismissRequest = { openAlertDialog.value = false }) {
                         Card {
-                            Text("Skontrolujte prosím svoje pripojenie k internetu", Modifier.padding(24.dp))
+                            Text(stringResource(Res.string.error_please_check_internet), Modifier.padding(24.dp))
                         }
                     }
                 }
@@ -104,7 +115,7 @@ fun LoginScreen(viewModel: LoginViewModel = koinInject(), onLoginSucces: () -> U
                 if(openErrorDialog.value) {
                     BasicAlertDialog(onDismissRequest = { openErrorDialog.value = false }) {
                         Card {
-                            Text("Neplatný e-mail alebo heslo", Modifier.padding(24.dp))
+                            Text(stringResource(Res.string.invalid_email_or_password), Modifier.padding(24.dp))
                         }
                     }
                 }
@@ -113,9 +124,10 @@ fun LoginScreen(viewModel: LoginViewModel = koinInject(), onLoginSucces: () -> U
     }
 }
 
+@OptIn(ExperimentalResourceApi::class)
 @Composable
 fun LogInSocial() {
-    StyledButton("Prihlásiť cez Google") {
+    StyledButton(stringResource(Res.string.login_with_google)) {
     }
 }
 
@@ -124,9 +136,10 @@ fun Footer() {
     Text("www.pawbook.com", fontSize = 10.sp)
 }
 
+@OptIn(ExperimentalResourceApi::class)
 @Composable
 fun CreateAccount(onCreateClick: () -> Unit) {
-    StyledButton("Vytvoriť účet", extraHorizontalPadding = 24.dp, onClick = onCreateClick)
+    StyledButton(stringResource(Res.string.create_account), extraHorizontalPadding = 24.dp, onClick = onCreateClick)
 }
 
 enum class ButtonStyle{
@@ -167,17 +180,19 @@ fun StyledButton(text:String = "", buttonStyle: ButtonStyle = ButtonStyle.FillPr
     }
 }
 
+@OptIn(ExperimentalResourceApi::class)
 @Composable
 fun ForgotPassword() {
-    Text("Zabudnuté heslo", fontSize = 12.sp)
+    Text(stringResource(Res.string.forgot_password), fontSize = 12.sp)
 }
 
+@OptIn(ExperimentalResourceApi::class)
 @Composable
 fun LogInForm(onLoginSubmit: (username: String, password: String) -> Unit) {
     var email = remember { mutableStateOf("timotej.rybar@uplab.sk")}
     var password = remember { mutableStateOf("lokomotiva21")}
 
-    InputField("E-mail", email.value, InputType.EMAIL){
+    InputField(stringResource(Res.string.email), email.value, InputType.EMAIL){
         email.value = it
     }
     Spacer(modifier = Modifier.height(10.dp))
@@ -190,12 +205,14 @@ fun LogInForm(onLoginSubmit: (username: String, password: String) -> Unit) {
     }
 }
 
+@OptIn(ExperimentalResourceApi::class)
 @Composable
 fun LogInButton(onLoginSubmit: () -> Unit) {
     // call submit on click
-    StyledButton(text = "Prihlásiť", extraHorizontalPadding = 0.dp, onClick = onLoginSubmit)
+    StyledButton(text = stringResource(Res.string.login), extraHorizontalPadding = 0.dp, onClick = onLoginSubmit)
 }
 
+@OptIn(ExperimentalResourceApi::class)
 @Composable
 fun InputPasswordField(title: String, value: String, onTextChange: (String) -> Unit) {
     var passwordVisible by rememberSaveable { mutableStateOf(false) }
@@ -224,7 +241,7 @@ fun InputPasswordField(title: String, value: String, onTextChange: (String) -> U
                 Icons.Filled.Lock
             else Icons.Filled.Lock
 
-            val description = if (passwordVisible) "Skryť heslo" else "Zobraziť heslo"
+            val description = if (passwordVisible) stringResource(Res.string.hide_password) else stringResource(Res.string.show_password)
 
             IconButton(onClick = {passwordVisible = !passwordVisible}){
                 Icon(imageVector  = image, description)
@@ -285,10 +302,10 @@ fun InputField(title: String, value: String, type: InputType, onTextChange: (Str
 }
 
 fun validateField(type: InputType, input: String): Boolean {
-    when(type) {
-        InputType.EMAIL -> return input.matches(Regex("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\$"))
-        InputType.PHONE -> return input.matches(Regex("09(0|1)[5678][0-9][0-9][0-9][0-9][0-9][0-9]")) // TODO: this is for Slovakia, use translation resources in the future
-        InputType.TEXT -> return input.isNotEmpty()
+    return when(type) {
+        InputType.EMAIL -> input.matches(Regex("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\$"))
+        InputType.PHONE -> input.matches(Regex("09(0|1)[5678][0-9][0-9][0-9][0-9][0-9][0-9]")) // TODO: this is for Slovakia, use translation resources in the future
+        InputType.TEXT -> input.isNotEmpty()
     }
 }
 

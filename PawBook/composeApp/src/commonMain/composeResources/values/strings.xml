@@ -372,4 +372,18 @@
     <string name ="search_pet_breed">Vyhľadajte plemeno zvieratka</string>
     <string name="activity_planning_dialog_title">Plánovanie aktivity</string>
     <string name="add">Pridať</string>
+    <string name="select_date">Vyberte dátum</string>
+    <string name="select_time">Nastavte čas</string>
+    <string name="error_please_check_internet">Skontrolujte prosím Vaše pripojenie k internetu</string>
+    <string name="error_occured">Vyskytla sa chyba</string>
+    <string name="try_again">Skúsiť znovu</string>
+    <string name="invalid_email_or_password">Neplatný e-mail alebo heslo</string>
+    <string name="dont_have_an_account">Ešte nemáte účet?</string>
+    <string name="login_with_google">Prihlásiť cez Google</string>
+    <string name="create_account">Vytvoriť účet</string>
+    <string name="forgot_password">Zabudnuté heslo</string>
+    <string name="email">E-mail</string>
+    <string name="login">Prihlásiť</string>
+    <string name="hide_password">Skryť heslo</string>
+    <string name="show_password">Zobraziť heslo</string>
 </resources>
