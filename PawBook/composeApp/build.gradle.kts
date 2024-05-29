@@ -95,6 +95,7 @@ kotlin {
             implementation("androidx.sqlite:sqlite-framework:2.5.0-alpha02")
             implementation("androidx.sqlite:sqlite:2.5.0-alpha02")
             //implementation(libs.sqldelight.coroutines.extensions)
+            implementation("com.mohamedrejeb.calf:calf-file-picker:0.4.0")
 
         }
 

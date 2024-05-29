@@ -11,8 +11,11 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import domain.model.enums.SplashState
+import kotlinx.datetime.Clock
 import org.koin.compose.koinInject
+import presentation.components.dialog.NoInternetDialog
 import presentation.screen.login.Logo
+import utils.compose.closeApp
 
 @Composable
 fun Splash(viewModel: SplashViewModel = koinInject(), onReady: () -> Unit) {
@@ -28,6 +31,15 @@ fun Splash(viewModel: SplashViewModel = koinInject(), onReady: () -> Unit) {
         ) {
             Logo()
             Text("Načítavam...")
+            if(splashState.value == SplashState.NO_INTERNET) {
+                NoInternetDialog({
+                    //retry
+                     viewModel.synchronizeDatabase()
+                }, {
+                    //exit
+                    closeApp()
+                })
+            }
         }
     }
 

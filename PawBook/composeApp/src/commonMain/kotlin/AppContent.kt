@@ -38,6 +38,7 @@ import domain.model.PetItem
 import kotlinx.coroutines.launch
 import presentation.components.calendar.PetCalendar
 import presentation.navigation.Navigation
+import presentation.screen.calendar.PetCalendarActivity
 import presentation.screen.login.LoginScreen
 import presentation.screen.myPets.MyPets
 import presentation.screen.petDetail.PetDetail
@@ -88,6 +89,7 @@ fun AppContent(navController: NavHostController = rememberNavController()) {
                     AppScreen.Register -> navController.navigate(AppScreen.Register.name)
                     AppScreen.Splash -> navController.navigate(AppScreen.Splash.name)
                     AppScreen.Calendar -> navController.navigate(AppScreen.Calendar.name)
+                    AppScreen.CalendarActivity -> navController.navigate(AppScreen.CalendarActivity.name)
                 }
             }) {
                 Scaffold(
@@ -98,6 +100,16 @@ fun AppContent(navController: NavHostController = rememberNavController()) {
                                 contentColor = LocalAppColors.current.secondary,
                                 onClick = {
                                     navController.navigate(AppScreen.PetDetail.name)
+                                }) {
+                                Icon(Icons.Filled.Add, "")
+                            }
+                        }
+                        if (navController.currentDestination?.route == AppScreen.Calendar.name) {
+                            FloatingActionButton(containerColor = LocalAppColors.current.primary,
+                                shape = CircleShape,
+                                contentColor = LocalAppColors.current.secondary,
+                                onClick = {
+                                    navController.navigate(AppScreen.CalendarActivity.name)
                                 }) {
                                 Icon(Icons.Filled.Add, "")
                             }
@@ -169,13 +181,19 @@ fun AppContent(navController: NavHostController = rememberNavController()) {
                         }
 
                         composable(route = AppScreen.PetDetail.name) {
-                            PetDetail(selectedPet.value, onDismissClick = {
+                            PetDetail(selectedPet.value, onSaved = {
                                 navController.navigate(AppScreen.Login.name)
                             })
                         }
 
                         composable(route = AppScreen.Calendar.name) {
                             PetCalendar()
+                        }
+
+                        composable(route = AppScreen.CalendarActivity.name) {
+                            PetCalendarActivity() {
+
+                            }
                         }
                     }
                 }

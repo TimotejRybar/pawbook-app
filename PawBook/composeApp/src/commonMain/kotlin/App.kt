@@ -8,6 +8,7 @@ import data.repository.PetsRepoitoryImpl
 import data.repository.RegisterRepositoryImpl
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.dsl.module
+import presentation.screen.calendar.PetCalendarActivityViewModel
 import presentation.screen.login.LoginViewModel
 import presentation.screen.petDetail.MyPetsViewModel
 import presentation.screen.petDetail.PetDetailViewModel
@@ -20,6 +21,7 @@ enum class AppScreen() {
     PetDetail(),
     MyPets(),
     Calendar(),
+    CalendarActivity,
     Register()
 }
 @Composable
@@ -57,6 +59,8 @@ fun appModule() = module {
     single<Preferences> { Preferences() }
     single { KoinModule.provideSettings() }
     single { KoinModule.provideDatabaseSync() }
+
+    single<PetCalendarActivityViewModel> { PetCalendarActivityViewModel() }
 }
 
 

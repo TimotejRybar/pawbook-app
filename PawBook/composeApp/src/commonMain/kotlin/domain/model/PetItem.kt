@@ -1,6 +1,7 @@
 package domain.model
 
 import domain.model.enums.PetType
+import kotlinx.datetime.LocalDateTime
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -14,7 +15,8 @@ data class PetItem(
     val weight: Float,
     val color: List<String>,
     val breed: String, // key
-    val photo: String,
+    val photo: PetPhoto,
+    val gallery: List<PetPhoto>
 ) {
     companion object {
         fun empty(): PetItem {
@@ -28,7 +30,8 @@ data class PetItem(
                 0f,
                 arrayListOf(),
                 "",
-                ""
+                PetPhoto(null, null, null),
+                arrayListOf()
             )
             return item
         }

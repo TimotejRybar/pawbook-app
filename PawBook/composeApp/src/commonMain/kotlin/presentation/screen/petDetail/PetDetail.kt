@@ -48,19 +48,23 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
+import com.mohamedrejeb.calf.core.LocalPlatformContext
+import com.mohamedrejeb.calf.picker.FilePickerFileType
+import com.mohamedrejeb.calf.picker.FilePickerSelectionMode
+import com.mohamedrejeb.calf.picker.rememberFilePickerLauncher
 import data.model.entity.BreedEntity
 import data.model.entity.ColorEntity
 import data.model.entity.DoctorEntity
-import domain.model.Doctor
-import domain.model.PetBreed
 import domain.model.PetItem
+import domain.model.PetPhoto
+import domain.model.enums.PetDetailState
 import io.ktor.util.date.GMTDate
 import domain.model.enums.PetPropFieldType
+import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import org.jetbrains.compose.resources.ExperimentalResourceApi
-import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
@@ -77,7 +81,14 @@ import presentation.screen.login.StyledButton
 import utils.compose.PetPropFieldUtils
 
 @Composable
-fun PetDetail(pet: PetItem, viewModel: PetDetailViewModel = koinInject(), onDismissClick: () -> Unit) {
+fun PetDetail(pet: PetItem, viewModel: PetDetailViewModel = koinInject(), onSaved: () -> Unit) {
+
+    val state by viewModel.state.collectAsState()
+
+    LaunchedEffect(state == PetDetailState.SAVED) {
+        if(state == PetDetailState.SAVED)
+        onSaved()
+    }
 
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -89,6 +100,8 @@ fun PetDetail(pet: PetItem, viewModel: PetDetailViewModel = koinInject(), onDism
         viewModel.pet.value.id = "CREATE"
         viewModel.init()
     }
+
+
 }
 
 @Composable
@@ -103,7 +116,7 @@ fun PetInfo(viewModel: PetDetailViewModel, pet: PetItem) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Spacer(modifier = Modifier.height(50.dp))
-            PetPhoto()
+            PetPhoto(viewModel)
             PetProps(viewModel, breeds, colors, doctors, pet)
             Spacer(modifier = Modifier.height(20.dp))
         }
@@ -118,8 +131,17 @@ fun SaveButton(onFormSubmit: () -> Unit) {
 }
 
 @Composable
-fun PetPhoto() {
-    var openDialog = remember { mutableStateOf(false) }
+fun PetPhoto(viewModel: PetDetailViewModel) {
+    val openDialog = remember { mutableStateOf(false) }
+
+    val context = LocalPlatformContext.current
+    val pickerLauncher = rememberFilePickerLauncher(
+            type = FilePickerFileType.Image,
+    selectionMode = FilePickerSelectionMode.Single,
+    onResult = { files ->
+            viewModel.uploadProfilePicture(context, files)
+        })
+
     CirclePhoto() {
         openDialog.value = true
     }
@@ -130,7 +152,7 @@ fun PetPhoto() {
             confirmButton = {
                 Button(
                     onClick = {
-                        //openDialog.value = false
+                        pickerLauncher.launch()
                     }) {
                     Text("Vybrať")
                 }
@@ -189,7 +211,7 @@ fun PetProps(viewModel: PetDetailViewModel, breeds: List<BreedEntity>, colors: L
     SaveButton() {
        // create new pet
        viewModel.createPet(PetItem(null, name.value, "", pet.petType, null, birthDay.value.toString(), weight.value.toFloat(),
-           color,breed.value?.id as String,""))
+           color,breed.value?.id as String, PetPhoto(null, null, null), arrayListOf()))
     }
 }
 

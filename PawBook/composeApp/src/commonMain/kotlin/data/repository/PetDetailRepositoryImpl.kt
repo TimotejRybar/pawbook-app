@@ -7,6 +7,7 @@ import data.model.entity.ColorEntity
 import data.model.entity.DoctorEntity
 import data.remote.PetApi
 import domain.model.PetItem
+import domain.model.PetPhoto
 import domain.model.result.CreatePetResult
 import domain.repository.PetDetailRepository
 import kotlinx.coroutines.flow.Flow
@@ -35,6 +36,16 @@ class PetDetailRepositoryImpl: PetDetailRepository, KoinComponent {
         emit(Resources.Loading(true))
         try {
             val result = petApi.create(pet)
+            emit(Resources.Success(result))
+        } catch (e: Exception) {
+            emit(Resources.Error("internal_error"))
+        }
+    }
+
+    override fun uploadProfilePicture(pet: PetItem, file: ByteArray?): Flow<Resources<PetPhoto>> = flow {
+        emit(Resources.Loading(true))
+        try {
+            val result = petApi.uploadProfilePhoto(pet.id as String, file)
             emit(Resources.Success(result))
         } catch (e: Exception) {
             emit(Resources.Error("internal_error"))

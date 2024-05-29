@@ -8,5 +8,7 @@ enum class PetDetailState {
     DELETE,
     NO_INTERNET,
     LOADING,
-    ERROR
+    ERROR,
+    UPLOADED_PHOTO,
+    SAVED
 }

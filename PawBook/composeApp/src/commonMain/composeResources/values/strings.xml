@@ -370,4 +370,6 @@
     <string name="continental_bulldog">Kontinentál buldog</string>
     <string name="valencian_terrier">Valencian teriér</string>
     <string name ="search_pet_breed">Vyhľadajte plemeno zvieratka</string>
+    <string name="activity_planning_dialog_title">Plánovanie aktivity</string>
+    <string name="add">Pridať</string>
 </resources>
