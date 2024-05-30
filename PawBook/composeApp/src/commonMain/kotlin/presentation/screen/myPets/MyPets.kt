@@ -13,6 +13,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -21,6 +22,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import data.model.entity.PetEntity
 import domain.model.PetItem
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
@@ -31,7 +33,7 @@ import presentation.screen.petDetail.MyPetsViewModel
 import presentation.theme.colors.LocalAppColors
 
 @Composable
-fun MyPets(viewModel: MyPetsViewModel = koinInject(),  onItemClick: (PetItem) -> Unit) {
+fun MyPets(viewModel: MyPetsViewModel = koinInject(),  onItemClick: (PetEntity) -> Unit) {
     LaunchedEffect(key1 = true){
         viewModel.fetch()
     }
@@ -44,7 +46,7 @@ fun MyPets(viewModel: MyPetsViewModel = koinInject(),  onItemClick: (PetItem) ->
 }
 
 @Composable
-fun Pets(items: List<PetItem>, onItemClick: (PetItem) -> Unit) {
+fun Pets(items: SnapshotStateList<PetEntity>, onItemClick: (PetEntity) -> Unit) {
     items.forEach {
         PetCard(
             petItem = it,
@@ -54,7 +56,7 @@ fun Pets(items: List<PetItem>, onItemClick: (PetItem) -> Unit) {
 }
 
 @Composable
-fun PetCard(petItem: PetItem, onItemClick: (PetItem) -> Unit) {
+fun PetCard(petItem: PetEntity, onItemClick: (PetEntity) -> Unit) {
     Row (horizontalArrangement = Arrangement.Center,
         modifier = Modifier.clickable { onItemClick(petItem) }.padding(16.dp, 16.dp),
         ) {
@@ -65,7 +67,7 @@ fun PetCard(petItem: PetItem, onItemClick: (PetItem) -> Unit) {
             modifier = Modifier.padding(12.dp, 0.dp, 0.dp, 0.dp)
         ) {
             PetName(petItem.name)
-            ShortDescription(petItem.shortDescription)
+            ShortDescription(petItem.shortDescription ?: "")
         }
     }
 }

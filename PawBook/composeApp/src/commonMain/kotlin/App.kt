@@ -3,12 +3,14 @@ import androidx.compose.runtime.Composable
 import core.di.KoinModule
 import data.remote.Preferences
 import data.repository.LoginRepositoryImpl
+import data.repository.PetCalendarRepositoryImpl
 import data.repository.PetDetailRepositoryImpl
 import data.repository.PetsRepoitoryImpl
 import data.repository.RegisterRepositoryImpl
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.dsl.module
 import presentation.screen.calendar.PetCalendarActivityViewModel
+import presentation.screen.calendar.PetCalendarViewModel
 import presentation.screen.login.LoginViewModel
 import presentation.screen.petDetail.MyPetsViewModel
 import presentation.screen.petDetail.PetDetailViewModel
@@ -60,7 +62,10 @@ fun appModule() = module {
     single { KoinModule.provideSettings() }
     single { KoinModule.provideDatabaseSync() }
 
+    single<PetCalendarViewModel> { PetCalendarViewModel() }
     single<PetCalendarActivityViewModel> { PetCalendarActivityViewModel() }
+    single { KoinModule.provideCalendarActivityApi(get()) }
+    single<PetCalendarRepositoryImpl> { PetCalendarRepositoryImpl() }
 }
 
 

@@ -13,6 +13,7 @@ import data.model.entity.DoctorEntity
 import data.repository.PetDetailRepositoryImpl
 import domain.model.PetItem
 import domain.model.enums.PetDetailState
+import io.ktor.http.DEFAULT_PORT
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
@@ -27,6 +28,10 @@ class PetDetailViewModel() : ViewModel(), KoinComponent {
     val state: StateFlow<PetDetailState> = _state
 
     val pet = mutableStateOf(PetItem.empty())
+
+    private val _profilePicture = MutableStateFlow<String>("")
+    val profilePicture: StateFlow<String> = _profilePicture
+
 
     private val _breeds = MutableStateFlow<ArrayList<BreedEntity>>(arrayListOf())
     val breeds: StateFlow<ArrayList<BreedEntity>> = _breeds
@@ -90,7 +95,7 @@ class PetDetailViewModel() : ViewModel(), KoinComponent {
     fun uploadProfilePicture(context: PlatformContext, fileBytes: List<KmpFile>) {
         viewModelScope.launch {
             val file = fileBytes.firstOrNull()?.readByteArray(context)
-            petDetailRepository.uploadProfilePicture(pet.value, file).collect {
+            petDetailRepository.uploadProfilePicture(file).collect {
                 when(it) {
                     is Resources.Error -> {
                         if(it.message == "no_internet") _state.update { PetDetailState.NO_INTERNET }
@@ -100,6 +105,7 @@ class PetDetailViewModel() : ViewModel(), KoinComponent {
                         _state.update { PetDetailState.LOADING }
                     }
                     is Resources.Success -> {
+                        _profilePicture.value = it.data as String
                         _state.update { PetDetailState.UPLOADED_PHOTO }
                     }
                 }

@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import core.common.DatabaseSync
 import core.util.Resources
 import data.repository.PetDetailRepositoryImpl
-import domain.model.enums.PetDetailState
 import domain.model.enums.SplashState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -23,7 +22,7 @@ class SplashViewModel() : ViewModel(), KoinComponent {
 
     fun synchronizeDatabase() {
         viewModelScope.launch {
-            databaseSync.synchronize().collect {
+            databaseSync.synchronizeResources().collect {
                 when(it) {
                     is Resources.Error -> {
                         if(it.message == "no_internet") _state.update { SplashState.NO_INTERNET }

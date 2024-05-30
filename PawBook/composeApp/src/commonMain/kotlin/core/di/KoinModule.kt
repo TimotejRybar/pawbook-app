@@ -5,6 +5,7 @@ import core.common.DatabaseSync
 import data.local.AppDatabase
 import data.local.getDatabase
 import data.remote.BreedApi
+import data.remote.CalendarActivityApi
 import data.remote.ColorApi
 import data.remote.DoctorApi
 import data.remote.LoginApi
@@ -63,6 +64,7 @@ object KoinModule {
     fun provideBreedsApi(ktorfit: Ktorfit): BreedApi = ktorfit.create()
     fun provideDoctorsApi(ktorfit: Ktorfit): DoctorApi = ktorfit.create()
     fun provideColorsApi(ktorfit: Ktorfit): ColorApi = ktorfit.create()
+    fun provideCalendarActivityApi(ktorfit: Ktorfit): CalendarActivityApi = ktorfit.create()
     fun provideSettings(): Settings = Settings()
     fun provideDatabase(): AppDatabase = getDatabase()
     fun provideDatabaseSync(): DatabaseSync = DatabaseSync()

@@ -10,7 +10,7 @@ import kotlinx.datetime.LocalDateTime
 @Entity
 data class CalendarActivityEntity(
     @PrimaryKey val id: String,
-    val pet: PetItem,
+    val pet: List<String>,
     val start: LocalDateTime,
     val end: LocalDateTime,
     val activityType: ActivityType,

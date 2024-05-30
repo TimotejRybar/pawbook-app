@@ -101,7 +101,7 @@ fun PetDetail(pet: PetItem, viewModel: PetDetailViewModel = koinInject(), onSave
         PetInfo(viewModel, pet)
     }
     LaunchedEffect(key1 = true) {
-        viewModel.pet.value.id = "CREATE"
+        viewModel.pet.value._id = "CREATE"
         viewModel.init()
     }
 
@@ -186,12 +186,13 @@ fun PetProps(viewModel: PetDetailViewModel, breeds: List<BreedEntity>, colors: L
     val weight = remember { mutableStateOf("") }
     val now = Clock.System.now()
     val tz = TimeZone.currentSystemDefault()
-    val today = now.toLocalDateTime(tz).date
+    val today = now.toLocalDateTime(tz)
     val birthDay = remember { mutableStateOf(today) }
     val breed = remember { mutableStateOf<BreedEntity?>(null) }
     val gender = remember { mutableStateOf("") }
     val color = remember { mutableStateListOf("") }
     val doctor = remember { mutableStateOf<DoctorEntity?>(null) }
+    val photo by viewModel.profilePicture.collectAsState()
 
     PetPropField(PetPropFieldType.NAME) {
         name.value = it
@@ -216,8 +217,8 @@ fun PetProps(viewModel: PetDetailViewModel, breeds: List<BreedEntity>, colors: L
     Spacer(modifier = Modifier.height(20.dp))
     SaveButton {
        // create new pet
-       viewModel.createPet(PetItem(null, name.value, "", pet.petType, null, birthDay.value.toString(), weight.value.toFloat(),
-           color,breed.value?.id as String, null, arrayListOf()))
+       viewModel.createPet(PetItem(null, name.value, "", pet.petType, null, birthDay.value, weight.value.toFloat(),
+           color,breed.value?.id as String, photo, null, null))
     }
 }
 

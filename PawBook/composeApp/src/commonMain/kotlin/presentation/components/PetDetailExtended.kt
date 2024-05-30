@@ -26,7 +26,7 @@ import domain.model.PetItem
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.InternalResourceApi
 import presentation.theme.colors.LocalAppColors
-import presentation.components.calendar.PetCalendar
+import presentation.screen.calendar.PetCalendar
 import presentation.navbar.Navbar
 import presentation.screen.petDetail.CirclePhoto
 

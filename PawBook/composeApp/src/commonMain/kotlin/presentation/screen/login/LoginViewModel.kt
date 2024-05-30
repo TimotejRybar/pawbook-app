@@ -2,6 +2,7 @@ package presentation.screen.login
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import core.common.DatabaseSync
 import core.util.Resources
 import data.repository.LoginRepositoryImpl
 import domain.model.enums.LoginState
@@ -15,6 +16,7 @@ import org.koin.core.component.inject
 
 class LoginViewModel() : ViewModel(), KoinComponent {
     private val loginRepository: LoginRepositoryImpl by inject()
+    private val databaseSync: DatabaseSync by inject()
 
     private val _state = MutableStateFlow(LoginState.IDLE)
     val state: StateFlow<LoginState> = _state
@@ -22,7 +24,7 @@ class LoginViewModel() : ViewModel(), KoinComponent {
     fun login(email: String, password: String, onLogin: () -> Unit) {
 
         viewModelScope.launch {
-            loginRepository.login(email, password).collect { it ->
+            loginRepository.login(email, password).collect {
                 when(it) {
                     is Resources.Error -> {
                         if(it.message == "no_internet") _state.update { LoginState.NO_INTERNET }
@@ -37,6 +39,14 @@ class LoginViewModel() : ViewModel(), KoinComponent {
                         onLogin()
                     }
                 }
+            }
+        }
+    }
+
+    fun synchronizeAuthenticated() {
+        viewModelScope.launch {
+            databaseSync.synchronizeData().collect {
+
             }
         }
     }

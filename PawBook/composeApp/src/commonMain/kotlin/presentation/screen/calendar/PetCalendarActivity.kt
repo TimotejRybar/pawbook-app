@@ -15,6 +15,7 @@ import androidx.compose.material3.TimePicker
 import androidx.compose.material3.TimePickerDefaults
 import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -22,13 +23,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import core.enums.ActivityType
 import data.model.entity.PetEntity
+import domain.model.CalendarActivity
 import io.ktor.util.date.GMTDate
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.LocalTime
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
 import pawbook.composeapp.generated.resources.Res
+import pawbook.composeapp.generated.resources.activity_duration_type
 import pawbook.composeapp.generated.resources.activity_type
 import pawbook.composeapp.generated.resources.add
 import pawbook.composeapp.generated.resources.description
@@ -44,16 +50,34 @@ import presentation.screen.petDetail.CustomDatePickerDialog
 import presentation.screen.petDetail.Spinner
 import presentation.screen.petDetail.noRippleClickable
 import presentation.theme.colors.LocalAppColors
+import utils.compose.addHours
+import utils.compose.addMinutes
 
+enum class ActivityDuration {
+   // val activityOptions = arrayListOf("15 minút", "30 minút", "1 hodina", "2 hodiny", "4 hodiny", "Celý deň")
+    MINUTES_15,
+    MINUTES_30,
+    HOURS_1,
+    HOURS_2,
+    HOURS_4,
+    HOURS_8
+}
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
 fun PetCalendarActivity (viewModel: PetCalendarActivityViewModel = koinInject(), onSubmit: () -> Unit) {
     val pets = viewModel.pets.collectAsState()
     val selectedPets = remember { mutableListOf<PetEntity>() }
-    val activity = remember { mutableStateOf("") }
+    val activity = remember { mutableStateOf<ActivityType?>(null) }
     val description = remember { mutableStateOf("") }
     val location = remember { mutableStateOf("") }
+    val start = remember { mutableStateOf<LocalDateTime?>(LocalDateTime(LocalDate(1,1,1), LocalTime(1,1))) }
+    val time = remember { mutableStateOf<LocalTime?>(LocalTime(12,0)) }
+    val duration = remember { mutableStateOf<ActivityDuration?>(null) }
+
+    LaunchedEffect(true) {
+        viewModel.loadPets()
+    }
 
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -64,8 +88,16 @@ fun PetCalendarActivity (viewModel: PetCalendarActivityViewModel = koinInject(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Spacer(modifier = Modifier.height(16.dp))
-            DateField()
-            TimeField()
+            DateField() {
+                start.value = LocalDateTime(it, time.value as LocalTime)
+            }
+            TimeField() {
+                time.value = it
+                start.value = LocalDateTime(start.value?.date as LocalDate, time.value as LocalTime)
+            }
+            DurationField {
+                duration.value = it
+            }
             MultiPetInput(pets.value) {
                 selectedPets.clear()
                 selectedPets.addAll(it)
@@ -81,11 +113,41 @@ fun PetCalendarActivity (viewModel: PetCalendarActivityViewModel = koinInject(),
             }
             Spacer(modifier = Modifier.height(20.dp))
             StyledButton(stringResource(Res.string.add)) {
+                viewModel.createActivity(CalendarActivity(null, selectedPets.map { mapPetEntityToDto(it) }, start.value, calculateEnd(start.value, duration.value),  activity.value as ActivityType, location.value, description.value, null, null))
                 onSubmit()
             }
             Spacer(modifier = Modifier.height(16.dp))
         }
     }
+}
+
+fun mapPetEntityToDto(petEntity: PetEntity): String{
+ return petEntity.id
+ //return PetItem(petEntity.id, petEntity.name, petEntity.shortDescription, petEntity.petType, null, petEntity.birthDay, petEntity.weight, petEntity.color, petEntity.breed, petEntity.photo, petEntity.updatedAt, petEntity.createdAt)
+}
+
+fun calculateEnd(value: LocalDateTime?, activityDuration: ActivityDuration?): LocalDateTime? {
+    when(activityDuration){
+        ActivityDuration.MINUTES_15 -> value?.addMinutes(15)
+        ActivityDuration.MINUTES_30 -> value?.addMinutes(30)
+        ActivityDuration.HOURS_1 -> value?.addHours(1)
+        ActivityDuration.HOURS_2 -> value?.addHours(2)
+        ActivityDuration.HOURS_4 -> value?.addHours(4)
+        ActivityDuration.HOURS_8 -> value?.addHours(8)
+        null -> TODO()
+    }
+    return value
+}
+
+@OptIn(ExperimentalResourceApi::class)
+@Composable
+fun DurationField(onSelected: (ActivityDuration) -> Unit) {
+    val activityOptions = arrayListOf("15 minút", "30 minút", "1 hodina", "2 hodiny", "4 hodiny", "Celý deň")
+
+    Spinner(text = stringResource(Res.string.activity_duration_type), options = activityOptions) {
+        onSelected(ActivityDuration.entries[activityOptions.indexOf(it)])
+    }
+
 }
 
 @OptIn(ExperimentalResourceApi::class)
@@ -106,7 +168,7 @@ fun DescriptionField(value: String, onTextChanged: (String) -> Unit) {
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
-fun TimeField() {
+fun TimeField(onSelected: (LocalTime?) -> Unit) {
     val date = remember { mutableStateOf(LocalTime(12,0)) }
     val isOpen = remember { mutableStateOf(false) }
 
@@ -142,6 +204,7 @@ fun TimeField() {
                 if (it != null) {
                     date.value = it
                 }
+                onSelected(it)
             },
             onCancel = {
                 isOpen.value = false
@@ -178,7 +241,7 @@ fun TimePickerDialog(
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
-fun DateField() {
+fun DateField(onSelected: (LocalDate) -> Unit) {
     val date = remember { mutableStateOf(GMTDate()) }
     val isOpen = remember { mutableStateOf(false) }
 
@@ -214,6 +277,7 @@ fun DateField() {
                 if (it != null) { // Set the date
                     date.value = GMTDate(it)
                 }
+                onSelected(LocalDate(date.value.year, date.value.month.ordinal, date.value.dayOfMonth))
             },
             onCancel = {
                 isOpen.value = false //close dialog
@@ -231,9 +295,9 @@ fun MultiPetInput(pets: List<PetEntity>, onPetSelected: (pets: List<PetEntity>) 
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
-fun ActivitySpinner(onSelected: (String) -> Unit) {
+fun ActivitySpinner(onSelected: (ActivityType) -> Unit) {
     val activityOptions = arrayListOf("Vychádzka", "Návšteva veterinára")
     Spinner(text = stringResource(Res.string.activity_type), options = activityOptions) {
-        onSelected(it)
+        onSelected(ActivityType.entries[activityOptions.indexOf(it)])
     }
 }

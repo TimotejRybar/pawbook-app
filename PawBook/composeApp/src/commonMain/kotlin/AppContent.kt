@@ -1,4 +1,5 @@
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
@@ -36,7 +37,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import domain.model.PetItem
 import kotlinx.coroutines.launch
-import presentation.components.calendar.PetCalendar
+import presentation.screen.calendar.PetCalendar
 import presentation.navigation.Navigation
 import presentation.screen.calendar.PetCalendarActivity
 import presentation.screen.login.LoginScreen
@@ -47,7 +48,7 @@ import presentation.screen.splash.Splash
 import presentation.theme.colors.LightThemeAppColors
 import presentation.theme.colors.LocalAppColors
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class)
 @Composable
 fun AppContent(navController: NavHostController = rememberNavController()) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -129,6 +130,7 @@ fun AppContent(navController: NavHostController = rememberNavController()) {
                     },
                     topBar = {
                         AnimatedVisibility(
+                            initiallyVisible = false,
                             visible = topBarState.value,
                             enter = slideInVertically(initialOffsetY = { -it }),
                             exit = slideOutVertically(targetOffsetY = { -it }),

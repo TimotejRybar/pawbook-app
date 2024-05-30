@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "1bc8dfc8b26cbdc45386850fd5749197",
+    "identityHash": "658b118f18f108ed6c64a819502e0a71",
     "entities": [
       {
         "tableName": "BreedEntity",
@@ -165,11 +165,153 @@
             "id"
           ]
         }
+      },
+      {
+        "tableName": "CalendarActivityEntity",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `pet` TEXT NOT NULL, `start` TEXT NOT NULL, `end` TEXT NOT NULL, `activityType` TEXT NOT NULL, `location` TEXT NOT NULL, `description` TEXT NOT NULL, `createdAt` TEXT NOT NULL, `updatedAt` TEXT NOT NULL, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "pet",
+            "columnName": "pet",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "start",
+            "columnName": "start",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "end",
+            "columnName": "end",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "activityType",
+            "columnName": "activityType",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "location",
+            "columnName": "location",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "description",
+            "columnName": "description",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "createdAt",
+            "columnName": "createdAt",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "updatedAt",
+            "columnName": "updatedAt",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        }
+      },
+      {
+        "tableName": "PetEntity",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `petType` TEXT NOT NULL, `name` TEXT NOT NULL, `shortDescription` TEXT, `birthDay` TEXT, `weight` REAL NOT NULL, `color` TEXT NOT NULL, `breed` TEXT NOT NULL, `photo` TEXT NOT NULL, `createdAt` TEXT NOT NULL, `updatedAt` TEXT NOT NULL, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "petType",
+            "columnName": "petType",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "shortDescription",
+            "columnName": "shortDescription",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "birthDay",
+            "columnName": "birthDay",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "weight",
+            "columnName": "weight",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "color",
+            "columnName": "color",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "breed",
+            "columnName": "breed",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "photo",
+            "columnName": "photo",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "createdAt",
+            "columnName": "createdAt",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "updatedAt",
+            "columnName": "updatedAt",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        }
       }
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '1bc8dfc8b26cbdc45386850fd5749197')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '658b118f18f108ed6c64a819502e0a71')"
     ]
   }
 }

@@ -15,5 +15,5 @@ interface PetDetailRepository {
     suspend fun fetchBreeds(): Flow<List<BreedEntity>>
     suspend fun fetchColors(): Flow<List<ColorEntity>>
     suspend fun createPet(pet: PetItem): Flow<Resources<CreatePetResult>>
-    fun uploadProfilePicture(pet: PetItem, file: ByteArray?): Flow<Resources<PetPhoto>>
+    suspend fun uploadProfilePicture(file: ByteArray?): Flow<Resources<String>>
 }

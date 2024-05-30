@@ -1,21 +1,23 @@
 package domain.model
 
 import core.enums.PetType
+import kotlinx.datetime.LocalDateTime
 import kotlinx.serialization.Serializable
 
 @Serializable
 data class PetItem(
-    var id: String?,
+    var _id: String?,
     var name: String,
-    var shortDescription: String,
+    var shortDescription: String?,
     var petType: PetType,
     var owner: String?,
-    val birthday: String,
+    val birthday: LocalDateTime?,
     val weight: Float,
     val color: List<String>,
     val breed: String, // key
-    val photo: PetPhoto?,
-    val gallery: List<PetPhoto>
+    val photo: String,
+    val updatedAt: LocalDateTime?,
+    val createdAt: LocalDateTime?
 ) {
     companion object {
         fun empty(): PetItem {
@@ -25,12 +27,13 @@ data class PetItem(
                 "",
                 PetType.Dog,
                 null,
-                "",
+                null,
                 0f,
                 arrayListOf(),
                 "",
-                PetPhoto(null, null, null),
-                arrayListOf()
+                "",
+                null,
+                null
             )
             return item
         }

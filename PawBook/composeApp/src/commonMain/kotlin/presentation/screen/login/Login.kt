@@ -81,6 +81,7 @@ fun LoginScreen(viewModel: LoginViewModel = koinInject(), onLoginSucces: () -> U
             Logo()
             LogInForm() { username, password ->
                 viewModel.login(username, password) {
+                    viewModel.synchronizeAuthenticated()
                     onLoginSucces()
                 }
             }

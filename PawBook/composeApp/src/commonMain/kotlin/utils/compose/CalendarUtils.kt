@@ -4,9 +4,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.text.intl.Locale
 import core.util.YearMonth
 import kotlinx.datetime.Clock
+import kotlinx.datetime.DateTimePeriod
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.DayOfWeek
 import kotlinx.datetime.LocalDate
+import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.number
 import kotlinx.datetime.plus
@@ -28,6 +30,57 @@ import kotlin.time.ExperimentalTime
 @Composable
 fun DayOfWeek.getDisplayName(): String? {
     return getWeekDayShortName(this, Locale.current)
+}
+
+fun LocalDateTime.addMinutes(minutes: Int): LocalDateTime {
+    var newMinute = this.minute + minutes
+    var newHour = this.hour
+    var newDay = this.dayOfMonth
+    var newMonth = this.monthNumber
+    var newYear = this.year
+
+    // Handle minute overflow
+    if (newMinute >= 60) {
+        newHour += newMinute / 60
+        newMinute %= 60
+    }
+
+    // Handle hour overflow
+    if (newHour >= 24) {
+        newDay += newHour / 24
+        newHour %= 24
+    }
+
+    // Handle day overflow with proper month length handling
+    while (true) {
+        val daysInMonth = getDaysInMonth(newYear, newMonth)
+        if (newDay <= daysInMonth) break
+        newDay -= daysInMonth
+        newMonth++
+        if (newMonth > 12) {
+            newMonth = 1
+            newYear++
+        }
+    }
+
+    return LocalDateTime(newYear, newMonth, newDay, newHour, newMinute, this.second, this.nanosecond)
+}
+
+fun LocalDateTime.addHours(hours: Int): LocalDateTime {
+    return this.addMinutes(hours * 60)
+}
+
+fun getDaysInMonth(year: Int, month: Int): Int {
+    return when (month) {
+        1, 3, 5, 7, 8, 10, 12 -> 31
+        4, 6, 9, 11 -> 30
+        2 -> if (isLeapYear(year)) 29 else 28
+        else -> throw IllegalArgumentException("Invalid month: $month")
+    }
+}
+
+fun isLeapYear(year: Int): Boolean {
+    return (year % 4 == 0 && year % 100 != 0) || (year % 400 == 0)
 }
 
 
