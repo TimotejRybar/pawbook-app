@@ -7,11 +7,13 @@ import data.model.entity.CalendarActivityEntity
 import data.model.entity.ColorEntity
 import data.model.entity.DoctorEntity
 import data.model.entity.PetEntity
+import data.model.entity.PetPhotoEntity
 import data.remote.BreedApi
 import data.remote.CalendarActivityApi
 import data.remote.ColorApi
 import data.remote.DoctorApi
 import data.remote.PetApi
+import data.remote.PetPhotoApi
 import data.repository.NetworkException
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -38,6 +40,7 @@ class DatabaseSync: KoinComponent {
     private val colorApi: ColorApi by inject()
     private val petApi: PetApi by inject()
     private val calendarApi: CalendarActivityApi by inject()
+    private val petPhotoApi: PetPhotoApi by inject()
 
     private val database: AppDatabase by inject()
 
@@ -45,6 +48,7 @@ class DatabaseSync: KoinComponent {
         try {
             val pets = petApi.fetch()
             val calendarActivities = calendarApi.fetch()
+            val petPhotos = petPhotoApi.fetch()
 
             val myPets = pets.pets.map {
                 PetEntity(it._id as String, it.petType, it.name, it.shortDescription, it.birthday, it.weight, it.color, it.breed, it.photo ?: "", it.createdAt as LocalDateTime, it.updatedAt as LocalDateTime)
@@ -54,9 +58,15 @@ class DatabaseSync: KoinComponent {
                 CalendarActivityEntity(it._id as String, it.pets, it.start as LocalDateTime, it.end as LocalDateTime, it.activityType, it.location, it.description, it.createdAt as LocalDateTime, it.updatedAt as LocalDateTime)
             }
 
+            val gallery = petPhotos.gallery.map {
+                PetPhotoEntity(it._id, it.author as String, it.pets, it.description, it.file, it.created, it.updated)
+            }
+
             database.getPetDao().insertAll(myPets)
             database.getCalendarDao().insertAll(activities)
+            database.getPetPhotoDao().insertAll(gallery)
             emit(Resources.Success(""))
+
         } catch (e: Exception) {
             e.printStackTrace()
         }

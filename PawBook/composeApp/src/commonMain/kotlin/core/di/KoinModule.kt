@@ -10,7 +10,7 @@ import data.remote.ColorApi
 import data.remote.DoctorApi
 import data.remote.LoginApi
 import data.remote.PetApi
-import data.remote.Preferences
+import data.local.Preferences
 import de.jensklingenberg.ktorfit.Ktorfit
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.DefaultRequest

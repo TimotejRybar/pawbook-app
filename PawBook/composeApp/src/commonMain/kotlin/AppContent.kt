@@ -35,13 +35,16 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import data.model.entity.PetEntity
 import domain.model.PetItem
 import kotlinx.coroutines.launch
 import presentation.screen.calendar.PetCalendar
 import presentation.navigation.Navigation
 import presentation.screen.calendar.PetCalendarActivity
+import presentation.screen.gallery.Gallery
 import presentation.screen.login.LoginScreen
 import presentation.screen.myPets.MyPets
+import presentation.screen.petDashboard.PetDashboard
 import presentation.screen.petDetail.PetDetail
 import presentation.screen.register.RegisterScreen
 import presentation.screen.splash.Splash
@@ -103,6 +106,8 @@ fun AppContent(navController: NavHostController = rememberNavController()) {
                     AppScreen.Splash -> navController.navigate(AppScreen.Splash.name)
                     AppScreen.Calendar -> navController.navigate(AppScreen.Calendar.name)
                     AppScreen.CalendarActivity -> navController.navigate(AppScreen.CalendarActivity.name)
+                    AppScreen.Gallery -> navController.navigate(AppScreen.Gallery.name)
+                    AppScreen.PetDashboard -> navController.navigate(AppScreen.PetDashboard.name)
                 }
             }) {
                 Scaffold(
@@ -207,6 +212,16 @@ fun AppContent(navController: NavHostController = rememberNavController()) {
                         composable(route = AppScreen.CalendarActivity.name) {
                             PetCalendarActivity() {
                                 navController.navigate(AppScreen.Calendar.name)
+                            }
+                        }
+
+                        composable(route = AppScreen.Gallery.name) {
+                            Gallery(){
+                            }
+                        }
+
+                        composable(route = AppScreen.PetDashboard.name) {
+                            PetDashboard {
                             }
                         }
                     }

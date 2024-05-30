@@ -1,7 +1,6 @@
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import core.di.KoinModule
-import data.remote.Preferences
+import data.local.Preferences
 import data.repository.LoginRepositoryImpl
 import data.repository.PetCalendarRepositoryImpl
 import data.repository.PetDetailRepositoryImpl
@@ -24,7 +23,9 @@ enum class AppScreen() {
     MyPets(),
     Calendar(),
     CalendarActivity,
-    Register()
+    Register(),
+    Gallery(),
+    PetDashboard()
 }
 @Composable
 @Preview

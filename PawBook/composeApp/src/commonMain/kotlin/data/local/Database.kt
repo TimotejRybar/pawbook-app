@@ -12,6 +12,7 @@ import domain.model.Location
 import core.enums.PetType
 import data.model.entity.CalendarActivityEntity
 import data.model.entity.PetEntity
+import data.model.entity.PetPhotoEntity
 import kotlinx.datetime.LocalDateTime
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -21,13 +22,16 @@ import kotlin.jvm.JvmStatic
 expect fun getDatabase(): AppDatabase
 
 @TypeConverters(value = [Converters::class])
-@Database(entities = [BreedEntity::class, ColorEntity::class, DoctorEntity::class, CalendarActivityEntity::class, PetEntity::class], version = 1)
+@Database(entities = [BreedEntity::class, ColorEntity::class,
+    DoctorEntity::class, CalendarActivityEntity::class,
+    PetEntity::class, PetPhotoEntity::class], version = 1)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun getDoctorDao(): DoctorDao
     abstract fun getBreedDao(): BreedDao
     abstract fun getColorDao(): ColorDao
     abstract fun getCalendarDao(): CalendarActivityDao
     abstract fun getPetDao(): PetDao
+    abstract fun getPetPhotoDao(): PetPhotoDao
 }
 
 

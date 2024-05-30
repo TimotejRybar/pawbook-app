@@ -2,7 +2,7 @@ package data.repository
 
 import core.util.Resources
 import data.remote.LoginApi
-import data.remote.Preferences
+import data.local.Preferences
 import domain.model.result.LoginResult
 import domain.model.result.Tokens
 import domain.repository.LoginRepository

@@ -190,7 +190,7 @@ fun ForgotPassword() {
 @OptIn(ExperimentalResourceApi::class)
 @Composable
 fun LogInForm(onLoginSubmit: (username: String, password: String) -> Unit) {
-    val email = remember { mutableStateOf("timotej.rybar@uplab.sk")}
+    val email = remember { mutableStateOf("rybar.timotej@gmail.com")}
     val password = remember { mutableStateOf("lokomotiva21")}
 
     InputField(stringResource(Res.string.email), email.value, InputType.EMAIL){

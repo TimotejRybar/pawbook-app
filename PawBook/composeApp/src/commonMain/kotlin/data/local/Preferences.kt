@@ -1,4 +1,4 @@
-package data.remote
+package data.local
 
 import com.russhwolf.settings.Settings
 import domain.model.result.Tokens
