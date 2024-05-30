@@ -19,6 +19,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDefaults
 import androidx.compose.material3.DatePickerDialog
@@ -153,14 +154,18 @@ fun PetPhoto(viewModel: PetDetailViewModel) {
     }
     if (openDialog.value) {
         AlertDialog(
+            containerColor = LocalAppColors.current.secondary,
             onDismissRequest = {},
             properties = DialogProperties(),
             confirmButton = {
                 Button(
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = LocalAppColors.current.primary
+                    ),
                     onClick = {
                         pickerLauncher.launch()
                     }) {
-                    Text(stringResource(Res.string.select))
+                    Text(color = Color.White, text = stringResource(Res.string.select))
                 }
             },
             icon = {
@@ -170,6 +175,9 @@ fun PetPhoto(viewModel: PetDetailViewModel) {
             text = { Text(stringResource(Res.string.continue_pet_upload_profile_photo)) },
             dismissButton = {
                 Button(
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = LocalAppColors.current.darkGray
+                    ),
                     onClick = {
                         openDialog.value = false
                     }) {
