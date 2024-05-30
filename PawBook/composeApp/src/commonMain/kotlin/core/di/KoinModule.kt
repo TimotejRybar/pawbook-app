@@ -38,7 +38,7 @@ object KoinModule {
         val prefs = Preferences()
         val token = prefs.getAccessToken()
         return Ktorfit.Builder()
-            .baseUrl("http://10.0.2.2:3000/v1/")
+            .baseUrl("https://pawbook.uplab.sk/v1/")
             .httpClient(HttpClient {
                 // install(HttpCache)
                 install(ContentNegotiation)
