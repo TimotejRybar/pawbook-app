@@ -1,12 +1,18 @@
 package presentation.screen.petDashboard
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.KeyboardArrowDown
 import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material3.Icon
@@ -47,25 +53,51 @@ fun PetDashboard(petId: String, viewModel: PetDashboardViewModel = koinInject())
     val petColors by viewModel.petColors.collectAsState()
     val petDoctor by viewModel.petDoctor.collectAsState()
 
-    LaunchedEffect(key1 = true){
+    LaunchedEffect(key1 = true) {
         viewModel.loadPet(petId)
         pet?.color?.let { viewModel.hexColorsToColorEntities(it) }
         pet?.doctor?.let { viewModel.loadDoctor(it) }
     }
+
     Box(
         modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center,
+        contentAlignment = Alignment.Center
     ) {
-        Row {
-            Column {
-                if (pet != null) {
-                        CirclePhoto(pet?.id as String)
-                    PetName(pet?.name as String)
-                    PetBirthday(pet?.birthDay)
-                    PetWeight(pet?.weight)
-                    PetBreed(pet?.breed)
-                    PetGender(pet?.gender as String)
-                    PetColors(petColors)
+        if (pet != null) {
+            Column(
+                modifier = Modifier.padding(16.dp)
+            ) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Start
+                ) {
+                    CirclePhoto(pet?.id as String)
+                    Column(
+                        modifier = Modifier.padding(start = 16.dp)
+                    ) {
+                        Row {
+                            PetName(pet?.name as String)
+                            Icon(
+                                modifier = Modifier.size(24.dp),
+                                imageVector = Icons.Rounded.Add,
+                                contentDescription = "arrow",
+                                tint = Color.Black
+                            )
+                        }
+                        PetBirthday(pet?.birthDay)
+                        PetWeight(pet?.weight)
+                        PetColors(petColors)
+                    }
+                }
+                Spacer(modifier = Modifier.height(16.dp))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Column {
+                        PetBreed(pet?.breed)
+                        PetGender(pet?.gender as String)
+                    }
                     PetDoctor(petDoctor)
                 }
             }
@@ -127,12 +159,12 @@ fun CirclePhoto(photoURL: String) {
         contentDescription = "Pet photo",
         contentScale = ContentScale.Crop,
         modifier = Modifier
-            .size(60.dp)
+            .size(150.dp)
             .clip(CircleShape)
     )
 }
 
 @Composable
 fun PetName(name: String) {
-    Text(name, color = LocalAppColors.current.primary, fontSize = 14.sp, textDecoration = TextDecoration.Underline)
+    Text(name, color = LocalAppColors.current.primary, fontSize = 32.sp, textDecoration = TextDecoration.Underline)
 }

@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "0d4c7a0ec1c5b7b05f55617b2e5bae86",
+    "identityHash": "cef005b37059ec3615eaefef3cb9b09b",
     "entities": [
       {
         "tableName": "BreedEntity",
@@ -234,7 +234,7 @@
       },
       {
         "tableName": "PetEntity",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `petType` TEXT NOT NULL, `name` TEXT NOT NULL, `shortDescription` TEXT, `birthDay` TEXT, `weight` REAL NOT NULL, `color` TEXT NOT NULL, `breed` TEXT NOT NULL, `photo` TEXT NOT NULL, `createdAt` TEXT NOT NULL, `updatedAt` TEXT NOT NULL, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `petType` TEXT NOT NULL, `name` TEXT NOT NULL, `shortDescription` TEXT, `gender` TEXT NOT NULL, `birthDay` TEXT, `weight` REAL NOT NULL, `color` TEXT NOT NULL, `breed` TEXT NOT NULL, `doctor` TEXT, `photo` TEXT, `createdAt` TEXT NOT NULL, `updatedAt` TEXT NOT NULL, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -260,6 +260,12 @@
             "affinity": "TEXT"
           },
           {
+            "fieldPath": "gender",
+            "columnName": "gender",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
             "fieldPath": "birthDay",
             "columnName": "birthDay",
             "affinity": "TEXT"
@@ -283,10 +289,14 @@
             "notNull": true
           },
           {
+            "fieldPath": "doctor",
+            "columnName": "doctor",
+            "affinity": "TEXT"
+          },
+          {
             "fieldPath": "photo",
             "columnName": "photo",
-            "affinity": "TEXT",
-            "notNull": true
+            "affinity": "TEXT"
           },
           {
             "fieldPath": "createdAt",
@@ -362,7 +372,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '0d4c7a0ec1c5b7b05f55617b2e5bae86')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'cef005b37059ec3615eaefef3cb9b09b')"
     ]
   }
 }

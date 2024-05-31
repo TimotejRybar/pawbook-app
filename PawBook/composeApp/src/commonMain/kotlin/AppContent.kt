@@ -59,6 +59,7 @@ fun AppContent(navController: NavHostController = rememberNavController()) {
     val topBarState = rememberSaveable { mutableStateOf(false) }
     val selectedPet = remember { mutableStateOf<PetEntity?>(null) }
 
+    // TODO
     val routeToLabelMap = mapOf(
         AppScreen.Splash.name to "Načítavam",
         AppScreen.Login.name to "Prihlásenie",
@@ -70,7 +71,7 @@ fun AppContent(navController: NavHostController = rememberNavController()) {
         AppScreen.PetDashboard.name to "Detail zvieratka"
     )
 
-    val currentRoute = navBackStackEntry?.destination?.route
+    val currentRoute = navBackStackEntry?.destination?.route?.substringBefore("/")
     val label = remember(currentRoute) { mutableStateOf(routeToLabelMap[currentRoute] ?: "Unknown") }
 
     when (navBackStackEntry?.destination?.route) {
