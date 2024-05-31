@@ -4,6 +4,7 @@ import core.util.Resources
 import data.model.entity.BreedEntity
 import data.model.entity.ColorEntity
 import data.model.entity.DoctorEntity
+import data.model.entity.PetEntity
 import domain.model.PetItem
 import domain.model.PetPhoto
 import domain.model.result.CreatePetResult
@@ -15,5 +16,7 @@ interface PetDetailRepository {
     suspend fun fetchBreeds(): Flow<List<BreedEntity>>
     suspend fun fetchColors(): Flow<List<ColorEntity>>
     suspend fun createPet(pet: PetItem): Flow<Resources<CreatePetResult>>
-    suspend fun uploadProfilePicture(file: ByteArray?): Flow<Resources<String>>
+    suspend fun uploadProfilePicture(petId: String, file: ByteArray?): Flow<Resources<String>>
+    suspend fun loadPetDoctor(petEntity: PetEntity): Flow<DoctorEntity>
+    suspend fun loadPetColors(petEntity: PetEntity): Flow<List<ColorEntity>>
 }

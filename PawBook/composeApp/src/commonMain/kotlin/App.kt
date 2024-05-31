@@ -3,6 +3,7 @@ import core.di.KoinModule
 import data.local.Preferences
 import data.repository.LoginRepositoryImpl
 import data.repository.PetCalendarRepositoryImpl
+import data.repository.PetDashboardRepositoryImpl
 import data.repository.PetDetailRepositoryImpl
 import data.repository.PetsRepoitoryImpl
 import data.repository.RegisterRepositoryImpl
@@ -11,6 +12,7 @@ import org.koin.dsl.module
 import presentation.screen.calendar.PetCalendarActivityViewModel
 import presentation.screen.calendar.PetCalendarViewModel
 import presentation.screen.login.LoginViewModel
+import presentation.screen.petDashboard.PetDashboardViewModel
 import presentation.screen.petDetail.MyPetsViewModel
 import presentation.screen.petDetail.PetDetailViewModel
 import presentation.screen.register.RegisterViewModel
@@ -19,13 +21,17 @@ import presentation.screen.splash.SplashViewModel
 enum class AppScreen() {
     Splash(),
     Login(),
-    PetDetail(),
+    PetEdit(),
     MyPets(),
     Calendar(),
     CalendarActivity,
     Register(),
     Gallery(),
-    PetDashboard()
+    PetDashboard();
+
+    companion object {
+        fun petDashboardRoute(petId: String) = "PetDashboard/$petId"
+    }
 }
 @Composable
 @Preview
@@ -67,6 +73,11 @@ fun appModule() = module {
     single<PetCalendarActivityViewModel> { PetCalendarActivityViewModel() }
     single { KoinModule.provideCalendarActivityApi(get()) }
     single<PetCalendarRepositoryImpl> { PetCalendarRepositoryImpl() }
+
+    single { KoinModule.provideGalleryApi(get()) }
+
+    single<PetDashboardRepositoryImpl> { PetDashboardRepositoryImpl() }
+    single<PetDashboardViewModel> { PetDashboardViewModel() }
 }
 
 

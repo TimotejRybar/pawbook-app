@@ -5,9 +5,11 @@ import data.local.AppDatabase
 import data.model.entity.BreedEntity
 import data.model.entity.ColorEntity
 import data.model.entity.DoctorEntity
+import data.model.entity.PetEntity
 import data.remote.PetApi
 import domain.model.PetItem
 import domain.model.PetPhoto
+import domain.model.result.CreatePetPhotoResult
 import domain.model.result.CreatePetResult
 import domain.repository.PetDetailRepository
 import io.kamel.core.utils.File
@@ -22,6 +24,7 @@ import io.ktor.utils.io.core.readBytes
 import io.ktor.utils.io.core.use
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.serialization.json.Json
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import pawbook.composeapp.generated.resources.Res
@@ -53,7 +56,7 @@ class PetDetailRepositoryImpl: PetDetailRepository, KoinComponent {
         }
     }
 
-    override suspend fun uploadProfilePicture(file: ByteArray?): Flow<Resources<String>> = flow {
+    override suspend fun uploadProfilePicture(petId: String, file: ByteArray?): Flow<Resources<String>> = flow {
         emit(Resources.Loading(true))
         try {
             val multipart = MultiPartFormDataContent(formData {
@@ -64,11 +67,19 @@ class PetDetailRepositoryImpl: PetDetailRepository, KoinComponent {
                 })
             })
 
-            val result = petApi.uploadProfilePhoto(multipart) // Update to pass multipart directly
-            emit(Resources.Success(result))
+            val result =  Json.decodeFromString<CreatePetPhotoResult>(petApi.uploadProfilePhoto(petId, multipart) as String)
+            emit(Resources.Success(result.photo))
         } catch (e: Exception) {
             emit(Resources.Error("internal_error"))
         }
+    }
+
+    override suspend fun loadPetDoctor(petEntity: PetEntity): Flow<DoctorEntity> {
+        return database.getDoctorDao().getById(petEntity.doctor.toString())
+    }
+
+    override suspend fun loadPetColors(petEntity: PetEntity): Flow<List<ColorEntity>> {
+        return database.getColorDao().getFromHexStrings(petEntity.color)
     }
 
 }

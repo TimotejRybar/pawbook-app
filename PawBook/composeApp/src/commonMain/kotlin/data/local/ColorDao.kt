@@ -14,4 +14,7 @@ interface ColorDao {
 
     @Query("SELECT * FROM ColorEntity")
     fun getAllAsFlow(): Flow<List<ColorEntity>>
+
+    @Query("SELECT * FROM ColorEntity WHERE color IN (:hexColors)")
+    fun getFromHexStrings(hexColors: List<String>): Flow<List<ColorEntity>>
 }

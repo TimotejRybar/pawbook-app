@@ -10,10 +10,10 @@ import core.util.Resources
 import data.model.entity.BreedEntity
 import data.model.entity.ColorEntity
 import data.model.entity.DoctorEntity
+import data.model.entity.PetEntity
 import data.repository.PetDetailRepositoryImpl
 import domain.model.PetItem
 import domain.model.enums.PetDetailState
-import io.ktor.http.DEFAULT_PORT
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
@@ -41,6 +41,13 @@ class PetDetailViewModel() : ViewModel(), KoinComponent {
 
     private val _colors = MutableStateFlow<ArrayList<ColorEntity>>(arrayListOf())
     val colors: StateFlow<ArrayList<ColorEntity>> = _colors
+
+    private val _petColors = MutableStateFlow<ArrayList<ColorEntity>>(arrayListOf())
+    val petColors: StateFlow<ArrayList<ColorEntity>> = _petColors
+
+    private val _petDoctor = MutableStateFlow<DoctorEntity?>(null)
+    val petDoctor: StateFlow<DoctorEntity?> = _petDoctor
+
 
     fun init() {
         fetchBreeds()
@@ -73,6 +80,23 @@ class PetDetailViewModel() : ViewModel(), KoinComponent {
         }
     }
 
+    fun loadPetDoctor(petEntity: PetEntity) {
+        viewModelScope.launch {
+            petDetailRepository.loadPetDoctor(petEntity).collect {
+                _petDoctor.value = it
+            }
+        }
+    }
+
+    fun loadPetColors(petEntity: PetEntity) {
+        viewModelScope.launch {
+            petDetailRepository.loadPetColors(petEntity).collect {
+                _petColors.value.clear()
+                _petColors.value.addAll(it)
+            }
+        }
+    }
+
     fun createPet(pet: PetItem) {
         viewModelScope.launch {
             petDetailRepository.createPet(pet).collect {
@@ -92,10 +116,10 @@ class PetDetailViewModel() : ViewModel(), KoinComponent {
         }
     }
 
-    fun uploadProfilePicture(context: PlatformContext, fileBytes: List<KmpFile>) {
+    fun uploadProfilePicture(context: PlatformContext, pet: PetEntity?, fileBytes: List<KmpFile>) {
         viewModelScope.launch {
             val file = fileBytes.firstOrNull()?.readByteArray(context)
-            petDetailRepository.uploadProfilePicture(file).collect {
+            petDetailRepository.uploadProfilePicture(pet?.id as String, file).collect {
                 when(it) {
                     is Resources.Error -> {
                         if(it.message == "no_internet") _state.update { PetDetailState.NO_INTERNET }
@@ -105,7 +129,7 @@ class PetDetailViewModel() : ViewModel(), KoinComponent {
                         _state.update { PetDetailState.LOADING }
                     }
                     is Resources.Success -> {
-                        _profilePicture.value = it.data as String
+                        _profilePicture.value = it.data ?: ""
                         _state.update { PetDetailState.UPLOADED_PHOTO }
                     }
                 }

@@ -1,5 +1,6 @@
 package domain.model
 
+import core.enums.Gender
 import core.enums.PetType
 import kotlinx.datetime.LocalDateTime
 import kotlinx.serialization.Serializable
@@ -12,10 +13,12 @@ data class PetItem(
     var petType: PetType,
     var owner: String?,
     val birthday: LocalDateTime?,
+    val gender: String,
     val weight: Float,
     val color: List<String>,
     val breed: String, // key
-    val photo: String,
+    val doctor: String?, // ID
+    val photo: String?,
     val updatedAt: LocalDateTime?,
     val createdAt: LocalDateTime?
 ) {
@@ -28,10 +31,12 @@ data class PetItem(
                 PetType.Dog,
                 null,
                 null,
+                Gender.BOY.value,
                 0f,
                 arrayListOf(),
                 "",
-                "",
+                null,
+                null,
                 null,
                 null
             )

@@ -31,12 +31,13 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import data.model.entity.PetEntity
-import domain.model.PetItem
 import kotlinx.coroutines.launch
 import presentation.screen.calendar.PetCalendar
 import presentation.navigation.Navigation
@@ -56,16 +57,17 @@ import presentation.theme.colors.LocalAppColors
 fun AppContent(navController: NavHostController = rememberNavController()) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val topBarState = rememberSaveable { mutableStateOf(false) }
-    val selectedPet = remember { mutableStateOf(PetItem.empty()) }
+    val selectedPet = remember { mutableStateOf<PetEntity?>(null) }
 
     val routeToLabelMap = mapOf(
         AppScreen.Splash.name to "Načítavam",
         AppScreen.Login.name to "Prihlásenie",
         AppScreen.Register.name to "Registrácia",
         AppScreen.MyPets.name to "Moje zvieratká",
-        AppScreen.PetDetail.name to "Detail zvieratka",
+        AppScreen.PetEdit.name to "Nové zvieratko",
         AppScreen.Calendar.name to "Kalendár",
-        AppScreen.CalendarActivity.name to "Plánovanie aktivity"
+        AppScreen.CalendarActivity.name to "Plánovanie aktivity",
+        AppScreen.PetDashboard.name to "Detail zvieratka"
     )
 
     val currentRoute = navBackStackEntry?.destination?.route
@@ -100,14 +102,14 @@ fun AppContent(navController: NavHostController = rememberNavController()) {
             Navigation(drawerState, onNavigate = {
                 when (it) {
                     AppScreen.Login -> navController.navigate(AppScreen.Login.name)
-                    AppScreen.PetDetail -> navController.navigate(AppScreen.PetDetail.name)
+                    AppScreen.PetEdit -> navController.navigate(AppScreen.PetEdit.name)
                     AppScreen.MyPets -> navController.navigate(AppScreen.MyPets.name)
                     AppScreen.Register -> navController.navigate(AppScreen.Register.name)
                     AppScreen.Splash -> navController.navigate(AppScreen.Splash.name)
                     AppScreen.Calendar -> navController.navigate(AppScreen.Calendar.name)
                     AppScreen.CalendarActivity -> navController.navigate(AppScreen.CalendarActivity.name)
                     AppScreen.Gallery -> navController.navigate(AppScreen.Gallery.name)
-                    AppScreen.PetDashboard -> navController.navigate(AppScreen.PetDashboard.name)
+                    AppScreen.PetDashboard -> navController.navigate(AppScreen.petDashboardRoute(petId = selectedPet.value?.id ?: ""))
                 }
             }) {
                 Scaffold(
@@ -117,7 +119,7 @@ fun AppContent(navController: NavHostController = rememberNavController()) {
                                 shape = CircleShape,
                                 contentColor = LocalAppColors.current.secondary,
                                 onClick = {
-                                    navController.navigate(AppScreen.PetDetail.name)
+                                    navController.navigate(AppScreen.PetEdit.name)
                                 }) {
                                 Icon(Icons.Filled.Add, "")
                             }
@@ -195,11 +197,12 @@ fun AppContent(navController: NavHostController = rememberNavController()) {
 
                         composable(route = AppScreen.MyPets.name) {
                             MyPets(onItemClick = {
-                                navController.navigate(AppScreen.PetDetail.name)
+                                selectedPet.value = it
+                                navController.navigate(AppScreen.petDashboardRoute(it.id))
                             })
                         }
 
-                        composable(route = AppScreen.PetDetail.name) {
+                        composable(route = AppScreen.PetEdit.name) {
                             PetDetail(selectedPet.value, onSaved = {
                                 navController.navigate(AppScreen.Login.name)
                             })
@@ -220,9 +223,12 @@ fun AppContent(navController: NavHostController = rememberNavController()) {
                             }
                         }
 
-                        composable(route = AppScreen.PetDashboard.name) {
-                            PetDashboard {
-                            }
+                        composable(
+                            route = "PetDashboard/{petId}",
+                            arguments = listOf(navArgument("petId") { type = NavType.StringType })
+                        ) { backStackEntry ->
+                            val petId = backStackEntry.arguments?.getString("petId") ?: return@composable
+                            PetDashboard(petId = petId)
                         }
                     }
                 }

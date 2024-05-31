@@ -48,23 +48,23 @@ class DatabaseSync: KoinComponent {
         try {
             val pets = petApi.fetch()
             val calendarActivities = calendarApi.fetch()
-            val petPhotos = petPhotoApi.fetch()
+            //val petPhotos = petPhotoApi.fetch()
 
             val myPets = pets.pets.map {
-                PetEntity(it._id as String, it.petType, it.name, it.shortDescription, it.birthday, it.weight, it.color, it.breed, it.photo ?: "", it.createdAt as LocalDateTime, it.updatedAt as LocalDateTime)
+                PetEntity(it._id as String, it.petType, it.name, it.shortDescription, it.gender, it.birthday, it.weight, it.color, it.breed, it.doctor,it.photo ?: "", it.createdAt as LocalDateTime, it.updatedAt as LocalDateTime)
             }
 
             val activities = calendarActivities.calendar.map {
                 CalendarActivityEntity(it._id as String, it.pets, it.start as LocalDateTime, it.end as LocalDateTime, it.activityType, it.location, it.description, it.createdAt as LocalDateTime, it.updatedAt as LocalDateTime)
             }
 
-            val gallery = petPhotos.gallery.map {
-                PetPhotoEntity(it._id, it.author as String, it.pets, it.description, it.file, it.created, it.updated)
-            }
+            //val gallery = petPhotos.gallery.map {
+            //    PetPhotoEntity(it._id, it.author as String, it.pets, it.description, it.file, it.created, it.updated)
+            //}
 
             database.getPetDao().insertAll(myPets)
             database.getCalendarDao().insertAll(activities)
-            database.getPetPhotoDao().insertAll(gallery)
+            //database.getPetPhotoDao().insertAll(gallery)
             emit(Resources.Success(""))
 
         } catch (e: Exception) {

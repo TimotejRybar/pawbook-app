@@ -11,6 +11,7 @@ import data.remote.DoctorApi
 import data.remote.LoginApi
 import data.remote.PetApi
 import data.local.Preferences
+import data.remote.PetPhotoApi
 import de.jensklingenberg.ktorfit.Ktorfit
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.DefaultRequest
@@ -64,6 +65,7 @@ object KoinModule {
     fun provideBreedsApi(ktorfit: Ktorfit): BreedApi = ktorfit.create()
     fun provideDoctorsApi(ktorfit: Ktorfit): DoctorApi = ktorfit.create()
     fun provideColorsApi(ktorfit: Ktorfit): ColorApi = ktorfit.create()
+    fun provideGalleryApi(ktorfit: Ktorfit): PetPhotoApi = ktorfit.create()
     fun provideCalendarActivityApi(ktorfit: Ktorfit): CalendarActivityApi = ktorfit.create()
     fun provideSettings(): Settings = Settings()
     fun provideDatabase(): AppDatabase = getDatabase()

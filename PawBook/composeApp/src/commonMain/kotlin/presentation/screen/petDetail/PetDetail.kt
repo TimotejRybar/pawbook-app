@@ -39,27 +39,35 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
+import coil3.compose.rememberAsyncImagePainter
 import com.mohamedrejeb.calf.core.LocalPlatformContext
+import com.mohamedrejeb.calf.io.readByteArray
 import com.mohamedrejeb.calf.picker.FilePickerFileType
 import com.mohamedrejeb.calf.picker.FilePickerSelectionMode
 import com.mohamedrejeb.calf.picker.rememberFilePickerLauncher
+import core.enums.Gender
+import core.enums.PetType
 import data.model.entity.BreedEntity
 import data.model.entity.ColorEntity
 import data.model.entity.DoctorEntity
+import data.model.entity.PetEntity
 import domain.model.PetItem
 import domain.model.enums.PetDetailState
 import io.ktor.util.date.GMTDate
 import domain.model.enums.PetPropFieldType
+import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
@@ -71,7 +79,9 @@ import pawbook.composeapp.generated.resources.Res
 import pawbook.composeapp.generated.resources.breed
 import pawbook.composeapp.generated.resources.continue_pet_upload_profile_photo
 import pawbook.composeapp.generated.resources.doctor
+import pawbook.composeapp.generated.resources.female
 import pawbook.composeapp.generated.resources.gender
+import pawbook.composeapp.generated.resources.male
 import pawbook.composeapp.generated.resources.save
 import pawbook.composeapp.generated.resources.search_doctor
 import pawbook.composeapp.generated.resources.search_pet_breed
@@ -86,9 +96,18 @@ import presentation.screen.login.StyledButton
 import utils.compose.PetPropFieldUtils
 
 @Composable
-fun PetDetail(pet: PetItem, viewModel: PetDetailViewModel = koinInject(), onSaved: () -> Unit) {
+fun PetDetail(pet: PetEntity?, viewModel: PetDetailViewModel = koinInject(), onSaved: () -> Unit) {
 
     val state by viewModel.state.collectAsState()
+
+    LaunchedEffect(true){
+        if(state == PetDetailState.EDIT) {
+            if (pet != null) {
+                viewModel.loadPetColors(pet)
+                viewModel.loadPetDoctor(pet)
+            }
+        }
+    }
 
     LaunchedEffect(state == PetDetailState.SAVED) {
         if(state == PetDetailState.SAVED)
@@ -105,15 +124,15 @@ fun PetDetail(pet: PetItem, viewModel: PetDetailViewModel = koinInject(), onSave
         viewModel.pet.value._id = "CREATE"
         viewModel.init()
     }
-
-
 }
 
 @Composable
-fun PetInfo(viewModel: PetDetailViewModel, pet: PetItem) {
+fun PetInfo(viewModel: PetDetailViewModel, pet: PetEntity?) {
     val breeds by viewModel.breeds.collectAsState()
     val doctors by viewModel.doctors.collectAsState()
     val colors by viewModel.colors.collectAsState()
+    val petColors by viewModel.petColors.collectAsState()
+    val petDoctor by viewModel.petDoctor.collectAsState()
 
     Row(verticalAlignment = Alignment.CenterVertically) {
         Column(
@@ -121,8 +140,8 @@ fun PetInfo(viewModel: PetDetailViewModel, pet: PetItem) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Spacer(modifier = Modifier.height(50.dp))
-            PetPhoto(viewModel)
-            PetProps(viewModel, breeds, colors, doctors, pet)
+            PetPhoto(viewModel, pet)
+            PetProps(viewModel, breeds, colors, doctors, pet, petColors, petDoctor)
             Spacer(modifier = Modifier.height(20.dp))
         }
     }
@@ -138,18 +157,25 @@ fun SaveButton(onFormSubmit: () -> Unit) {
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
-fun PetPhoto(viewModel: PetDetailViewModel) {
+fun PetPhoto(viewModel: PetDetailViewModel, pet: PetEntity?) {
     val openDialog = remember { mutableStateOf(false) }
+    val currentPhoto = remember { mutableStateOf("") }
+    val currentPhotoFile = remember { mutableStateOf<ByteArray?>(null) }
+    val localScope = rememberCoroutineScope()
 
     val context = LocalPlatformContext.current
     val pickerLauncher = rememberFilePickerLauncher(
             type = FilePickerFileType.Image,
     selectionMode = FilePickerSelectionMode.Single,
     onResult = { files ->
-            viewModel.uploadProfilePicture(context, files)
+            viewModel.uploadProfilePicture(context, pet, files)
+            localScope.launch {
+                currentPhoto.value = "local"
+                currentPhotoFile.value = files[0].readByteArray(context)
+            }
         })
 
-    CirclePhoto {
+    CirclePhoto(currentPhotoFile.value, currentPhoto.value) {
         openDialog.value = true
     }
     if (openDialog.value) {
@@ -189,7 +215,15 @@ fun PetPhoto(viewModel: PetDetailViewModel) {
 }
 
 @Composable
-fun PetProps(viewModel: PetDetailViewModel, breeds: List<BreedEntity>, colors: List<ColorEntity>, doctors: List<DoctorEntity>, pet: PetItem) {
+fun PetProps(
+    viewModel: PetDetailViewModel,
+    breeds: List<BreedEntity>,
+    colors: List<ColorEntity>,
+    doctors: List<DoctorEntity>,
+    pet: PetEntity?,
+    petColors: ArrayList<ColorEntity>,
+    petDoctor: DoctorEntity?
+) {
     val name = remember { mutableStateOf("") }
     val weight = remember { mutableStateOf("") }
     val now = Clock.System.now()
@@ -197,7 +231,7 @@ fun PetProps(viewModel: PetDetailViewModel, breeds: List<BreedEntity>, colors: L
     val today = now.toLocalDateTime(tz)
     val birthDay = remember { mutableStateOf(today) }
     val breed = remember { mutableStateOf<BreedEntity?>(null) }
-    val gender = remember { mutableStateOf("") }
+    val gender = remember { mutableStateOf<Gender?>(null) }
     val color = remember { mutableStateListOf("") }
     val doctor = remember { mutableStateOf<DoctorEntity?>(null) }
     val photo by viewModel.profilePicture.collectAsState()
@@ -209,7 +243,7 @@ fun PetProps(viewModel: PetDetailViewModel, breeds: List<BreedEntity>, colors: L
     PetPropField(PetPropFieldType.WEIGHT) {
         weight.value = it
     }
-    ColorSpinner(colors) { it1 ->
+    ColorSpinner(pet, petColors, colors) { it1 ->
         color.clear()
         color.addAll(it1.map{it.color})
     }
@@ -225,8 +259,8 @@ fun PetProps(viewModel: PetDetailViewModel, breeds: List<BreedEntity>, colors: L
     Spacer(modifier = Modifier.height(20.dp))
     SaveButton {
        // create new pet
-       viewModel.createPet(PetItem(null, name.value, "", pet.petType, null, birthDay.value, weight.value.toFloat(),
-           color,breed.value?.id as String, photo, null, null))
+       viewModel.createPet(PetItem(null, name.value, "", PetType.Dog, null, birthDay.value, (gender.value as Gender).value,weight.value.toFloat(),
+           color, breed.value?.id as String, doctor.value?.id, photo, null, null))
     }
 }
 
@@ -239,18 +273,20 @@ fun DoctorSpinner(doctors: List<DoctorEntity>, onSelected: (DoctorEntity) -> Uni
 }
 
 @Composable
-fun ColorSpinner(colors: List<ColorEntity>, onColorSelected: (colors: List<ColorEntity>) -> Unit) {
-    ColorField("Farba zvieratka", colors) {
-        onColorSelected(colors)
+fun ColorSpinner(pet: PetEntity?, defaultColors: List<ColorEntity>, availableColors: List<ColorEntity>, onColorSelected: (colors: List<ColorEntity>) -> Unit) {
+    ColorField("Farba zvieratka", defaultColors, availableColors) {
+        onColorSelected(availableColors)
     }
 }
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
-fun GenderSpinner(onSelected: (String) -> Unit) {
-    val genderOptions = arrayListOf("Pes", "Fenka")
+fun GenderSpinner(onSelected: (Gender) -> Unit) {
+    val genderOptions = arrayListOf(stringResource(Res.string.male), stringResource(Res.string.female))
     Spinner(text = stringResource(Res.string.gender), options = genderOptions) {
-        onSelected(it)
+        val option = genderOptions.find{ option -> it == option }
+        val gender = if(option == genderOptions[0]) Gender.BOY else Gender.GIRL
+        onSelected(gender)
     }
 }
 
@@ -369,9 +405,17 @@ fun DatePropField() {
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
-fun CirclePhoto(onClick: () -> Unit) {
+fun CirclePhoto(imageData: ByteArray?, imageUrl: String?, onClick: () -> Unit) {
+    val painter: Painter = if (imageData != null) {
+        rememberAsyncImagePainter(model = imageData)
+    } else if (imageUrl != null) {
+        rememberAsyncImagePainter(model = imageUrl)
+    } else {
+        painterResource(Res.drawable.sofka) // Replace with your placeholder resource
+    }
+
     Image(
-        painter = painterResource(Res.drawable.sofka),
+        painter = painter,
         contentDescription = "Pet photo",
         contentScale = ContentScale.Crop,
         modifier = Modifier

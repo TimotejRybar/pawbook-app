@@ -14,4 +14,7 @@ interface PetDao {
 
     @Query("SELECT * FROM PetEntity")
     fun getAllAsFlow(): Flow<List<PetEntity>>
+
+    @Query("SELECT * FROM PetEntity WHERE id=:petId")
+    fun getById(petId: String): Flow<PetEntity>
 }

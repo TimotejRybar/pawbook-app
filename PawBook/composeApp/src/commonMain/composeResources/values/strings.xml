@@ -397,4 +397,7 @@
     <string name="location">Miesto</string>
     <string name="activity_type">Typ aktivity</string>
     <string name="activity_duration_type">Vyberte dĺžku aktivity</string>
+    <string name="weight_unit">kg</string>
+    <string name="male">Pes</string>
+    <string name="female">Fenka</string>
 </resources>

@@ -4,4 +4,4 @@ import domain.model.PetPhoto
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class CreatePetPhotoResult(val petPhoto: PetPhoto)
+data class CreatePetPhotoResult(val message: String, val photo: String)

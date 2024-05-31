@@ -14,4 +14,7 @@ interface DoctorDao {
 
     @Query("SELECT * FROM DoctorEntity")
     fun getAllAsFlow(): Flow<List<DoctorEntity>>
+
+    @Query("SELECT * FROM DoctorEntity WHERE id=:doctorId")
+    fun getById(doctorId: String): Flow<DoctorEntity>
 }

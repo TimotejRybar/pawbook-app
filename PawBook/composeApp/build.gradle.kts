@@ -97,6 +97,12 @@ kotlin {
             //implementation(libs.sqldelight.coroutines.extensions)
             implementation("com.mohamedrejeb.calf:calf-file-picker:0.4.0")
             implementation("media.kamel:kamel-image:0.9.4")
+            implementation(libs.ktor.core)
+            implementation(libs.coil.compose.core)
+            implementation(libs.coil.compose)
+            implementation(libs.coil.mp)
+            implementation(libs.coil.network.ktor)
+
         }
 
         sqldelight {

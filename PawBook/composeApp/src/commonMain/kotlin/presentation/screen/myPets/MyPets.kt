@@ -41,7 +41,9 @@ fun MyPets(viewModel: MyPetsViewModel = koinInject(),  onItemClick: (PetEntity) 
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.CenterStart,
     ) {
-        Pets(items = viewModel.pets, onItemClick)
+        Pets(items = viewModel.pets){
+            onItemClick(it)
+        }
     }
 }
 

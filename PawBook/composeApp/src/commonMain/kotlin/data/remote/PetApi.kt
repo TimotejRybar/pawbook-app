@@ -25,6 +25,6 @@ interface PetApi
     @POST("pets")
     suspend fun create(@Body pet: PetItem): CreatePetResult
 
-    @POST("pets/uploadProfilePhoto")
-    suspend fun uploadProfilePhoto(@Body file: MultiPartFormDataContent): String?
+    @POST("pets/uploadProfilePhoto/{petId}")
+    suspend fun uploadProfilePhoto(@Path("petId") petId: String, @Body file: MultiPartFormDataContent): String?
 }

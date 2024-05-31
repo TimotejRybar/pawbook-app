@@ -22,7 +22,9 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
+import core.common.Config
 import domain.model.PetItem
+import io.kamel.image.asyncPainterResource
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.InternalResourceApi
 import presentation.theme.colors.LocalAppColors
@@ -48,7 +50,7 @@ fun PetInfoExtended(petItem: PetItem) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Navbar()
-            PetPhoto()
+            PetPhoto(petItem._id as String)
             PetName(petItem.name)
             Spacer(modifier = Modifier.height(20.dp))
             PetQuestions()
@@ -89,9 +91,9 @@ fun PetQuestions() {
 }
 
 @Composable
-fun PetPhoto() {
+fun PetPhoto(petId: String) {
     var openDialog = remember { mutableStateOf(true) }
-    CirclePhoto() {
+    CirclePhoto(null, petId) {
         openDialog.value = true
     }
     if (openDialog.value) {

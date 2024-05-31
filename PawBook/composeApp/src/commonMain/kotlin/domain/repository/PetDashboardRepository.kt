@@ -1,8 +1,12 @@
 package domain.repository
 
+import data.model.entity.ColorEntity
 import data.model.entity.DoctorEntity
+import data.model.entity.PetEntity
 import kotlinx.coroutines.flow.Flow
 
 interface PetDashboardRepository {
-    suspend fun fetchDoctors(): Flow<List<DoctorEntity>>
+    suspend fun loadColors(hexColors: List<String>): Flow<List<ColorEntity>>
+    suspend fun loadDoctor(doctorId: String): Flow<DoctorEntity>
+    suspend fun loadPet(petId: String): Flow<PetEntity>
 }

@@ -12,11 +12,14 @@ data class PetEntity(
     val petType: PetType,
     val name: String,
     val shortDescription: String?,
+    val gender: String,
     val birthDay: LocalDateTime?,
     val weight: Float,
     val color: List<String>,
     val breed: String,
-    val photo: String,
+    val doctor: String?,
+    val photo: String?,
     val createdAt: LocalDateTime,
     val updatedAt: LocalDateTime
 )
+

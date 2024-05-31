@@ -11,6 +11,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -28,10 +29,35 @@ import presentation.components.color.colorPicker.ColorPicker
 import presentation.theme.colors.LocalAppColors
 
 @Composable
-fun ColorField(title: String, availableColors: List<ColorEntity>, onColorSelected: (List<ColorEntity>) -> Unit) {
+fun ColorFieldReadOnly(title: String, defaultColors: List<ColorEntity>) {
+    val colors = remember { mutableStateListOf<ColorEntity>() }
+
+    LaunchedEffect(true){
+        colors.clear()
+        colors.addAll(defaultColors)
+    }
+
+    Title(title)
+    Row(
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        colors.forEach { petColor ->
+            ColorCircle(petColor, 24.dp, true, false) { color: ColorEntity, selected: Boolean ->
+            }
+        }
+    }
+}
+
+@Composable
+fun ColorField(title: String, defaultColors: List<ColorEntity>, availableColors: List<ColorEntity>, onColorSelected: (List<ColorEntity>) -> Unit) {
     var showDialog by remember { mutableStateOf(false) }
     val colors = remember { mutableStateListOf<ColorEntity>() }
     val newColors = remember { mutableStateListOf<ColorEntity>() }
+
+    LaunchedEffect(true){
+        colors.clear()
+        colors.addAll(defaultColors)
+    }
 
     presentation.components.petField.Title(title)
     Row(
