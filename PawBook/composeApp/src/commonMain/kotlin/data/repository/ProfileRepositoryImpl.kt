@@ -1,5 +1,6 @@
 package data.repository
 
+import com.mohamedrejeb.calf.core.PlatformContext
 import core.util.Resources
 import data.local.AppDatabase
 import data.local.Preferences
@@ -58,5 +59,13 @@ class ProfileRepositoryImpl: ProfileRepository, KoinComponent {
             emit(Resources.Error("internal_error"))
             e.printStackTrace()
         }
+    }
+
+    override fun isUserProfilePhotoUploaded(): Boolean {
+        return preferences.isUserProfilePhotoUploaded()
+    }
+
+    override fun setUserProfilePhotoUploaded(value: Boolean) {
+        preferences.setUserProfilePhotoUploaded(value)
     }
 }

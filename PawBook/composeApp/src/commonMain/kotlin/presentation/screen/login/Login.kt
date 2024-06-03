@@ -38,7 +38,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -59,7 +58,6 @@ import pawbook.composeapp.generated.resources.forgot_password
 import pawbook.composeapp.generated.resources.hide_password
 import pawbook.composeapp.generated.resources.invalid_email_or_password
 import pawbook.composeapp.generated.resources.login
-import pawbook.composeapp.generated.resources.login_with_google
 import pawbook.composeapp.generated.resources.pawbook_logo
 import pawbook.composeapp.generated.resources.show_password
 import presentation.components.loading.LoadingAnimation
@@ -128,7 +126,7 @@ fun LoginScreen(viewModel: LoginViewModel = koinInject(), onLoginSucces: () -> U
 @OptIn(ExperimentalResourceApi::class)
 @Composable
 fun LogInSocial() {
-    StyledButton(stringResource(Res.string.login_with_google)) {
+    StyledButton(stringResource(Res.string.login_with_facebook)) {
     }
 }
 

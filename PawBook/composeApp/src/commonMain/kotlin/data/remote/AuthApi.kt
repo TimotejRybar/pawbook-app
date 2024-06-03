@@ -1,5 +1,6 @@
 package data.remote
 
+import de.jensklingenberg.ktorfit.http.Body
 import de.jensklingenberg.ktorfit.http.Field
 import de.jensklingenberg.ktorfit.http.FormUrlEncoded
 import de.jensklingenberg.ktorfit.http.POST
@@ -17,10 +18,8 @@ interface AuthApi
     @FormUrlEncoded
     @POST("auth/register")
     suspend fun register(@Field name: String, @Field password: String,
-                         @Field email: String, @Field social: String,
-                         @Field birthday: LocalDateTime, @Field city: String): RegisterResult
+                         @Field email: String, @Field social: String): RegisterResult
 
-    @FormUrlEncoded
     @POST("auth/updateProfile")
-    fun updateProfile(profile: User)
+    fun updateProfile(@Body profile: User)
 }

@@ -57,6 +57,14 @@ class ProfileViewModel: ViewModel(), KoinComponent {
         }
     }
 
+    fun setUserProfilePhotoAsUploaded() {
+        profileRepository.setUserProfilePhotoUploaded(true)
+    }
+
+    fun isUserProfilePhotoUploaded(): Boolean {
+        return profileRepository.isUserProfilePhotoUploaded()
+    }
+
     fun uploadProfilePicture(
         context: PlatformContext,
         profile: User?,

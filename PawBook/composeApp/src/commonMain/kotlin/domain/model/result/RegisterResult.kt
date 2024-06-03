@@ -18,8 +18,8 @@ data class User(
     val role: String,
     val isEmailVerified: Boolean,
     val id: String,
-    val birthDay: LocalDateTime,
-    val city: String
+    val birthDay: LocalDateTime?,
+    val city: String?
 )
 
 @Serializable

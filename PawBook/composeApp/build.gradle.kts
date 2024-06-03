@@ -67,6 +67,7 @@ kotlin {
             implementation("com.revenuecat.purchases:purchases-ui:7.5.2")
             implementation(libs.androidx.room.paging)
             implementation(libs.sqldelight.android.driver)
+            
         }
 
 

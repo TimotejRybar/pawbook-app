@@ -379,7 +379,7 @@
     <string name="try_again">Skúsiť znovu</string>
     <string name="invalid_email_or_password">Neplatný e-mail alebo heslo</string>
     <string name="dont_have_an_account">Ešte nemáte účet?</string>
-    <string name="login_with_google">Prihlásiť cez Google</string>
+    <string name="login_with_facebook">Prihlásiť cez Facebook</string>
     <string name="create_account">Vytvoriť účet</string>
     <string name="forgot_password">Zabudnuté heslo</string>
     <string name="email">E-mail</string>
@@ -413,4 +413,7 @@
     <string name="birthday">Dátum narodenia</string>
     <string name="city">Obec</string>
     <string name="confirm">Potvrdiť</string>
+    <string name="profile">Profil</string>
+    <string name="contact">Kontakt</string>
+    <string name="cancel">Zrušiť</string>
 </resources>

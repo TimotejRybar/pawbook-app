@@ -77,6 +77,7 @@ import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
 import pawbook.composeapp.generated.resources.Res
 import pawbook.composeapp.generated.resources.breed
+import pawbook.composeapp.generated.resources.cancel
 import pawbook.composeapp.generated.resources.continue_pet_upload_profile_photo
 import pawbook.composeapp.generated.resources.doctor
 import pawbook.composeapp.generated.resources.female
@@ -207,7 +208,7 @@ fun PetPhoto(viewModel: PetDetailViewModel, pet: PetEntity?) {
                     onClick = {
                         openDialog.value = false
                     }) {
-                    Text("Zrušiť")
+                    Text(stringResource(Res.string.cancel))
                 }
             }
         )
@@ -427,7 +428,7 @@ fun CirclePhoto(imageData: ByteArray? = null, imageUrl: String? = null, onClick:
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalResourceApi::class)
 @Composable
 fun CustomDatePickerDialog(
     onAccept: (Long?) -> Unit,
@@ -445,7 +446,7 @@ fun CustomDatePickerDialog(
         },
         dismissButton = {
             Button(onClick = onCancel) {
-                Text("Cancel")
+                Text(stringResource(Res.string.cancel))
             }
         }
     ) {

@@ -42,8 +42,10 @@ import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.stringResource
 import pawbook.composeapp.generated.resources.Res
+import pawbook.composeapp.generated.resources.contact
 import pawbook.composeapp.generated.resources.loading
 import pawbook.composeapp.generated.resources.login
+import pawbook.composeapp.generated.resources.profile
 import pawbook.composeapp.generated.resources.screen_calendar
 import pawbook.composeapp.generated.resources.screen_calendar_activity
 import pawbook.composeapp.generated.resources.screen_home
@@ -55,12 +57,14 @@ import pawbook.composeapp.generated.resources.screen_register
 import presentation.screen.calendar.PetCalendar
 import presentation.navigation.Navigation
 import presentation.screen.calendar.PetCalendarActivity
+import presentation.screen.contact.Contact
 import presentation.screen.gallery.Gallery
 import presentation.screen.home.Home
 import presentation.screen.login.LoginScreen
 import presentation.screen.myPets.MyPets
 import presentation.screen.petDashboard.PetDashboard
 import presentation.screen.petDetail.PetDetail
+import presentation.screen.profile.Profile
 import presentation.screen.register.RegisterScreen
 import presentation.screen.splash.Splash
 import presentation.theme.colors.LightThemeAppColors
@@ -84,7 +88,9 @@ fun AppContent(navController: NavHostController = rememberNavController()) {
         AppScreen.Calendar.name to stringResource(Res.string.screen_calendar),
         AppScreen.CalendarActivity.name to stringResource(Res.string.screen_calendar_activity),
         AppScreen.PetDashboard.name to stringResource(Res.string.screen_pet_dashboard),
-        AppScreen.Home.name to stringResource(Res.string.screen_home)
+        AppScreen.Home.name to stringResource(Res.string.screen_home),
+        AppScreen.Profile.name to stringResource(Res.string.profile),
+        AppScreen.Contact.name to stringResource(Res.string.contact)
     )
 
     val currentRoute = navBackStackEntry?.destination?.route?.substringBefore("/")
@@ -128,6 +134,8 @@ fun AppContent(navController: NavHostController = rememberNavController()) {
                     AppScreen.Gallery -> navController.navigate(AppScreen.Gallery.name)
                     AppScreen.PetDashboard -> navController.navigate(AppScreen.petDashboardRoute(petId = selectedPet.value?.id ?: ""))
                     AppScreen.Home -> navController.navigate(AppScreen.Home.name)
+                    AppScreen.Profile -> navController.navigate(AppScreen.Profile.name)
+                    AppScreen.Contact -> navController.navigate(AppScreen.Contact.name)
                 }
             }) {
                 Scaffold(
@@ -251,6 +259,14 @@ fun AppContent(navController: NavHostController = rememberNavController()) {
 
                         composable(route = AppScreen.Home.name) {
                             Home()
+                        }
+
+                        composable(route = AppScreen.Profile.name) {
+                            Profile()
+                        }
+
+                        composable(route = AppScreen.Contact.name) {
+                            Contact()
                         }
                     }
                 }

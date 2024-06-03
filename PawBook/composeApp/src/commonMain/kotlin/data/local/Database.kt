@@ -24,7 +24,7 @@ expect fun getDatabase(): AppDatabase
 @TypeConverters(value = [Converters::class])
 @Database(entities = [BreedEntity::class, ColorEntity::class,
     DoctorEntity::class, CalendarActivityEntity::class,
-    PetEntity::class, PetPhotoEntity::class, CityEntity::class], version = 1)
+    PetEntity::class, PetPhotoEntity::class], version = 1)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun getDoctorDao(): DoctorDao
     abstract fun getBreedDao(): BreedDao
@@ -32,8 +32,6 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun getCalendarDao(): CalendarActivityDao
     abstract fun getPetDao(): PetDao
     abstract fun getPetPhotoDao(): PetPhotoDao
-    abstract fun getCityDao(): CityDao
-
 }
 
 

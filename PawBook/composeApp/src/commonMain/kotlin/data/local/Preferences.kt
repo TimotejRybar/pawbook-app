@@ -29,4 +29,12 @@ class Preferences() : KoinComponent {
     fun getAccessToken(): String {
         return settings.getString("access_token", "")
     }
+
+    fun setUserProfilePhotoUploaded(value: Boolean) {
+        settings.putBoolean("user_profile_photo_uploaded", value)
+    }
+
+    fun isUserProfilePhotoUploaded(): Boolean {
+        return settings.getBoolean("user_profile_photo_uploaded", false)
+    }
 }
