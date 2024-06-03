@@ -11,11 +11,14 @@ import org.koin.core.component.inject
 class Preferences() : KoinComponent {
     private val settings: Settings by inject()
 
-    fun saveUser(user: User, tokens: Tokens) {
-        settings.putString("access_token", tokens.access.token)
-        settings.putString("access_token_expires",  tokens.access.expires.toString())
-        settings.putString("refresh_token", tokens.access.token)
-        settings.putString("refresh_token_expires",  tokens.access.expires.toString())
+    fun saveUser(user: User, tokens: Tokens? = null
+    ) {
+        if(tokens != null) {
+            settings.putString("access_token", tokens.access.token)
+            settings.putString("access_token_expires", tokens.access.expires.toString())
+            settings.putString("refresh_token", tokens.access.token)
+            settings.putString("refresh_token_expires", tokens.access.expires.toString())
+        }
         settings.putString("user", Json.encodeToString(user))
     }
 

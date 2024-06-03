@@ -2,7 +2,7 @@ package data.repository
 
 import core.enums.SocialLogin
 import core.util.Resources
-import data.remote.LoginApi
+import data.remote.AuthApi
 import data.local.Preferences
 import domain.model.result.RegisterResult
 import domain.model.result.Tokens
@@ -15,12 +15,12 @@ import org.koin.core.component.inject
 
 class RegisterRepositoryImpl : RegisterRepository, KoinComponent {
 
-    private val loginApi: LoginApi by inject()
+    private val authApi: AuthApi by inject()
     private val preferences: Preferences by inject()
 
     override suspend fun register(name: String, password: String, email: String): Flow<Resources<RegisterResult>> = flow {
         emit(Resources.Loading(true))
-        val registerResult = loginApi.register(name, password, email, SocialLogin.none.name)
+        val registerResult = authApi.register(name, password, email, SocialLogin.none.name)
         preferences.saveUser(registerResult.user as User, registerResult.accessAndRefreshTokens as Tokens)
         emit(Resources.Success(registerResult))
     }

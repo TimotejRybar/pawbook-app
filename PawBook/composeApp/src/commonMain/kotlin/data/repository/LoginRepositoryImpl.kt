@@ -1,7 +1,7 @@
 package data.repository
 
 import core.util.Resources
-import data.remote.LoginApi
+import data.remote.AuthApi
 import data.local.Preferences
 import domain.model.result.LoginResult
 import domain.model.result.Tokens
@@ -14,13 +14,13 @@ import org.koin.core.component.inject
 class LoginRepositoryImpl : LoginRepository, KoinComponent {
     private val ERROR_INVALID_LOGIN = "Incorrect email or password"
 
-    private val loginApi: LoginApi by inject()
+    private val authApi: AuthApi by inject()
     private val preferences: Preferences by inject()
 
     override suspend fun login(email: String, password: String): Flow<Resources<LoginResult>> = flow {
         emit(Resources.Loading(true))
         try {
-            val loginResult = loginApi.login(email, password)
+            val loginResult = authApi.login(email, password)
             if (loginResult.message == ERROR_INVALID_LOGIN) emit(Resources.Error("invalid_login"))
             else {
                 if(loginResult.user != null) {

@@ -239,7 +239,9 @@ fun PetProps(
     PetPropField(PetPropFieldType.NAME) {
         name.value = it
     }
-    DatePropField()
+    DatePropField(PetPropFieldUtils.getPropFieldText(PetPropFieldType.BIRTH)) {
+        // TODO
+    }
     PetPropField(PetPropFieldType.WEIGHT) {
         weight.value = it
     }
@@ -359,14 +361,13 @@ fun validateField(petPropFieldType: PetPropFieldType, it: String): Boolean {
 }
 
 @Composable
-fun DatePropField() {
-    val text = PetPropFieldUtils.getPropFieldText(PetPropFieldType.BIRTH)
+fun DatePropField(title: String, onDateSelected: (date: GMTDate) -> Unit) {
     val date = remember { mutableStateOf(GMTDate()) }
     val isOpen = remember { mutableStateOf(false) }
 
     TextField(
         label = {
-            Text(text, color = Color.Black)
+            Text(title, color = Color.Black)
         },
         value = (date.value.dayOfMonth.toString() + ". " + date.value.month.toString() + " " +  date.value.year.toString()),
         enabled = false,
@@ -395,6 +396,7 @@ fun DatePropField() {
 
                 if (it != null) { // Set the date
                     date.value = GMTDate(it)
+                    onDateSelected(date.value)
                 }
             },
             onCancel = {
@@ -405,7 +407,7 @@ fun DatePropField() {
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
-fun CirclePhoto(imageData: ByteArray?, imageUrl: String?, onClick: () -> Unit) {
+fun CirclePhoto(imageData: ByteArray? = null, imageUrl: String? = null, onClick: () -> Unit) {
     val painter: Painter = if (imageData != null) {
         rememberAsyncImagePainter(model = imageData)
     } else if (imageUrl != null) {

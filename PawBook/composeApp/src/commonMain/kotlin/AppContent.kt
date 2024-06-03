@@ -39,10 +39,24 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import data.model.entity.PetEntity
 import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.ExperimentalResourceApi
+import org.jetbrains.compose.resources.stringResource
+import pawbook.composeapp.generated.resources.Res
+import pawbook.composeapp.generated.resources.loading
+import pawbook.composeapp.generated.resources.login
+import pawbook.composeapp.generated.resources.screen_calendar
+import pawbook.composeapp.generated.resources.screen_calendar_activity
+import pawbook.composeapp.generated.resources.screen_home
+import pawbook.composeapp.generated.resources.screen_login
+import pawbook.composeapp.generated.resources.screen_my_pets
+import pawbook.composeapp.generated.resources.screen_pet_dashboard
+import pawbook.composeapp.generated.resources.screen_pet_edit
+import pawbook.composeapp.generated.resources.screen_register
 import presentation.screen.calendar.PetCalendar
 import presentation.navigation.Navigation
 import presentation.screen.calendar.PetCalendarActivity
 import presentation.screen.gallery.Gallery
+import presentation.screen.home.Home
 import presentation.screen.login.LoginScreen
 import presentation.screen.myPets.MyPets
 import presentation.screen.petDashboard.PetDashboard
@@ -52,23 +66,25 @@ import presentation.screen.splash.Splash
 import presentation.theme.colors.LightThemeAppColors
 import presentation.theme.colors.LocalAppColors
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class,
+    ExperimentalResourceApi::class
+)
 @Composable
 fun AppContent(navController: NavHostController = rememberNavController()) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val topBarState = rememberSaveable { mutableStateOf(false) }
     val selectedPet = remember { mutableStateOf<PetEntity?>(null) }
 
-    // TODO
     val routeToLabelMap = mapOf(
-        AppScreen.Splash.name to "Načítavam",
-        AppScreen.Login.name to "Prihlásenie",
-        AppScreen.Register.name to "Registrácia",
-        AppScreen.MyPets.name to "Moje zvieratká",
-        AppScreen.PetEdit.name to "Nové zvieratko",
-        AppScreen.Calendar.name to "Kalendár",
-        AppScreen.CalendarActivity.name to "Plánovanie aktivity",
-        AppScreen.PetDashboard.name to "Detail zvieratka"
+        AppScreen.Splash.name to stringResource(Res.string.loading),
+        AppScreen.Login.name to stringResource(Res.string.screen_login),
+        AppScreen.Register.name to stringResource(Res.string.screen_register),
+        AppScreen.MyPets.name to stringResource(Res.string.screen_my_pets),
+        AppScreen.PetEdit.name to stringResource(Res.string.screen_pet_edit),
+        AppScreen.Calendar.name to stringResource(Res.string.screen_calendar),
+        AppScreen.CalendarActivity.name to stringResource(Res.string.screen_calendar_activity),
+        AppScreen.PetDashboard.name to stringResource(Res.string.screen_pet_dashboard),
+        AppScreen.Home.name to stringResource(Res.string.screen_home)
     )
 
     val currentRoute = navBackStackEntry?.destination?.route?.substringBefore("/")
@@ -111,6 +127,7 @@ fun AppContent(navController: NavHostController = rememberNavController()) {
                     AppScreen.CalendarActivity -> navController.navigate(AppScreen.CalendarActivity.name)
                     AppScreen.Gallery -> navController.navigate(AppScreen.Gallery.name)
                     AppScreen.PetDashboard -> navController.navigate(AppScreen.petDashboardRoute(petId = selectedPet.value?.id ?: ""))
+                    AppScreen.Home -> navController.navigate(AppScreen.Home.name)
                 }
             }) {
                 Scaffold(
@@ -230,6 +247,10 @@ fun AppContent(navController: NavHostController = rememberNavController()) {
                         ) { backStackEntry ->
                             val petId = backStackEntry.arguments?.getString("petId") ?: return@composable
                             PetDashboard(petId = petId)
+                        }
+
+                        composable(route = AppScreen.Home.name) {
+                            Home()
                         }
                     }
                 }

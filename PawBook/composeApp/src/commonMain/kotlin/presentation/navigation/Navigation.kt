@@ -22,7 +22,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.ExperimentalResourceApi
+import org.jetbrains.compose.resources.stringResource
+import pawbook.composeapp.generated.resources.Res
+import pawbook.composeapp.generated.resources.app_name
+import pawbook.composeapp.generated.resources.screen_calendar
+import pawbook.composeapp.generated.resources.screen_home
+import pawbook.composeapp.generated.resources.screen_my_pets
 
+@OptIn(ExperimentalResourceApi::class)
 @Composable
 fun Navigation(
     drawerState: DrawerState,
@@ -39,13 +47,23 @@ fun Navigation(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text("Pawbook", modifier = Modifier.padding(start = 16.dp))
+                    Text(stringResource(Res.string.app_name), modifier = Modifier.padding(start = 16.dp))
                     Spacer(modifier = Modifier.weight(1f))
                     CloseButton(onClose = { scope.launch { drawerState.close() } })
                 }
                 HorizontalDivider()
                 NavigationDrawerItem(
-                    label = { Text(text = "Moje zvieratká") },
+                    label = { Text(text = stringResource(Res.string.screen_home)) },
+                    selected = false,
+                    onClick = {
+                        scope.launch {
+                            drawerState.close()
+                        }
+                        onNavigate(AppScreen.Home)
+                    }
+                )
+                NavigationDrawerItem(
+                    label = { Text(text = stringResource(Res.string.screen_my_pets))  },
                     selected = false,
                     onClick = {
                         scope.launch {
@@ -55,7 +73,7 @@ fun Navigation(
                     }
                 )
                 NavigationDrawerItem(
-                    label = { Text(text = "Kalendár") },
+                    label = { Text(text = stringResource(Res.string.screen_calendar)) },
                     selected = false,
                     onClick = {
                         scope.launch {

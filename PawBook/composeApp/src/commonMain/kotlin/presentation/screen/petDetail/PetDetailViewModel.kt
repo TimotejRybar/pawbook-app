@@ -29,9 +29,8 @@ class PetDetailViewModel() : ViewModel(), KoinComponent {
 
     val pet = mutableStateOf(PetItem.empty())
 
-    private val _profilePicture = MutableStateFlow<String>("")
+    private val _profilePicture = MutableStateFlow("")
     val profilePicture: StateFlow<String> = _profilePicture
-
 
     private val _breeds = MutableStateFlow<ArrayList<BreedEntity>>(arrayListOf())
     val breeds: StateFlow<ArrayList<BreedEntity>> = _breeds

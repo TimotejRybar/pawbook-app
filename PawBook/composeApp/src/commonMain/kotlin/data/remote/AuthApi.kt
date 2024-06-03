@@ -5,8 +5,10 @@ import de.jensklingenberg.ktorfit.http.FormUrlEncoded
 import de.jensklingenberg.ktorfit.http.POST
 import domain.model.result.LoginResult
 import domain.model.result.RegisterResult
+import domain.model.result.User
+import kotlinx.datetime.LocalDateTime
 
-interface LoginApi
+interface AuthApi
 {
     @FormUrlEncoded
     @POST("auth/login")
@@ -14,6 +16,11 @@ interface LoginApi
 
     @FormUrlEncoded
     @POST("auth/register")
-    suspend fun register(@Field name: String, @Field password: String, @Field email: String, @Field social: String): RegisterResult
+    suspend fun register(@Field name: String, @Field password: String,
+                         @Field email: String, @Field social: String,
+                         @Field birthday: LocalDateTime, @Field city: String): RegisterResult
 
+    @FormUrlEncoded
+    @POST("auth/updateProfile")
+    fun updateProfile(profile: User)
 }

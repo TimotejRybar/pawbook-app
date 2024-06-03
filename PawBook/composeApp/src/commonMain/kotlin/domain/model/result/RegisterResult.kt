@@ -17,7 +17,9 @@ data class User(
     val social: String,
     val role: String,
     val isEmailVerified: Boolean,
-    val id: String
+    val id: String,
+    val birthDay: LocalDateTime,
+    val city: String
 )
 
 @Serializable

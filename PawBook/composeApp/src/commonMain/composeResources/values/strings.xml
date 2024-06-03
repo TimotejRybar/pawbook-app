@@ -400,4 +400,17 @@
     <string name="weight_unit">kg</string>
     <string name="male">Pes</string>
     <string name="female">Fenka</string>
+    <string name="loading">Načítavam</string>
+    <string name="screen_login">Prihlásenie</string>
+    <string name="screen_register">Registrácia</string>
+    <string name="screen_my_pets">Moje zvieratká</string>
+    <string name="screen_pet_edit">Nové zvieratko</string>
+    <string name="screen_calendar">Kalendár</string>
+    <string name="screen_calendar_activity">Plánovanie aktivity</string>
+    <string name="screen_pet_dashboard">Detail zvieratka</string>
+    <string name="screen_home">Domov</string>
+    <string name="my_name">Moje meno</string>
+    <string name="birthday">Dátum narodenia</string>
+    <string name="city">Obec</string>
+    <string name="confirm">Potvrdiť</string>
 </resources>

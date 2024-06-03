@@ -6,15 +6,18 @@ import data.repository.PetCalendarRepositoryImpl
 import data.repository.PetDashboardRepositoryImpl
 import data.repository.PetDetailRepositoryImpl
 import data.repository.PetsRepoitoryImpl
+import data.repository.ProfileRepositoryImpl
 import data.repository.RegisterRepositoryImpl
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.dsl.module
 import presentation.screen.calendar.PetCalendarActivityViewModel
 import presentation.screen.calendar.PetCalendarViewModel
+import presentation.screen.home.HomeViewModel
 import presentation.screen.login.LoginViewModel
 import presentation.screen.petDashboard.PetDashboardViewModel
 import presentation.screen.petDetail.MyPetsViewModel
 import presentation.screen.petDetail.PetDetailViewModel
+import presentation.screen.profile.ProfileViewModel
 import presentation.screen.register.RegisterViewModel
 import presentation.screen.splash.SplashViewModel
 
@@ -27,7 +30,8 @@ enum class AppScreen() {
     CalendarActivity,
     Register(),
     Gallery(),
-    PetDashboard();
+    PetDashboard(),
+    Home();
 
     companion object {
         fun petDashboardRoute(petId: String) = "PetDashboard/$petId"
@@ -78,6 +82,9 @@ fun appModule() = module {
 
     single<PetDashboardRepositoryImpl> { PetDashboardRepositoryImpl() }
     single<PetDashboardViewModel> { PetDashboardViewModel() }
+
+    single<ProfileViewModel> { ProfileViewModel() }
+    single<ProfileRepositoryImpl> { ProfileRepositoryImpl()}
 }
 
 

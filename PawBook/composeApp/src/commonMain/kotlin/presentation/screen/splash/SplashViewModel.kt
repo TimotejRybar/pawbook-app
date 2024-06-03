@@ -14,7 +14,6 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
 class SplashViewModel() : ViewModel(), KoinComponent {
-    private val petDetailRepository: PetDetailRepositoryImpl by inject()
     private val databaseSync: DatabaseSync by inject()
 
     private val _state = MutableStateFlow(SplashState.IDLE)

@@ -7,13 +7,12 @@ import data.model.entity.CalendarActivityEntity
 import data.model.entity.ColorEntity
 import data.model.entity.DoctorEntity
 import data.model.entity.PetEntity
-import data.model.entity.PetPhotoEntity
 import data.remote.BreedApi
 import data.remote.CalendarActivityApi
 import data.remote.ColorApi
 import data.remote.DoctorApi
 import data.remote.PetApi
-import data.remote.PetPhotoApi
+import data.remote.StorageApi
 import data.repository.NetworkException
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -40,7 +39,7 @@ class DatabaseSync: KoinComponent {
     private val colorApi: ColorApi by inject()
     private val petApi: PetApi by inject()
     private val calendarApi: CalendarActivityApi by inject()
-    private val petPhotoApi: PetPhotoApi by inject()
+    private val storageApi: StorageApi by inject()
 
     private val database: AppDatabase by inject()
 
@@ -79,6 +78,7 @@ class DatabaseSync: KoinComponent {
             val breeds = breedApi.fetch()
             val colors = colorApi.fetch()
             val doctors = doctorApi.fetch()
+
             // update db
             val petBreeds = breeds.breeds.map {
                 BreedEntity(it._id, it.petType, it.name, it.key, it.updatedAt, it.createdAt)
