@@ -10,12 +10,25 @@ androidx-core-ktx = "1.13.1"
 androidx-espresso-core = "3.5.1"
 androidx-material = "1.12.0"
 androidx-test-junit = "1.1.5"
+calfFilePicker = "0.4.0"
 compose = "1.6.7"
 compose-plugin = "1.6.2"
+fontAwesome = "1.1.0"
 junit = "4.13.2"
+kamelImage = "0.9.4"
+koinCompose = "1.1.5"
+koinCore = "3.5.6"
 kotlin = "1.9.23"
 junitKtx = "1.1.5"
 kotest = "5.8.1"
+kotlinxCoroutinesCore = "1.8.1-Beta"
+kotlinxDatetime = "0.5.0"
+kotlinxSerializationJson = "1.6.3"
+ktorfitLib = "1.13.0"
+lifecycleViewmodel = "2.7.0"
+multiplatformSettingsNoArg = "1.1.1"
+navigationCompose = "2.8.0-alpha01"
+purchases = "7.5.2"
 turbine = "1.1.0"
 ktor = "2.3.10"
 roomKtx = "2.7.0-alpha02"
@@ -25,6 +38,16 @@ coil3 = "3.0.0-alpha06"
 
 
 [libraries]
+androidx-lifecycle-viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel", version.ref = "lifecycleViewmodel" }
+androidx-ui-test-junit4 = { module = "androidx.compose.ui:ui-test-junit4", version.ref = "compose" }
+androidx-ui-test-manifest = { module = "androidx.compose.ui:ui-test-manifest", version.ref = "compose" }
+calf-file-picker = { module = "com.mohamedrejeb.calf:calf-file-picker", version.ref = "calfFilePicker" }
+font-awesome = { module = "br.com.devsrsouza.compose.icons:font-awesome", version.ref = "fontAwesome" }
+kamel-image = { module = "media.kamel:kamel-image", version.ref = "kamelImage" }
+koin-android = { module = "io.insert-koin:koin-android", version.ref = "koinCore" }
+koin-androidx-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koinCore" }
+koin-compose = { module = "io.insert-koin:koin-compose", version.ref = "koinCompose" }
+koin-core = { module = "io.insert-koin:koin-core", version.ref = "koinCore" }
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -39,6 +62,12 @@ compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling", version.ref = 
 compose-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview", version.ref = "compose" }
 androidx-junit-ktx = { group = "androidx.test.ext", name = "junit-ktx", version.ref = "junitKtx" }
 
+kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutinesCore" }
+kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinxDatetime" }
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
+ktor-client-android = { module = "io.ktor:ktor-client-android", version.ref = "ktor" }
+ktor-client-json = { module = "io.ktor:ktor-client-json", version.ref = "ktor" }
+ktor-client-serialization = { module = "io.ktor:ktor-client-serialization", version.ref = "ktor" }
 ktor-darwin-ios = { module = "io.ktor:ktor-client-darwin", version.ref = "ktor" }
 ktor-ios = { module = "io.ktor:ktor-client-ios", version.ref = "ktor" }
 ktor-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor" }
@@ -54,6 +83,12 @@ coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", ve
 kotest-framework-engine = { module = "io.kotest:kotest-framework-engine", version.ref = "kotest" }
 kotest-assertions-core = { module = "io.kotest:kotest-assertions-core", version.ref = "kotest" }
 kotest-property = { module = "io.kotest:kotest-property", version.ref = "kotest" }
+ktorfit-lib = { module = "de.jensklingenberg.ktorfit:ktorfit-lib", version.ref = "ktorfitLib" }
+multiplatform-settings = { module = "com.russhwolf:multiplatform-settings", version.ref = "multiplatformSettingsNoArg" }
+multiplatform-settings-no-arg = { module = "com.russhwolf:multiplatform-settings-no-arg", version.ref = "multiplatformSettingsNoArg" }
+navigation-compose = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
+purchases = { module = "com.revenuecat.purchases:purchases", version.ref = "purchases" }
+purchases-ui = { module = "com.revenuecat.purchases:purchases-ui", version.ref = "purchases" }
 turbine-turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
 
 coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coil3" }

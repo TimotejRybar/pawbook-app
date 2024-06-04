@@ -1,19 +1,15 @@
-import com.android.build.api.dsl.Packaging
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsCompose)
-    //id("dev.icerock.mobile.multiplatform-resources")
     alias(libs.plugins.ksp)
     id("de.jensklingenberg.ktorfit")
     kotlin("plugin.serialization") version "1.9.22"
     id("kotlinx-serialization")
     alias(libs.plugins.room)
-    alias(libs.plugins.sqldelight) //Plugin of SQLDelight.
+    alias(libs.plugins.sqldelight)
 }
-
-
 
 kotlin {
     androidTarget {
@@ -44,27 +40,18 @@ kotlin {
 
     sourceSets {
 
-        /*
-        getByName("androidMain").dependsOn(commonMain.get())
-        getByName("iosArm64Main").dependsOn(commonMain.get())
-        getByName("iosX64Main").dependsOn(commonMain.get())
-        getByName("iosSimulatorArm64Main").dependsOn(commonMain.get())
-        */
-
-
-
         androidMain.dependencies {
             implementation(libs.androidx.activity.compose)
-            implementation("io.ktor:ktor-client-android:2.3.10")
-            implementation("io.ktor:ktor-client-json:2.3.10")
-            implementation("io.ktor:ktor-client-serialization:2.3.10")
-            implementation("io.ktor:ktor-client-logging:2.3.10")
-            implementation("io.ktor:ktor-client-okhttp:2.3.10")
-            implementation("io.insert-koin:koin-android:3.5.6")
-            implementation("io.insert-koin:koin-androidx-compose:3.5.6")
+            implementation(libs.ktor.client.android)
+            implementation(libs.ktor.client.json)
+            implementation(libs.ktor.client.serialization)
+            implementation(libs.ktor.logging)
+            implementation(libs.ktor.okhttp)
+            implementation(libs.koin.android)
+            implementation(libs.koin.androidx.compose)
             implementation(libs.compose.ui.tooling.preview)
-            implementation("com.revenuecat.purchases:purchases:7.5.2")
-            implementation("com.revenuecat.purchases:purchases-ui:7.5.2")
+            implementation(libs.purchases)
+            implementation(libs.purchases.ui)
             implementation(libs.androidx.room.paging)
             implementation(libs.sqldelight.android.driver)
             //implementation("com.facebook.android:facebook-login:17.0.0")
@@ -81,26 +68,26 @@ kotlin {
             implementation(libs.ktor.core)
             implementation(libs.ktor.serialization)
             implementation(libs.ktor.negotiation)
-            implementation("org.jetbrains.androidx.navigation:navigation-compose:2.8.0-alpha01")
-            implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.5.0")
-            implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1-Beta")
-            implementation("androidx.lifecycle:lifecycle-viewmodel:2.7.0")
-            implementation("io.insert-koin:koin-core:3.5.6")
+            implementation(libs.navigation.compose)
+            implementation(libs.kotlinx.datetime)
+            implementation(libs.kotlinx.coroutines.core)
+            implementation(libs.androidx.lifecycle.viewmodel)
+            implementation(libs.koin.core)
             implementation(libs.ktor.core)
-            implementation("io.insert-koin:koin-compose:1.1.5")
-            implementation("de.jensklingenberg.ktorfit:ktorfit-lib:1.13.0")
-            implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
-            implementation("com.russhwolf:multiplatform-settings:1.1.1")
-            implementation("com.russhwolf:multiplatform-settings-no-arg:1.1.1")
+            implementation(libs.koin.compose)
+            implementation(libs.ktorfit.lib)
+            implementation(libs.kotlinx.serialization.json)
+            implementation(libs.multiplatform.settings)
+            implementation(libs.multiplatform.settings.no.arg)
             implementation(libs.androidx.room.runtime)
-            implementation("com.mohamedrejeb.calf:calf-file-picker:0.4.0")
-            implementation("media.kamel:kamel-image:0.9.4")
+            implementation(libs.calf.file.picker)
+            implementation(libs.kamel.image)
             implementation(libs.ktor.core)
             implementation(libs.coil.compose.core)
             implementation(libs.coil.compose)
             implementation(libs.coil.mp)
             implementation(libs.coil.network.ktor)
-            implementation("br.com.devsrsouza.compose.icons:font-awesome:1.1.0")
+            implementation(libs.font.awesome)
         }
 
         sqldelight {
@@ -193,10 +180,10 @@ android {
         debugImplementation(libs.compose.ui.tooling)
         //commonMainApi("dev.icerock.moko:resources-compose:0.24.0-alpha-4")
         //commonTestImplementation("dev.icerock.moko:resources-test:0.24.0-alpha-4")
-        androidTestDebugImplementation("androidx.compose.ui:ui-test-manifest:1.6.7")
-        androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.6.7")
-        androidTestImplementation("androidx.test.ext:junit:1.1.5")
-        androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+        androidTestDebugImplementation(libs.androidx.ui.test.manifest)
+        androidTestImplementation(libs.androidx.ui.test.junit4)
+        androidTestImplementation(libs.androidx.test.junit)
+        androidTestImplementation(libs.androidx.espresso.core)
 
     }
 
