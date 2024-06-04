@@ -67,7 +67,7 @@ kotlin {
             implementation("com.revenuecat.purchases:purchases-ui:7.5.2")
             implementation(libs.androidx.room.paging)
             implementation(libs.sqldelight.android.driver)
-            implementation("com.facebook.android:facebook-login:17.0.0")
+            //implementation("com.facebook.android:facebook-login:17.0.0")
         }
 
 
@@ -93,9 +93,6 @@ kotlin {
             implementation("com.russhwolf:multiplatform-settings:1.1.1")
             implementation("com.russhwolf:multiplatform-settings-no-arg:1.1.1")
             implementation(libs.androidx.room.runtime)
-            //implementation("androidx.sqlite:sqlite-framework:2.5.0-alpha02")
-            //implementation("androidx.sqlite:sqlite:2.5.0-alpha02")
-            //implementation(libs.sqldelight.coroutines.extensions)
             implementation("com.mohamedrejeb.calf:calf-file-picker:0.4.0")
             implementation("media.kamel:kamel-image:0.9.4")
             implementation(libs.ktor.core)
@@ -103,7 +100,7 @@ kotlin {
             implementation(libs.coil.compose)
             implementation(libs.coil.mp)
             implementation(libs.coil.network.ktor)
-
+            implementation("br.com.devsrsouza.compose.icons:font-awesome:1.1.0")
         }
 
         sqldelight {
