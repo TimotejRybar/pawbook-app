@@ -13,6 +13,7 @@ import core.enums.PetType
 import data.model.entity.CalendarActivityEntity
 import data.model.entity.PetEntity
 import data.model.entity.PetPhotoEntity
+import data.model.entity.StorageEntryEntity
 import kotlinx.datetime.LocalDateTime
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -24,7 +25,7 @@ expect fun getDatabase(): AppDatabase
 @TypeConverters(value = [Converters::class])
 @Database(entities = [BreedEntity::class, ColorEntity::class,
     DoctorEntity::class, CalendarActivityEntity::class,
-    PetEntity::class, PetPhotoEntity::class], version = 1)
+    PetEntity::class, PetPhotoEntity::class, StorageEntryEntity::class], version = 1)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun getDoctorDao(): DoctorDao
     abstract fun getBreedDao(): BreedDao
@@ -32,6 +33,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun getCalendarDao(): CalendarActivityDao
     abstract fun getPetDao(): PetDao
     abstract fun getPetPhotoDao(): PetPhotoDao
+    abstract fun getStorageDao(): StorageDao
 }
 
 

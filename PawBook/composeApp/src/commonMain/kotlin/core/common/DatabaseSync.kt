@@ -7,6 +7,7 @@ import data.model.entity.CalendarActivityEntity
 import data.model.entity.ColorEntity
 import data.model.entity.DoctorEntity
 import data.model.entity.PetEntity
+import data.model.entity.StorageEntryEntity
 import data.remote.BreedApi
 import data.remote.CalendarActivityApi
 import data.remote.ColorApi
@@ -48,6 +49,7 @@ class DatabaseSync: KoinComponent {
             val pets = petApi.fetch()
             val calendarActivities = calendarApi.fetch()
             //val petPhotos = petPhotoApi.fetch()
+            val allFiles = storageApi.fetch();
 
             val myPets = pets.pets.map {
                 PetEntity(it._id as String, it.petType, it.name, it.shortDescription, it.gender, it.birthday, it.weight, it.color, it.breed, it.doctor,it.photo ?: "", it.createdAt as LocalDateTime, it.updatedAt as LocalDateTime)
@@ -60,6 +62,10 @@ class DatabaseSync: KoinComponent {
             //val gallery = petPhotos.gallery.map {
             //    PetPhotoEntity(it._id, it.author as String, it.pets, it.description, it.file, it.created, it.updated)
             //}
+
+            val storage = allFiles.storage.map {
+                StorageEntryEntity(it._id, it.storageEntryType, it.name, it.storageKey, it.storageKey, it.createdAt as LocalDateTime, it.updatedAt as LocalDateTime)
+            }
 
             database.getPetDao().insertAll(myPets)
             database.getCalendarDao().insertAll(activities)

@@ -21,20 +21,22 @@ import presentation.screen.petDetail.PetDetailViewModel
 import presentation.screen.profile.ProfileViewModel
 import presentation.screen.register.RegisterViewModel
 import presentation.screen.splash.SplashViewModel
+import presentation.screen.storage.StorageViewModel
 
 enum class AppScreen() {
-    Splash(),
-    Login(),
-    PetEdit(),
-    MyPets(),
-    Calendar(),
+    Splash,
+    Login,
+    PetEdit,
+    MyPets,
+    Calendar,
     CalendarActivity,
-    Register(),
-    Gallery(),
-    PetDashboard(),
-    Home(),
-    Profile(),
-    Contact;
+    Register,
+    Gallery,
+    PetDashboard,
+    Home,
+    Profile,
+    Contact,
+    Storage;
 
     companion object {
         fun petDashboardRoute(petId: String) = "PetDashboard/$petId"
@@ -81,7 +83,7 @@ fun appModule() = module {
     single { KoinModule.provideCalendarActivityApi(get()) }
     single<PetCalendarRepositoryImpl> { PetCalendarRepositoryImpl() }
 
-    single { KoinModule.provideGalleryApi(get()) }
+    single { KoinModule.provideStorageApi(get()) }
 
     single<PetDashboardRepositoryImpl> { PetDashboardRepositoryImpl() }
     single<PetDashboardViewModel> { PetDashboardViewModel() }
@@ -92,6 +94,8 @@ fun appModule() = module {
     single<ContactViewModel> { ContactViewModel() }
 
     single<HomeViewModel> { HomeViewModel()}
+
+    single<StorageViewModel> { StorageViewModel() }
 }
 
 

@@ -27,6 +27,7 @@ import org.jetbrains.compose.resources.stringResource
 import pawbook.composeapp.generated.resources.Res
 import pawbook.composeapp.generated.resources.app_name
 import pawbook.composeapp.generated.resources.contact
+import pawbook.composeapp.generated.resources.documents
 import pawbook.composeapp.generated.resources.profile
 import pawbook.composeapp.generated.resources.screen_calendar
 import pawbook.composeapp.generated.resources.screen_home
@@ -82,6 +83,16 @@ fun Navigation(
                             drawerState.close()
                         }
                         onNavigate(AppScreen.Calendar)
+                    }
+                )
+                NavigationDrawerItem(
+                    label = { Text(text = stringResource(Res.string.documents)) },
+                    selected = false,
+                    onClick = {
+                        scope.launch {
+                            drawerState.close()
+                        }
+                        onNavigate(AppScreen.Storage)
                     }
                 )
                 NavigationDrawerItem(

@@ -65,7 +65,7 @@ object KoinModule {
     fun provideBreedsApi(ktorfit: Ktorfit): BreedApi = ktorfit.create()
     fun provideDoctorsApi(ktorfit: Ktorfit): DoctorApi = ktorfit.create()
     fun provideColorsApi(ktorfit: Ktorfit): ColorApi = ktorfit.create()
-    fun provideGalleryApi(ktorfit: Ktorfit): StorageApi = ktorfit.create()
+    fun provideStorageApi(ktorfit: Ktorfit): StorageApi = ktorfit.create()
     fun provideCalendarActivityApi(ktorfit: Ktorfit): CalendarActivityApi = ktorfit.create()
     fun provideSettings(): Settings = Settings()
     fun provideDatabase(): AppDatabase = getDatabase()

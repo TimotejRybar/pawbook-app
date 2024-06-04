@@ -4,7 +4,6 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import core.enums.PetType
 import kotlinx.datetime.LocalDateTime
-import presentation.components.calendar.CalendarUiState
 
 @Entity
 data class PetEntity(
