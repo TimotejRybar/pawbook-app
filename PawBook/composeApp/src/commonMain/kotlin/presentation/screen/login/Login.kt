@@ -58,6 +58,7 @@ import pawbook.composeapp.generated.resources.forgot_password
 import pawbook.composeapp.generated.resources.hide_password
 import pawbook.composeapp.generated.resources.invalid_email_or_password
 import pawbook.composeapp.generated.resources.login
+import pawbook.composeapp.generated.resources.login_with_facebook
 import pawbook.composeapp.generated.resources.pawbook_logo
 import pawbook.composeapp.generated.resources.show_password
 import presentation.components.loading.LoadingAnimation

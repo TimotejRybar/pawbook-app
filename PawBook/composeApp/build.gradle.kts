@@ -67,7 +67,7 @@ kotlin {
             implementation("com.revenuecat.purchases:purchases-ui:7.5.2")
             implementation(libs.androidx.room.paging)
             implementation(libs.sqldelight.android.driver)
-            
+            implementation("com.facebook.android:facebook-login:17.0.0")
         }
 
 

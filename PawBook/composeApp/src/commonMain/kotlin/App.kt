@@ -90,6 +90,8 @@ fun appModule() = module {
     single<ProfileRepositoryImpl> { ProfileRepositoryImpl()}
 
     single<ContactViewModel> { ContactViewModel() }
+
+    single<HomeViewModel> { HomeViewModel()}
 }
 
 

@@ -87,7 +87,7 @@ fun PetCalendarActivity (viewModel: PetCalendarActivityViewModel = koinInject(),
             modifier = Modifier.fillMaxWidth().background(LocalAppColors.current.secondary),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(48.dp))
             DateField() {
                 start.value = LocalDateTime(it, time.value as LocalTime)
             }
