@@ -12,6 +12,6 @@ data class StorageEntryEntity(
     val name: String,
     val vPath: String,
     val storageKey: String,
-    val createdAt: LocalDateTime,
-    val updatedAt: LocalDateTime
+    val createdAt: LocalDateTime?,
+    val updatedAt: LocalDateTime?
 )

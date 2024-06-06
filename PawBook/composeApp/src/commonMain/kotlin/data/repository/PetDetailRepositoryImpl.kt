@@ -8,26 +8,18 @@ import data.model.entity.DoctorEntity
 import data.model.entity.PetEntity
 import data.remote.PetApi
 import domain.model.PetItem
-import domain.model.PetPhoto
 import domain.model.result.CreatePetPhotoResult
 import domain.model.result.CreatePetResult
 import domain.repository.PetDetailRepository
-import io.kamel.core.utils.File
 import io.ktor.client.request.forms.MultiPartFormDataContent
 import io.ktor.client.request.forms.formData
 import io.ktor.http.Headers
 import io.ktor.http.HttpHeaders
-import io.ktor.http.content.PartData
-import io.ktor.http.headersOf
-import io.ktor.utils.io.core.Input
-import io.ktor.utils.io.core.readBytes
-import io.ktor.utils.io.core.use
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.serialization.json.Json
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import pawbook.composeapp.generated.resources.Res
 
 class PetDetailRepositoryImpl: PetDetailRepository, KoinComponent {
 

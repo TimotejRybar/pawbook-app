@@ -38,7 +38,14 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import compose.icons.FontAwesomeIcons
+import compose.icons.fontawesomeicons.Regular
+import compose.icons.fontawesomeicons.Solid
+import compose.icons.fontawesomeicons.regular.File
+import compose.icons.fontawesomeicons.regular.Folder
+import compose.icons.fontawesomeicons.solid.Plus
 import data.model.entity.PetEntity
+import domain.model.enums.StorageState
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.stringResource
@@ -46,6 +53,7 @@ import pawbook.composeapp.generated.resources.Res
 import pawbook.composeapp.generated.resources.contact
 import pawbook.composeapp.generated.resources.documents
 import pawbook.composeapp.generated.resources.loading
+import pawbook.composeapp.generated.resources.new_folder
 import pawbook.composeapp.generated.resources.profile
 import pawbook.composeapp.generated.resources.screen_calendar
 import pawbook.composeapp.generated.resources.screen_calendar_activity
@@ -55,6 +63,9 @@ import pawbook.composeapp.generated.resources.screen_my_pets
 import pawbook.composeapp.generated.resources.screen_pet_dashboard
 import pawbook.composeapp.generated.resources.screen_pet_edit
 import pawbook.composeapp.generated.resources.screen_register
+import pawbook.composeapp.generated.resources.upload_file
+import presentation.components.button.FabItem
+import presentation.components.button.MultiFloatingActionButton
 import presentation.screen.calendar.PetCalendar
 import presentation.navigation.Navigation
 import presentation.screen.calendar.PetCalendarActivity
@@ -125,25 +136,12 @@ fun AppContent(navController: NavHostController = rememberNavController()) {
             val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
             val scope = rememberCoroutineScope()
 
+            val storageState = remember { mutableStateOf(StorageState.INIT) }
+
             val subPage = remember { mutableStateOf(false) }
 
             Navigation(drawerState, onNavigate = {
-                when (it) {
-                    AppScreen.Login -> navController.navigate(AppScreen.Login.name)
-                    AppScreen.PetEdit -> navController.navigate(AppScreen.PetEdit.name)
-                    AppScreen.MyPets -> navController.navigate(AppScreen.MyPets.name)
-                    AppScreen.Register -> navController.navigate(AppScreen.Register.name)
-                    AppScreen.Splash -> navController.navigate(AppScreen.Splash.name)
-                    AppScreen.Calendar -> navController.navigate(AppScreen.Calendar.name)
-                    AppScreen.CalendarActivity -> navController.navigate(AppScreen.CalendarActivity.name)
-                    AppScreen.Gallery -> navController.navigate(AppScreen.Gallery.name)
-                    AppScreen.PetDashboard -> navController.navigate(AppScreen.petDashboardRoute(petId = selectedPet.value?.id ?: ""))
-                    AppScreen.Home -> navController.navigate(AppScreen.Home.name)
-                    AppScreen.Profile -> navController.navigate(AppScreen.Profile.name)
-                    AppScreen.Contact -> navController.navigate(AppScreen.Contact.name)
-                    AppScreen.Storage -> navController.navigate(AppScreen.Storage.name)
-                }
-
+                navController.navigate(it.name)
             }) {
                 Scaffold(
                     floatingActionButton = {
@@ -167,6 +165,18 @@ fun AppContent(navController: NavHostController = rememberNavController()) {
                                 Icon(Icons.Filled.Add, "")
                             }
                         }
+                        if (navController.currentDestination?.route == AppScreen.Storage.name) {
+                            MultiFloatingActionButton(fabIcon = FontAwesomeIcons.Solid.Plus, items = arrayListOf(
+                                FabItem(FontAwesomeIcons.Regular.Folder, label = stringResource(Res.string.new_folder)) {
+                                    storageState.value = StorageState.CREATE_FOLDER
+
+                                },
+                                FabItem(FontAwesomeIcons.Regular.File, label = stringResource(Res.string.upload_file)) {
+                                    storageState.value = StorageState.UPLOAD_FILE
+                                }
+
+                            ))
+                        }
                     },
                     topBar = {
                         AnimatedVisibility(
@@ -180,8 +190,8 @@ fun AppContent(navController: NavHostController = rememberNavController()) {
                                     AppScreen.PetEdit.name, AppScreen.CalendarActivity.name, AppScreen.PetDashboard.name-> true
                                     else -> false
                                 }
-                                val topBarIcon = if (subPage.value) Icons.AutoMirrored.Filled.ArrowBack else Icons.Default.Menu
 
+                                val topBarIcon = if (subPage.value) Icons.AutoMirrored.Filled.ArrowBack else Icons.Default.Menu
 
                                 if (topBarState.value) {
                                     TopAppBar(
@@ -290,7 +300,7 @@ fun AppContent(navController: NavHostController = rememberNavController()) {
                         }
 
                         composable(route = AppScreen.Storage.name) {
-                            Storage()
+                            Storage(storageState.value)
                         }
                     }
                 }

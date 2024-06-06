@@ -5,4 +5,7 @@ import kotlinx.datetime.LocalDateTime
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class StorageEntry(val _id: String,val storageEntryType: StorageEntryType, val name: String, val vPath: String, val storageKey: String, val createdAt: LocalDateTime, var updatedAt: LocalDateTime)
+data class StorageEntry(
+    val _id: String?,
+    val storageEntryType: StorageEntryType, val name: String, val vPath: String, val storageKey: String, val createdAt: LocalDateTime?, var updatedAt: LocalDateTime?
+)

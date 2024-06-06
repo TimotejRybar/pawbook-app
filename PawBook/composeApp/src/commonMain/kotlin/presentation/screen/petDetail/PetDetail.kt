@@ -94,6 +94,7 @@ import presentation.components.color.colorField.ColorField
 import presentation.screen.login.ButtonStyle
 import presentation.theme.colors.LocalAppColors
 import presentation.screen.login.StyledButton
+import presentation.screen.profile.CirclePhotoUploadPlaceholder
 import utils.compose.PetPropFieldUtils
 
 @Composable
@@ -176,9 +177,20 @@ fun PetPhoto(viewModel: PetDetailViewModel, pet: PetEntity?) {
             }
         })
 
-    CirclePhoto(currentPhotoFile.value, currentPhoto.value) {
-        openDialog.value = true
+    val petProfilePhotoUploaded = false
+
+    if(petProfilePhotoUploaded) {
+        CirclePhoto(currentPhotoFile.value, currentPhoto.value) {
+            openDialog.value = true
+        }
+    } else {
+        CirclePhotoUploadPlaceholder() {
+            // open photo picker
+            openDialog.value = true
+        }
     }
+
+
     if (openDialog.value) {
         AlertDialog(
             containerColor = LocalAppColors.current.secondary,

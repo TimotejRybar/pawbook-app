@@ -64,11 +64,12 @@ class DatabaseSync: KoinComponent {
             //}
 
             val storage = allFiles.storage.map {
-                StorageEntryEntity(it._id, it.storageEntryType, it.name, it.storageKey, it.storageKey, it.createdAt as LocalDateTime, it.updatedAt as LocalDateTime)
+                StorageEntryEntity(it._id as String, it.storageEntryType, it.name, it.storageKey, it.storageKey, it.createdAt as LocalDateTime, it.updatedAt as LocalDateTime)
             }
 
             database.getPetDao().insertAll(myPets)
             database.getCalendarDao().insertAll(activities)
+            database.getStorageDao().insertAll(storage)
             //database.getPetPhotoDao().insertAll(gallery)
             emit(Resources.Success(""))
 

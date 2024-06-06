@@ -417,4 +417,7 @@
     <string name="contact">Kontakt</string>
     <string name="cancel">Zrušiť</string>
     <string name="documents">Dokumenty</string>
+    <string name="new_folder">Nový priečinok</string>
+    <string name="upload_file">Nahrať súbor</string>
+    <string name="directory_name">Názov priečinku</string>
 </resources>
