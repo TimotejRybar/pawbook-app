@@ -135,9 +135,7 @@ fun AppContent(navController: NavHostController = rememberNavController()) {
         ) {
             val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
             val scope = rememberCoroutineScope()
-
             val storageState = remember { mutableStateOf(StorageState.INIT) }
-
             val subPage = remember { mutableStateOf(false) }
 
             Navigation(drawerState, onNavigate = {

@@ -154,9 +154,18 @@ fun Storage(storageState: StorageState, viewModel: StorageViewModel = koinInject
         }
     }
 
-    LaunchedEffect(storageState == StorageState.CREATE_FOLDER) {
-        openCreateFolderDialog.value = true
+    if(storageState === StorageState.CREATE_FOLDER) {
+        LaunchedEffect(true) {
+            openCreateFolderDialog.value = true
+        }
     }
+
+    if(storageState === StorageState.UPLOAD_FILE) {
+        LaunchedEffect(storageState === StorageState.UPLOAD_FILE) {
+            pickerLauncher.launch()
+        }
+    }
+
 }
 
 @Composable
