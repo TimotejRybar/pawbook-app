@@ -3,8 +3,6 @@ package data.model.entity
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import core.enums.ActivityType
-import core.enums.PetType
-import domain.model.PetItem
 import kotlinx.datetime.LocalDateTime
 
 @Entity

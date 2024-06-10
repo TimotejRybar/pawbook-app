@@ -43,6 +43,7 @@ import org.koin.compose.koinInject
 import pawbook.composeapp.generated.resources.Res
 import pawbook.composeapp.generated.resources.weight_unit
 import presentation.components.color.colorField.ColorFieldReadOnly
+import presentation.screen.petDashboard.trackWeight.TrackWeightOverview
 import presentation.theme.colors.LocalAppColors
 import utils.compose.format
 
@@ -99,6 +100,7 @@ fun PetDashboard(petId: String, viewModel: PetDashboardViewModel = koinInject())
                         PetGender(pet?.gender as String)
                     }
                     PetDoctor(petDoctor)
+                    TrackWeightOverview(viewModel, pet as PetEntity)
                 }
             }
         }

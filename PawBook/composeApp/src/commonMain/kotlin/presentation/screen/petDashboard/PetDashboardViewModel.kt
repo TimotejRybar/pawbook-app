@@ -29,7 +29,6 @@ class PetDashboardViewModel() : ViewModel(), KoinComponent {
     private val _petDoctor = MutableStateFlow<DoctorEntity?>(null)
     val petDoctor: StateFlow<DoctorEntity?> = _petDoctor.asStateFlow()
 
-
     fun hexColorsToColorEntities(hexColors: List<String>) {
         viewModelScope.launch {
             petDashboardRepository.loadColors(hexColors).collect {
@@ -50,6 +49,15 @@ class PetDashboardViewModel() : ViewModel(), KoinComponent {
         viewModelScope.launch {
             petDashboardRepository.loadPet(petId).collect {
                 _pet.value = it
+            }
+        }
+    }
+
+    suspend fun addWeightRecord(pet: PetEntity, weight: Float) {
+        viewModelScope.launch {
+            petDashboardRepository.addWeightRecord(pet.id, weight).collect {
+                // update state if needed...
+                _pet.value?.weightHistory?.add(it)
             }
         }
     }

@@ -420,4 +420,7 @@
     <string name="new_folder">Nový priečinok</string>
     <string name="upload_file">Nahrať súbor</string>
     <string name="directory_name">Názov priečinku</string>
+    <string name="back">Naspäť</string>
+    <string name="messages">Správy</string>
+    <string name="repeated_activity">Opakovanie</string>
 </resources>

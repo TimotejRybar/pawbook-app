@@ -7,7 +7,6 @@ import de.jensklingenberg.ktorfit.http.POST
 import domain.model.result.LoginResult
 import domain.model.result.RegisterResult
 import domain.model.result.User
-import kotlinx.datetime.LocalDateTime
 
 interface AuthApi
 {

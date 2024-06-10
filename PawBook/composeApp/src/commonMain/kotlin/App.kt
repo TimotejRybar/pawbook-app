@@ -39,7 +39,8 @@ enum class AppScreen() {
     Contact,
     Storage,
     StorageNewFolder,
-    StorageUploadFile;
+    StorageUploadFile,
+    Conversations;
 
     companion object {
         fun petDashboardRoute(petId: String) = "PetDashboard/$petId"

@@ -15,6 +15,7 @@ import io.ktor.http.Headers
 import io.ktor.http.HttpHeaders
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.datetime.LocalDateTime
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
@@ -23,8 +24,8 @@ class StorageRepositoryImpl : StorageRepository, KoinComponent {
     private val database: AppDatabase by inject()
     private val storageApi: StorageApi by inject()
 
-    override suspend fun fetch(): Flow<List<StorageEntryEntity>> {
-        return database.getStorageDao().getAllAsFlow()
+    override suspend fun fetch(currentPath: String): Flow<List<StorageEntryEntity>> {
+        return database.getStorageDao().getByDirectory(currentPath)
     }
 
     override suspend fun uploadFile(
@@ -60,11 +61,11 @@ class StorageRepositoryImpl : StorageRepository, KoinComponent {
         emit(Resources.Loading(true))
 
         val createFolderResult = storageApi.createFolder(
-            StorageEntry(null, StorageEntryType.FOLDER, name as String,
+            StorageEntry(null, StorageEntryType.FOLDER.value, name as String,
                 vPath, "", null, null))
 
         createFolderResult.folder.let {
-            database.getStorageDao().insert(StorageEntryEntity(it._id as String, it.storageEntryType, it.name, it.vPath, it.storageKey, it.createdAt, it.updatedAt))
+            database.getStorageDao().insert(StorageEntryEntity(it._id as String, StorageEntryType.FOLDER, it.name, it.vPath, it.storageKey, it.createdAt as LocalDateTime, it.updatedAt as LocalDateTime))
         }
 
         emit(Resources.Success(createFolderResult))

@@ -22,36 +22,34 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
-import core.common.Config
-import domain.model.PetItem
-import io.kamel.image.asyncPainterResource
+import domain.model.Pet
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.InternalResourceApi
-import presentation.theme.colors.LocalAppColors
-import presentation.screen.calendar.PetCalendar
 import presentation.navbar.Navbar
+import presentation.screen.calendar.PetCalendar
 import presentation.screen.petDetail.CirclePhoto
+import presentation.theme.colors.LocalAppColors
 
 @Composable
-fun PetDetailExtended(petItem: PetItem, onDismissClick: () -> Unit) {
+fun PetDetailExtended(pet: Pet, onDismissClick: () -> Unit) {
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
-        PetInfoExtended(petItem)
+        PetInfoExtended(pet)
     }
 }
 
 @Composable
-fun PetInfoExtended(petItem: PetItem) {
+fun PetInfoExtended(pet: Pet) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         Column(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Navbar()
-            PetPhoto(petItem._id as String)
-            PetName(petItem.name)
+            PetPhoto(pet._id as String)
+            PetName(pet.name)
             Spacer(modifier = Modifier.height(20.dp))
             PetQuestions()
         }

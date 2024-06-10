@@ -1,10 +1,10 @@
 package domain.model.result
 
-import domain.model.PetItem
+import domain.model.Pet
 import kotlinx.serialization.Serializable
 
 @Serializable
 data class CreatePetResult (
-    val pet: PetItem,
+    val pet: Pet,
     val message: String
 )

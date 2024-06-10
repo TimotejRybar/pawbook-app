@@ -15,6 +15,10 @@ interface StorageDao {
     @Query("SELECT * FROM StorageEntryEntity")
     fun getAllAsFlow(): Flow<List<StorageEntryEntity>>
 
+    @Query("SELECT * FROM StorageEntryEntity WHERE vPath=:directory")
+    fun getByDirectory(directory: String): Flow<List<StorageEntryEntity>>
+
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(storageEntry: StorageEntryEntity)
 }

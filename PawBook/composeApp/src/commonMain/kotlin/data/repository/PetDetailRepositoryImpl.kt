@@ -7,7 +7,8 @@ import data.model.entity.ColorEntity
 import data.model.entity.DoctorEntity
 import data.model.entity.PetEntity
 import data.remote.PetApi
-import domain.model.PetItem
+import domain.model.Pet
+import domain.model.WeightRecord
 import domain.model.result.CreatePetPhotoResult
 import domain.model.result.CreatePetResult
 import domain.repository.PetDetailRepository
@@ -38,7 +39,7 @@ class PetDetailRepositoryImpl: PetDetailRepository, KoinComponent {
         return database.getColorDao().getAllAsFlow()
     }
 
-    override suspend fun createPet(pet: PetItem): Flow<Resources<CreatePetResult>> = flow {
+    override suspend fun createPet(pet: Pet): Flow<Resources<CreatePetResult>> = flow {
         emit(Resources.Loading(true))
         try {
             val result = petApi.create(pet)
@@ -61,6 +62,16 @@ class PetDetailRepositoryImpl: PetDetailRepository, KoinComponent {
 
             val result =  Json.decodeFromString<CreatePetPhotoResult>(petApi.uploadProfilePhoto(petId, multipart) as String)
             emit(Resources.Success(result.photo))
+        } catch (e: Exception) {
+            emit(Resources.Error("internal_error"))
+        }
+    }
+
+    override suspend fun addWeightRecord(petId: String, weightRecord: WeightRecord): Flow<Resources<WeightRecord>> = flow {
+        emit(Resources.Loading(true))
+        try {
+            val result = petApi.addWeightRecord(petId, weightRecord)
+            emit(Resources.Success(result))
         } catch (e: Exception) {
             emit(Resources.Error("internal_error"))
         }

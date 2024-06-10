@@ -3,10 +3,8 @@ package presentation.screen.petDetail
 import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import core.util.Resources
 import data.model.entity.PetEntity
 import data.repository.PetsRepoitoryImpl
-import domain.model.PetItem
 import domain.model.enums.MyPetsState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

@@ -25,6 +25,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -59,11 +60,11 @@ import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
 import pawbook.composeapp.generated.resources.Res
+import pawbook.composeapp.generated.resources.back
 import pawbook.composeapp.generated.resources.cancel
 import pawbook.composeapp.generated.resources.confirm
 import pawbook.composeapp.generated.resources.directory_name
 import pawbook.composeapp.generated.resources.new_folder
-import pawbook.composeapp.generated.resources.select
 import presentation.screen.login.InputField
 import presentation.screen.login.InputType
 import presentation.screen.storage.StorageViewModel.Companion.DEFAULT_DIRECTORY
@@ -73,21 +74,20 @@ import presentation.theme.colors.LocalAppColors
 @Composable
 fun Storage(storageState: StorageState, viewModel: StorageViewModel = koinInject()) {
 
-    val allFiles = viewModel.allFiles.collectAsState()
     val localScope = rememberCoroutineScope()
-    val currentFile = remember { mutableStateOf<KmpFile?>(null) }
-    val currentPath = remember { mutableStateOf(DEFAULT_DIRECTORY) }
+    val currentPath = viewModel.currentPath.collectAsState()
     val openCreateFolderDialog = remember { mutableStateOf(false) }
+    val backString = stringResource(Res.string.back)
 
     LaunchedEffect(true) {
-        viewModel.fetchStorage()
+        viewModel.fetchStorage(currentPath.value, backString)
     }
 
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.CenterStart,
     ) {
-        FileManager(allFiles.value)
+        FileManager(viewModel)
     }
 
     val context = LocalPlatformContext.current
@@ -100,7 +100,6 @@ fun Storage(storageState: StorageState, viewModel: StorageViewModel = koinInject
                     // no files selected
                 } else {
                     viewModel.uploadFile(context, files[0], currentPath.value)
-                    currentFile.value = files[0]
                 }
             }
         })
@@ -121,7 +120,7 @@ fun Storage(storageState: StorageState, viewModel: StorageViewModel = koinInject
                     modifier = Modifier.fillMaxWidth().background(LocalAppColors.current.secondary).padding(16.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    val newFolderName = mutableStateOf("")
+                    val newFolderName = remember { mutableStateOf("") }
                     Text(stringResource(Res.string.new_folder), fontSize = 18.sp)
                     Spacer(modifier = Modifier.width(8.dp))
                     InputField(stringResource(Res.string.directory_name), newFolderName.value, InputType.TEXT) {
@@ -168,21 +167,48 @@ fun Storage(storageState: StorageState, viewModel: StorageViewModel = koinInject
 
 }
 
+@OptIn(ExperimentalResourceApi::class)
 @Composable
-fun FileManager(allFiles: List<StorageEntryEntity>) {
+fun FileManager(viewModel: StorageViewModel) {
+    val files by viewModel.allFiles.collectAsState()
+    val backString = stringResource(Res.string.back)
 
-    val currentPath = remember { mutableStateOf(DEFAULT_DIRECTORY) }
-    val currentDirectory = remember { mutableStateOf<List<StorageEntryEntity>>(emptyList()) }
+    LazyColumn(modifier = Modifier.heightIn(150.dp, 300.dp)) {
+        if (files.isEmpty()) {
+            item {
+                Text("This folder is empty.", modifier = Modifier.padding(16.dp))
+            }
+        } else {
+            items(files) { storageEntry ->
+                FileEntry(storageEntry) { storageEntryEntity ->
+                    var newPath: String? = null
+                    if (storageEntryEntity.storageEntryType == StorageEntryType.FOLDER) {
+                        newPath = storageEntryEntity.vPath + storageEntryEntity.name + "/"
+                        viewModel.setCurrentPath(newPath)
+                        viewModel.fetchStorage(newPath, backString)
+                    }
+                    else if (storageEntryEntity.storageEntryType == StorageEntryType.RETURN) {
+                        newPath = removeLastFolder(storageEntryEntity.vPath)
+                    }
 
-    LaunchedEffect(allFiles, currentPath.value) {
-        currentDirectory.value = allFiles.filter { it.vPath == currentPath.value }
-    }
-
-    LazyColumn(modifier = Modifier.heightIn(150.dp, 300.dp) ) {
-        items(currentDirectory.value) { storageEntry ->
-            FileEntry(storageEntry) {
+                    newPath.let {
+                        viewModel.setCurrentPath(it as String)
+                        viewModel.fetchStorage(it, backString)
+                    }
+                }
             }
         }
+    }
+}
+
+fun removeLastFolder(path: String): String {
+    val regex = Regex("[^/]+/$")
+    val match = regex.find(path)
+    return if (match != null) {
+        val startIndex = path.lastIndexOf(match.value)
+        path.substring(0, startIndex)
+    } else {
+        path
     }
 }
 

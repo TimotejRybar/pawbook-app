@@ -63,10 +63,11 @@ import data.model.entity.BreedEntity
 import data.model.entity.ColorEntity
 import data.model.entity.DoctorEntity
 import data.model.entity.PetEntity
-import domain.model.PetItem
+import domain.model.Pet
+import domain.model.WeightRecord
 import domain.model.enums.PetDetailState
-import io.ktor.util.date.GMTDate
 import domain.model.enums.PetPropFieldType
+import io.ktor.util.date.GMTDate
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
@@ -92,9 +93,9 @@ import pawbook.composeapp.generated.resources.sofka
 import presentation.components.autocomplete.AutoComplete
 import presentation.components.color.colorField.ColorField
 import presentation.screen.login.ButtonStyle
-import presentation.theme.colors.LocalAppColors
 import presentation.screen.login.StyledButton
 import presentation.screen.profile.CirclePhotoUploadPlaceholder
+import presentation.theme.colors.LocalAppColors
 import utils.compose.PetPropFieldUtils
 
 @Composable
@@ -274,8 +275,8 @@ fun PetProps(
     Spacer(modifier = Modifier.height(20.dp))
     SaveButton {
        // create new pet
-       viewModel.createPet(PetItem(null, name.value, "", PetType.Dog, null, birthDay.value, (gender.value as Gender).value,weight.value.toFloat(),
-           color, breed.value?.id as String, doctor.value?.id, photo, null, null))
+       viewModel.createPet(Pet(null, name.value, "", PetType.Dog, null, birthDay.value, (gender.value as Gender).value,weight.value.toFloat(),
+           color, breed.value?.id as String, doctor.value?.id, photo, pet?.weightHistory as ArrayList<WeightRecord>, null, null))
     }
 }
 

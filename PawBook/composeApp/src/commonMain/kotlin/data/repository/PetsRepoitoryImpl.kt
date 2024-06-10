@@ -6,7 +6,7 @@ import data.model.entity.PetEntity
 import data.remote.CalendarActivityApi
 import data.remote.PetApi
 import domain.model.CalendarActivity
-import domain.model.PetItem
+import domain.model.Pet
 import domain.repository.PetsRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -19,7 +19,7 @@ class PetsRepoitoryImpl: PetsRepository, KoinComponent {
     private val calendarApi: CalendarActivityApi by inject()
     private val database: AppDatabase by inject()
 
-    override suspend fun create(pet: PetItem): Flow<Resources<PetItem>> = flow {
+    override suspend fun create(pet: Pet): Flow<Resources<Pet>> = flow {
         emit(Resources.Loading(true))
         try {
             val fetchResult = petsApi.create(pet)

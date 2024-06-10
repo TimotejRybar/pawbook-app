@@ -12,7 +12,7 @@ import data.model.entity.ColorEntity
 import data.model.entity.DoctorEntity
 import data.model.entity.PetEntity
 import data.repository.PetDetailRepositoryImpl
-import domain.model.PetItem
+import domain.model.Pet
 import domain.model.enums.PetDetailState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -27,7 +27,7 @@ class PetDetailViewModel() : ViewModel(), KoinComponent {
     private val _state = MutableStateFlow(PetDetailState.INIT)
     val state: StateFlow<PetDetailState> = _state
 
-    val pet = mutableStateOf(PetItem.empty())
+    val pet = mutableStateOf(Pet.empty())
 
     private val _profilePicture = MutableStateFlow("")
     val profilePicture: StateFlow<String> = _profilePicture
@@ -96,7 +96,7 @@ class PetDetailViewModel() : ViewModel(), KoinComponent {
         }
     }
 
-    fun createPet(pet: PetItem) {
+    fun createPet(pet: Pet) {
         viewModelScope.launch {
             petDetailRepository.createPet(pet).collect {
                 when(it) {

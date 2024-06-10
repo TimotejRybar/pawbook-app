@@ -2,16 +2,16 @@ package data.model.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import domain.model.enums.StorageEntryType
+import domain.model.Message
+import domain.model.result.User
 import kotlinx.datetime.LocalDateTime
 
 @Entity
-data class StorageEntryEntity(
+data class ConversationEntity(
     @PrimaryKey val id: String,
-    val storageEntryType: StorageEntryType,
     val name: String,
-    val vPath: String,
-    val storageKey: String,
+    var members: List<User>,
+    var messages: List<Message>,
     val createdAt: LocalDateTime,
     val updatedAt: LocalDateTime
 )

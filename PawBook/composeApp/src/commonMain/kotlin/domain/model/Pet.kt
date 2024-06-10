@@ -6,7 +6,7 @@ import kotlinx.datetime.LocalDateTime
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class PetItem(
+data class Pet(
     var _id: String?,
     var name: String,
     var shortDescription: String?,
@@ -19,12 +19,13 @@ data class PetItem(
     val breed: String, // key
     val doctor: String?, // ID
     val photo: String?,
+    val weightHistory: ArrayList<WeightRecord>,
     val updatedAt: LocalDateTime?,
     val createdAt: LocalDateTime?
 ) {
     companion object {
-        fun empty(): PetItem {
-            val item = PetItem(
+        fun empty(): Pet {
+            val item = Pet(
                 null,
                 "",
                 "",
@@ -37,6 +38,7 @@ data class PetItem(
                 "",
                 null,
                 null,
+                arrayListOf(),
                 null,
                 null
             )

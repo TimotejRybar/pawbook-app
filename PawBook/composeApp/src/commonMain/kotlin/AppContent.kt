@@ -53,6 +53,7 @@ import pawbook.composeapp.generated.resources.Res
 import pawbook.composeapp.generated.resources.contact
 import pawbook.composeapp.generated.resources.documents
 import pawbook.composeapp.generated.resources.loading
+import pawbook.composeapp.generated.resources.messages
 import pawbook.composeapp.generated.resources.new_folder
 import pawbook.composeapp.generated.resources.profile
 import pawbook.composeapp.generated.resources.screen_calendar
@@ -69,7 +70,9 @@ import presentation.components.button.MultiFloatingActionButton
 import presentation.screen.calendar.PetCalendar
 import presentation.navigation.Navigation
 import presentation.screen.calendar.PetCalendarActivity
+import presentation.screen.chat.Chat
 import presentation.screen.contact.Contact
+import presentation.screen.conversations.Conversations
 import presentation.screen.gallery.Gallery
 import presentation.screen.home.Home
 import presentation.screen.login.LoginScreen
@@ -104,7 +107,8 @@ fun AppContent(navController: NavHostController = rememberNavController()) {
         AppScreen.Home.name to stringResource(Res.string.screen_home),
         AppScreen.Profile.name to stringResource(Res.string.profile),
         AppScreen.Contact.name to stringResource(Res.string.contact),
-        AppScreen.Storage.name to stringResource(Res.string.documents)
+        AppScreen.Storage.name to stringResource(Res.string.documents),
+        AppScreen.Conversations.name to stringResource(Res.string.messages)
     )
 
     val currentRoute = navBackStackEntry?.destination?.route?.substringBefore("/")

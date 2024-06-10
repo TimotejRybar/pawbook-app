@@ -4,7 +4,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.heightIn
@@ -17,19 +16,15 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import core.common.Config
-import data.model.entity.PetEntity
 import data.model.entity.PetPhotoEntity
-import domain.model.PetItem
 import io.kamel.core.utils.URI
 import io.kamel.image.KamelImage
 import io.kamel.image.asyncPainterResource
@@ -38,8 +33,6 @@ import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.koinInject
 import pawbook.composeapp.generated.resources.Res
 import pawbook.composeapp.generated.resources.sofka
-import presentation.screen.calendar.PetCalendarOverviewItem
-import presentation.screen.petDetail.MyPetsViewModel
 import presentation.theme.colors.LocalAppColors
 
 @Composable

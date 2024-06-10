@@ -258,7 +258,8 @@ fun validatePassword(it: String): Boolean {
 enum class InputType{
     EMAIL,
     PHONE,
-    TEXT
+    TEXT,
+    DECIMAL
 }
 
 
@@ -307,6 +308,7 @@ fun validateField(type: InputType, input: String): Boolean {
         InputType.EMAIL -> input.matches(Regex("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\$"))
         InputType.PHONE -> input.matches(Regex("09(0|1)[5678][0-9][0-9][0-9][0-9][0-9][0-9]")) // TODO: this is for Slovakia, use translation resources in the future
         InputType.TEXT -> input.isNotEmpty()
+        InputType.DECIMAL -> input.matches(Regex("^(?!0+(\\.0+)?$)\\d*\\.?\\d+$"))
     }
 }
 

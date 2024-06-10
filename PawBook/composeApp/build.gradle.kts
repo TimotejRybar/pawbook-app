@@ -88,6 +88,7 @@ kotlin {
             implementation(libs.coil.mp)
             implementation(libs.coil.network.ktor)
             implementation(libs.font.awesome)
+            implementation("io.github.thechance101:chart:Beta-0.0.5")
         }
 
         sqldelight {

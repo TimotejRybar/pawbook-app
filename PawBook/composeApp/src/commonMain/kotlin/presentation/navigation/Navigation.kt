@@ -28,6 +28,7 @@ import pawbook.composeapp.generated.resources.Res
 import pawbook.composeapp.generated.resources.app_name
 import pawbook.composeapp.generated.resources.contact
 import pawbook.composeapp.generated.resources.documents
+import pawbook.composeapp.generated.resources.messages
 import pawbook.composeapp.generated.resources.profile
 import pawbook.composeapp.generated.resources.screen_calendar
 import pawbook.composeapp.generated.resources.screen_home

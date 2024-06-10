@@ -7,12 +7,17 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.material3.Button
+import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDefaults
+import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TimePicker
 import androidx.compose.material3.TimePickerDefaults
+import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -37,8 +42,10 @@ import pawbook.composeapp.generated.resources.Res
 import pawbook.composeapp.generated.resources.activity_duration_type
 import pawbook.composeapp.generated.resources.activity_type
 import pawbook.composeapp.generated.resources.add
+import pawbook.composeapp.generated.resources.cancel
 import pawbook.composeapp.generated.resources.description
 import pawbook.composeapp.generated.resources.location
+import pawbook.composeapp.generated.resources.repeated_activity
 import pawbook.composeapp.generated.resources.select_date
 import pawbook.composeapp.generated.resources.select_pets
 import pawbook.composeapp.generated.resources.select_time
@@ -98,6 +105,7 @@ fun PetCalendarActivity (viewModel: PetCalendarActivityViewModel = koinInject(),
             DurationField {
                 duration.value = it
             }
+            RepeatEvent()
             MultiPetInput(pets.value) {
                 selectedPets.clear()
                 selectedPets.addAll(it)
@@ -118,6 +126,20 @@ fun PetCalendarActivity (viewModel: PetCalendarActivityViewModel = koinInject(),
             }
             Spacer(modifier = Modifier.height(16.dp))
         }
+    }
+}
+
+@OptIn(ExperimentalResourceApi::class)
+@Composable
+fun RepeatEvent() {
+
+    val options = remember { arrayListOf("Len raz", "Každý deň", "Každý týždeň", "Každý mesiac") }
+
+    Spinner(
+        text = stringResource(Res.string.repeated_activity),
+        options = options)
+    {
+
     }
 }
 
@@ -296,7 +318,7 @@ fun MultiPetInput(pets: List<PetEntity>, onPetSelected: (pets: List<PetEntity>) 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
 fun ActivitySpinner(onSelected: (ActivityType) -> Unit) {
-    val activityOptions = arrayListOf("Vychádzka", "Návšteva veterinára")
+    val activityOptions = arrayListOf("Vychádzka", "Návšteva veterinára", "Lieky")
     Spinner(text = stringResource(Res.string.activity_type), options = activityOptions) {
         onSelected(ActivityType.entries[activityOptions.indexOf(it)])
     }

@@ -8,7 +8,7 @@ import domain.model.result.UploadFileResult
 import kotlinx.coroutines.flow.Flow
 
 interface StorageRepository {
-    suspend fun fetch(): Flow<List<StorageEntryEntity>>
+    suspend fun fetch(currentPath: String): Flow<List<StorageEntryEntity>>
     suspend fun uploadFile(name: String?, file: ByteArray, fileType: StorageEntryType, vPath: String): Flow<Resources<UploadFileResult>>
     suspend fun createFolder(name: String?, vPath: String): Flow<Resources<CreateFolderResult>>
 }

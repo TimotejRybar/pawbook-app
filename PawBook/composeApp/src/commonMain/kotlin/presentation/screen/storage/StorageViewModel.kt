@@ -28,21 +28,28 @@ class StorageViewModel(): ViewModel(), KoinComponent {
     private val _allFiles = MutableStateFlow<ArrayList<StorageEntryEntity>>(arrayListOf())
     val allFiles: StateFlow<ArrayList<StorageEntryEntity>> = _allFiles
 
+    private val _currentPath = MutableStateFlow(DEFAULT_DIRECTORY)
+    val currentPath: StateFlow<String> = _currentPath
+
     private val _state = MutableStateFlow(StorageUploadState.IDLE)
     val state: StateFlow<StorageUploadState> = _state
 
-    fun fetchStorage(){
+    fun fetchStorage(currentPath: String, backString: String) {
         viewModelScope.launch {
-            storageRepository.fetch().collect {
-                _allFiles.value.clear()
-                _allFiles.value.add(rootStorageEntry())
-                _allFiles.value.addAll(it)
+            storageRepository.fetch(currentPath).collect { fetchedFiles ->
+                val newFileList = arrayListOf<StorageEntryEntity>()
+                if (currentPath != DEFAULT_DIRECTORY) {
+                    newFileList.add(backStorageEntry(currentPath, backString))
+                }
+                newFileList.addAll(fetchedFiles)
+                _allFiles.value = newFileList
+                _currentPath.value = currentPath
             }
         }
     }
 
-    private fun rootStorageEntry(): StorageEntryEntity {
-        return StorageEntryEntity("root", StorageEntryType.FOLDER, DEFAULT_DIRECTORY, DEFAULT_DIRECTORY, DEFAULT_DIRECTORY, LocalDateTime(
+    private fun backStorageEntry(currentPath: String, backString: String): StorageEntryEntity {
+        return StorageEntryEntity("...", StorageEntryType.RETURN,  backString, currentPath, "", LocalDateTime(
             LocalDate(1,1,1), LocalTime(1,1)),
             LocalDateTime(LocalDate(1,1,1), LocalTime(1,1))
         )
@@ -98,6 +105,10 @@ class StorageViewModel(): ViewModel(), KoinComponent {
                 }
             }
         }
+    }
+
+    fun setCurrentPath(path: String) {
+        _currentPath.value = path
     }
 
     companion object {

@@ -4,16 +4,17 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverter
 import androidx.room.TypeConverters
+import core.enums.PetType
 import data.model.entity.BreedEntity
+import data.model.entity.CalendarActivityEntity
 import data.model.entity.ColorEntity
 import data.model.entity.DoctorEntity
-import domain.model.Address
-import domain.model.Location
-import core.enums.PetType
-import data.model.entity.CalendarActivityEntity
 import data.model.entity.PetEntity
 import data.model.entity.PetPhotoEntity
 import data.model.entity.StorageEntryEntity
+import domain.model.Address
+import domain.model.Location
+import domain.model.WeightRecord
 import kotlinx.datetime.LocalDateTime
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -34,8 +35,8 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun getPetDao(): PetDao
     abstract fun getPetPhotoDao(): PetPhotoDao
     abstract fun getStorageDao(): StorageDao
+   // abstract fun getConversationDao(): ConversationDao
 }
-
 
 object Converters {
     @JvmStatic
@@ -70,6 +71,32 @@ object Converters {
     @TypeConverter
     fun toStringList(value: String): List<String> = Json.decodeFromString(value)
 
+    @JvmStatic
+    @TypeConverter
+    fun fromWeightHistory(weightHistory: ArrayList<WeightRecord>): String = Json.encodeToString(weightHistory)
+
+    @JvmStatic
+    @TypeConverter
+    fun toWeightHistory(value: String): ArrayList<WeightRecord> = Json.decodeFromString(value)
+
+/*
+    @JvmStatic
+    @TypeConverter
+    fun fromUserList(stringList: List<User>): String = Json.encodeToString(stringList)
+
+    @JvmStatic
+    @TypeConverter
+    fun toUserList(value: String): List<User> = Json.decodeFromString(value)
+
+
+    @JvmStatic
+    @TypeConverter
+    fun fromMessageList(stringList: List<User>): String = Json.encodeToString(stringList)
+
+    @JvmStatic
+    @TypeConverter
+    fun toMessageList(value: String): List<Message> = Json.decodeFromString(value)
+*/
 
     @JvmStatic
     @TypeConverter

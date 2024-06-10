@@ -15,6 +15,7 @@ import data.remote.DoctorApi
 import data.remote.PetApi
 import data.remote.StorageApi
 import data.repository.NetworkException
+import domain.model.enums.StorageEntryType
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.datetime.LocalDateTime
@@ -51,8 +52,9 @@ class DatabaseSync: KoinComponent {
             //val petPhotos = petPhotoApi.fetch()
             val allFiles = storageApi.fetch();
 
+            // figure out how to save weight to remote db
             val myPets = pets.pets.map {
-                PetEntity(it._id as String, it.petType, it.name, it.shortDescription, it.gender, it.birthday, it.weight, it.color, it.breed, it.doctor,it.photo ?: "", it.createdAt as LocalDateTime, it.updatedAt as LocalDateTime)
+                PetEntity(it._id as String, it.petType, it.name, it.shortDescription, it.gender, it.birthday, it.weight, it.color, it.breed, it.doctor,it.photo ?: "", arrayListOf(), it.createdAt as LocalDateTime, it.updatedAt as LocalDateTime)
             }
 
             val activities = calendarActivities.calendar.map {
@@ -64,7 +66,7 @@ class DatabaseSync: KoinComponent {
             //}
 
             val storage = allFiles.storage.map {
-                StorageEntryEntity(it._id as String, it.storageEntryType, it.name, it.storageKey, it.storageKey, it.createdAt as LocalDateTime, it.updatedAt as LocalDateTime)
+                StorageEntryEntity(it._id as String, StorageEntryType.fromValue(it.storageEntryType), it.name, it.vPath, it.storageKey, it.createdAt as LocalDateTime, it.updatedAt as LocalDateTime)
             }
 
             database.getPetDao().insertAll(myPets)

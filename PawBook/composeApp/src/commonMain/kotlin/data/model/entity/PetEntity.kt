@@ -3,6 +3,7 @@ package data.model.entity
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import core.enums.PetType
+import domain.model.WeightRecord
 import kotlinx.datetime.LocalDateTime
 
 @Entity
@@ -18,6 +19,7 @@ data class PetEntity(
     val breed: String,
     val doctor: String?,
     val photo: String?,
+    val weightHistory: ArrayList<WeightRecord>,
     val createdAt: LocalDateTime,
     val updatedAt: LocalDateTime
 )
