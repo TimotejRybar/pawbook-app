@@ -20,5 +20,5 @@ interface PetDao {
     fun getById(petId: String): Flow<PetEntity>
 
     @Update
-    fun update(pet: PetEntity)
+    suspend fun update(pet: PetEntity)
 }

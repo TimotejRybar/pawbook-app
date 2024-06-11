@@ -1,4 +1,4 @@
-package presentation.screen.petDashboard.trackWeight
+package presentation.screen.petDashboard.trackEpilepsy
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -8,11 +8,9 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -22,49 +20,27 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import compose.icons.FontAwesomeIcons
-import compose.icons.fontawesomeicons.Solid
-import compose.icons.fontawesomeicons.solid.ArrowDown
-import compose.icons.fontawesomeicons.solid.ArrowUp
 import data.model.entity.PetEntity
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.ExperimentalResourceApi
-import org.jetbrains.compose.resources.stringResource
-import pawbook.composeapp.generated.resources.Res
-import pawbook.composeapp.generated.resources.weight_unit
 import presentation.components.petField.DialogTitle
 import presentation.screen.login.InputField
 import presentation.screen.login.InputType
 import presentation.screen.login.StyledButton
 import presentation.screen.petDashboard.PetDashboardViewModel
+import presentation.screen.petDashboard.trackWeight.TrackWeightDialog
 import presentation.theme.colors.LocalAppColors
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
-fun TrackWeightOverview(
+fun TrackEpilepsyOverview(
     viewModel: PetDashboardViewModel,
     pet: PetEntity
 ) {
-    val currentWeight: Float? = pet.weightHistory.last().weight ?: null
-    val previousWeight: Float? = pet.weightHistory.get(pet.weightHistory.size-2).weight ?: null
-    var arrowIcon: ImageVector?
-    val arrowColor: Color?
-
-    var weightIncreased: Boolean?
-    previousWeight.let {
-        weightIncreased = currentWeight as Float > it as Float
-
-        arrowIcon =
-            if (weightIncreased == true) FontAwesomeIcons.Solid.ArrowUp else FontAwesomeIcons.Solid.ArrowDown
-        arrowColor =
-            if (weightIncreased == true) Color.Green else Color.Red
-    }
     var openDialog by remember { mutableStateOf(false) }
 
     Row(
@@ -77,18 +53,15 @@ fun TrackWeightOverview(
             }
     ) {
         Text(
-            text = "$currentWeight" + stringResource(Res.string.weight_unit),
+            text = "Posledný záchvat",
             fontSize = 18.sp,
             modifier = Modifier.weight(1f)
         )
-        if(arrowIcon != null) {
-            Icon(
-                imageVector = arrowIcon as ImageVector,
-                contentDescription = null,
-                tint = arrowColor as Color,
-                modifier = Modifier.size(24.dp)
-            )
-        }
+        Text(
+            text = "pred 14 dňami",
+            fontSize = 18.sp,
+            modifier = Modifier.weight(1f)
+        )
     }
 
     if(openDialog) {
@@ -97,7 +70,7 @@ fun TrackWeightOverview(
 }
 
 @Composable
-fun TrackWeightDialog(viewModel: PetDashboardViewModel, pet: PetEntity, title: String) {
+fun TrackEpilepsyDialog(viewModel: PetDashboardViewModel, pet: PetEntity, title: String) {
 
     var openInputDialog by remember { mutableStateOf(false) }
     val coroutineScope = rememberCoroutineScope()
@@ -130,17 +103,17 @@ fun TrackWeightDialog(viewModel: PetDashboardViewModel, pet: PetEntity, title: S
     }
 
     if(openInputDialog) {
-        WeightRecordDialog {
+        EpilepsyRecordDialog {
             // save weight record
             coroutineScope.launch {
-                viewModel.addWeightRecord(pet, it)
+                viewModel.addEpilepsyRecord(pet, it)
             }
         }
     }
 }
 
 @Composable
-fun WeightRecordDialog(onSubmit: (Float) -> Unit) {
+fun EpilepsyRecordDialog(onSubmit: (Float) -> Unit) {
 
     var dialogWeight by remember { mutableStateOf("") }
 
@@ -162,6 +135,8 @@ fun WeightRecordDialog(onSubmit: (Float) -> Unit) {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Spacer(modifier = Modifier.height(16.dp))
+                // checkboxy: zvracanie, kako, kŕče (intenzita), slintanie (intenzita), dĺžka záchvatu (spinner)
+                // input poznámka
                 InputField("Váha zvieratka (kg)", dialogWeight, InputType.DECIMAL){
                     dialogWeight = it
                 }

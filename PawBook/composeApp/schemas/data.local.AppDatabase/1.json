@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "61129a572ba510c30dc9e617d5186ded",
+    "identityHash": "e248157e3da31882dcb71b2a954c4f87",
     "entities": [
       {
         "tableName": "BreedEntity",
@@ -234,7 +234,7 @@
       },
       {
         "tableName": "PetEntity",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `petType` TEXT NOT NULL, `name` TEXT NOT NULL, `shortDescription` TEXT, `gender` TEXT NOT NULL, `birthDay` TEXT, `weight` REAL NOT NULL, `color` TEXT NOT NULL, `breed` TEXT NOT NULL, `doctor` TEXT, `photo` TEXT, `createdAt` TEXT NOT NULL, `updatedAt` TEXT NOT NULL, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `petType` TEXT NOT NULL, `name` TEXT NOT NULL, `shortDescription` TEXT, `gender` TEXT NOT NULL, `birthDay` TEXT, `weight` REAL NOT NULL, `color` TEXT NOT NULL, `breed` TEXT NOT NULL, `doctor` TEXT, `photo` TEXT, `weightHistory` TEXT NOT NULL, `createdAt` TEXT NOT NULL, `updatedAt` TEXT NOT NULL, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -297,6 +297,12 @@
             "fieldPath": "photo",
             "columnName": "photo",
             "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "weightHistory",
+            "columnName": "weightHistory",
+            "affinity": "TEXT",
+            "notNull": true
           },
           {
             "fieldPath": "createdAt",
@@ -426,7 +432,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '61129a572ba510c30dc9e617d5186ded')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'e248157e3da31882dcb71b2a954c4f87')"
     ]
   }
 }
