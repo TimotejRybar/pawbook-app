@@ -17,13 +17,14 @@ import androidx.compose.ui.unit.sp
 import presentation.theme.colors.LocalAppColors
 
 @Composable
-fun ProgressInput(question: String, lowTitle: String, highTitle: String, maxProgress: Int, defaultProgress: Int) {
+fun ProgressInput(question: String, lowTitle: String, highTitle: String, maxProgress: Int, defaultProgress: Int, onValueSelected: (value: Int) -> Unit) {
     Row {
         ProgressInputTitle(question)
     }
     Row {
         LowTitle(lowTitle)
         ProgressBars(maxProgress, defaultProgress) {
+            onValueSelected(it)
         }
         HighTitle(highTitle)
     }

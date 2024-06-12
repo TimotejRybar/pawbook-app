@@ -13,6 +13,7 @@ import data.model.entity.PetEntity
 import data.model.entity.PetPhotoEntity
 import data.model.entity.StorageEntryEntity
 import domain.model.Address
+import domain.model.EpilepsyRecord
 import domain.model.Location
 import domain.model.WeightRecord
 import kotlinx.datetime.LocalDateTime
@@ -79,24 +80,33 @@ object Converters {
     @TypeConverter
     fun toWeightHistory(value: String): ArrayList<WeightRecord> = Json.decodeFromString(value)
 
-/*
     @JvmStatic
     @TypeConverter
-    fun fromUserList(stringList: List<User>): String = Json.encodeToString(stringList)
+    fun fromEpilepsyHistory(epilepsyHistory: ArrayList<EpilepsyRecord>): String = Json.encodeToString(epilepsyHistory)
 
     @JvmStatic
     @TypeConverter
-    fun toUserList(value: String): List<User> = Json.decodeFromString(value)
+    fun toEpilepsyHistory(value: String): ArrayList<EpilepsyRecord> = Json.decodeFromString(value)
 
 
-    @JvmStatic
-    @TypeConverter
-    fun fromMessageList(stringList: List<User>): String = Json.encodeToString(stringList)
+    /*
+        @JvmStatic
+        @TypeConverter
+        fun fromUserList(stringList: List<User>): String = Json.encodeToString(stringList)
 
-    @JvmStatic
-    @TypeConverter
-    fun toMessageList(value: String): List<Message> = Json.decodeFromString(value)
-*/
+        @JvmStatic
+        @TypeConverter
+        fun toUserList(value: String): List<User> = Json.decodeFromString(value)
+
+
+        @JvmStatic
+        @TypeConverter
+        fun fromMessageList(stringList: List<User>): String = Json.encodeToString(stringList)
+
+        @JvmStatic
+        @TypeConverter
+        fun toMessageList(value: String): List<Message> = Json.decodeFromString(value)
+    */
 
     @JvmStatic
     @TypeConverter

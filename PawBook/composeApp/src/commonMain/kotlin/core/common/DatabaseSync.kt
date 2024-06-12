@@ -52,9 +52,8 @@ class DatabaseSync: KoinComponent {
             //val petPhotos = petPhotoApi.fetch()
             val allFiles = storageApi.fetch();
 
-            // figure out how to save weight to remote db
             val myPets = pets.pets.map {
-                PetEntity(it._id as String, it.petType, it.name, it.shortDescription, it.gender, it.birthday, it.weight, it.color, it.breed, it.doctor,it.photo ?: "", arrayListOf(), it.createdAt as LocalDateTime, it.updatedAt as LocalDateTime)
+                PetEntity(it._id as String, it.petType, it.name, it.shortDescription, it.gender, it.birthday, it.weight, it.color, it.breed, it.doctor,it.photo ?: "", it.trackWeight, it.weightHistory, it.trackEpilepsy, it.epilepsyHistory, it.createdAt as LocalDateTime, it.updatedAt as LocalDateTime)
             }
 
             val activities = calendarActivities.calendar.map {

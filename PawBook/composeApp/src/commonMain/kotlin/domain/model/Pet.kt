@@ -19,7 +19,10 @@ data class Pet(
     val breed: String, // key
     val doctor: String?, // ID
     val photo: String?,
+    val trackWeight: Boolean,
     val weightHistory: ArrayList<WeightRecord>,
+    val trackEpilepsy: Boolean,
+    val epilepsyHistory: ArrayList<EpilepsyRecord>,
     val updatedAt: LocalDateTime?,
     val createdAt: LocalDateTime?
 ) {
@@ -38,6 +41,9 @@ data class Pet(
                 "",
                 null,
                 null,
+                true,
+                arrayListOf(),
+                true,
                 arrayListOf(),
                 null,
                 null

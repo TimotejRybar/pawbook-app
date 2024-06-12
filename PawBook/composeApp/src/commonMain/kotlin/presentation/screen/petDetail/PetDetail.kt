@@ -64,7 +64,6 @@ import data.model.entity.ColorEntity
 import data.model.entity.DoctorEntity
 import data.model.entity.PetEntity
 import domain.model.Pet
-import domain.model.WeightRecord
 import domain.model.enums.PetDetailState
 import domain.model.enums.PetPropFieldType
 import io.ktor.util.date.GMTDate
@@ -276,7 +275,7 @@ fun PetProps(
     SaveButton {
        // create new pet
        viewModel.createPet(Pet(null, name.value, "", PetType.Dog, null, birthDay.value, (gender.value as Gender).value,weight.value.toFloat(),
-           color, breed.value?.id as String, doctor.value?.id, photo, pet?.weightHistory as ArrayList<WeightRecord>, null, null))
+           color, breed.value?.id as String, doctor.value?.id, photo, true, arrayListOf(), false, arrayListOf(), null, null))
     }
 }
 

@@ -1,5 +1,6 @@
 package presentation.screen.petDashboard
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,9 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.KeyboardArrowDown
-import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -30,17 +29,19 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import core.common.Config
+import compose.icons.FontAwesomeIcons
+import compose.icons.fontawesomeicons.Solid
+import compose.icons.fontawesomeicons.solid.Female
 import data.model.entity.ColorEntity
 import data.model.entity.DoctorEntity
 import data.model.entity.PetEntity
-import io.kamel.image.KamelImage
-import io.kamel.image.asyncPainterResource
 import kotlinx.datetime.LocalDateTime
 import org.jetbrains.compose.resources.ExperimentalResourceApi
+import org.jetbrains.compose.resources.imageResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
 import pawbook.composeapp.generated.resources.Res
+import pawbook.composeapp.generated.resources.sofka
 import pawbook.composeapp.generated.resources.weight_unit
 import presentation.components.color.colorField.ColorFieldReadOnly
 import presentation.screen.petDashboard.trackWeight.TrackWeightOverview
@@ -70,7 +71,7 @@ fun PetDashboard(petId: String, viewModel: PetDashboardViewModel = koinInject())
             ) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Start
+                    horizontalArrangement = Arrangement.Center
                 ) {
                     CirclePhoto(pet?.id as String)
                     Column(
@@ -80,10 +81,11 @@ fun PetDashboard(petId: String, viewModel: PetDashboardViewModel = koinInject())
                             PetName(pet?.name as String)
                             Icon(
                                 modifier = Modifier.size(24.dp),
-                                imageVector = Icons.Rounded.Add,
-                                contentDescription = "arrow",
+                                imageVector = FontAwesomeIcons.Solid.Female,
+                                contentDescription = "female",
                                 tint = Color.Black
                             )
+
                         }
                         PetBirthday(pet?.birthDay)
                         PetWeight(pet?.weight)
@@ -99,9 +101,10 @@ fun PetDashboard(petId: String, viewModel: PetDashboardViewModel = koinInject())
                         PetBreed(pet?.breed)
                         PetGender(pet?.gender as String)
                     }
-                    PetDoctor(petDoctor)
-                    TrackWeightOverview(viewModel, pet as PetEntity)
                 }
+                //PetDoctor(petDoctor)
+                TrackWeightOverview(viewModel, pet as PetEntity)
+                //TrackEpilepsyOverview(viewModel, pet as PetEntity)
             }
         }
     }
@@ -123,18 +126,13 @@ fun PetDoctor(doctor: DoctorEntity?) {
 @Composable
 fun PetColors(colors: List<ColorEntity>?) {
     if (colors != null) {
-        ColorFieldReadOnly("Farba psa", colors)
+        ColorFieldReadOnly("", colors)
     }
 }
 
 @Composable
 fun PetGender(gender: String) {
-    Icon(
-        modifier = Modifier.size(24.dp),
-        imageVector = Icons.Rounded.Settings,
-        contentDescription = "arrow",
-        tint = Color.Black
-    )
+
 }
 
 @Composable
@@ -154,14 +152,16 @@ fun PetBirthday(birthDay: LocalDateTime?) {
     )
 }
 
+@OptIn(ExperimentalResourceApi::class)
 @Composable
 fun CirclePhoto(photoURL: String) {
-    KamelImage(
-        resource = asyncPainterResource(Config.STORAGE_URl + photoURL),
+    Image(
+         imageResource(Res.drawable.sofka),
+        //resource = asyncPainterResource(Config.STORAGE_URl + photoURL),
         contentDescription = "Pet photo",
         contentScale = ContentScale.Crop,
         modifier = Modifier
-            .size(150.dp)
+            .size(120.dp)
             .clip(CircleShape)
     )
 }
