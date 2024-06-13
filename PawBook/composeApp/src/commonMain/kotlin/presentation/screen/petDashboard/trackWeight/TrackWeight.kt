@@ -95,7 +95,7 @@ fun TrackWeightOverview(
             if(pet.weightHistory.size > 0) {
                 Text(
                     text = pet.weightHistory.last().weight.toString() + " " + stringResource(Res.string.weight_unit),
-                    fontSize = 18.sp,
+                    fontSize = 14.sp,
                 )
             } else {
                 Text(

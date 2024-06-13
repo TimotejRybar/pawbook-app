@@ -1,4 +1,4 @@
-package presentation.screen.petDetail
+package presentation.screen.petCreate
 
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -13,7 +13,7 @@ import data.model.entity.DoctorEntity
 import data.model.entity.PetEntity
 import data.repository.PetDetailRepositoryImpl
 import domain.model.Pet
-import domain.model.enums.PetDetailState
+import domain.model.enums.PetCreateState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
@@ -21,12 +21,12 @@ import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
-class PetDetailViewModel() : ViewModel(), KoinComponent {
+class PetCreateViewModel() : ViewModel(), KoinComponent {
 
     private val petDetailRepository: PetDetailRepositoryImpl by inject()
 
-    private val _state = MutableStateFlow(PetDetailState.INIT)
-    val state: StateFlow<PetDetailState> = _state
+    private val _state = MutableStateFlow(PetCreateState.INIT)
+    val state: StateFlow<PetCreateState> = _state
 
     val pet = mutableStateOf(Pet.empty())
 
@@ -102,14 +102,14 @@ class PetDetailViewModel() : ViewModel(), KoinComponent {
             petDetailRepository.createPet(pet).collect {
                 when(it) {
                     is Resources.Error -> {
-                        if(it.message == "no_internet") _state.update { PetDetailState.NO_INTERNET }
-                        if(it.message == "internal_error") _state.update { PetDetailState.ERROR }
+                        if(it.message == "no_internet") _state.update { PetCreateState.NO_INTERNET }
+                        if(it.message == "internal_error") _state.update { PetCreateState.ERROR }
                     }
                     is Resources.Loading -> {
-                        _state.update { PetDetailState.LOADING }
+                        _state.update { PetCreateState.LOADING }
                     }
                     is Resources.Success -> {
-                        _state.update { PetDetailState.SAVED }
+                        _state.update { PetCreateState.SAVED }
                     }
                 }
             }
@@ -122,15 +122,15 @@ class PetDetailViewModel() : ViewModel(), KoinComponent {
             petDetailRepository.uploadProfilePicture(pet?.id as String, file).collect {
                 when(it) {
                     is Resources.Error -> {
-                        if(it.message == "no_internet") _state.update { PetDetailState.NO_INTERNET }
-                        if(it.message == "internal_error") _state.update { PetDetailState.ERROR }
+                        if(it.message == "no_internet") _state.update { PetCreateState.NO_INTERNET }
+                        if(it.message == "internal_error") _state.update { PetCreateState.ERROR }
                     }
                     is Resources.Loading -> {
-                        _state.update { PetDetailState.LOADING }
+                        _state.update { PetCreateState.LOADING }
                     }
                     is Resources.Success -> {
                         _profilePicture.value = it.data ?: ""
-                        _state.update { PetDetailState.UPLOADED_PHOTO }
+                        _state.update { PetCreateState.UPLOADED_PHOTO }
                     }
                 }
             }

@@ -91,7 +91,7 @@ fun TrackEpilepsyOverview(
         trailingContent = {
             Text(
                 text = "14 dní",
-                fontSize = 18.sp
+                fontSize = 14.sp
             )
         })
 
@@ -128,9 +128,6 @@ fun TrackEpilepsyDialog(viewModel: PetDashboardViewModel, pet: PetEntity, onDism
                 Spacer(modifier = Modifier.height(16.dp))
                 DialogTitle("História záznamov")
                 EpilepsyHistoryChart(pet.epilepsyHistory) {
-
-                }
-                StyledButton("Pridať záznam") {
                     openInputDialog = true
                 }
                 Spacer(modifier = Modifier.height(16.dp))
@@ -309,13 +306,12 @@ fun EpilepsyHistoryChart(epilepsyHistory: ArrayList<EpilepsyRecord>, onAddClick:
 
     val lineParameters = arrayListOf(
         LineParameters(
-        label = "Váha (kg)",
+        label = "Intenzita záchvatu",
         data = weightData,
         lineColor = LocalAppColors.current.primary,
         lineType = LineType.CURVED_LINE,
         lineShadow = true,
-    )
-    )
+    ))
 
     Column(modifier = Modifier.fillMaxSize().padding(32.dp)) {
         if (epilepsyHistory.isNotEmpty()) {

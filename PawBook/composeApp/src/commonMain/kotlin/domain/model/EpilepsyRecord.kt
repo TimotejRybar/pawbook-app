@@ -15,6 +15,7 @@ data class EpilepsyRecord (
     val created: LocalDateTime = LocalDateTime(1,1,1,1,1,1)
 ) {
     fun calculatePoints(): Double {
-
+        // TODO: calculate points
+        return 4.0
     }
 }

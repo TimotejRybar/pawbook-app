@@ -1,6 +1,5 @@
 package presentation.screen.profile
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -34,8 +33,6 @@ import androidx.compose.ui.graphics.Paint
 import androidx.compose.ui.graphics.PaintingStyle
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
-import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -65,8 +62,8 @@ import pawbook.composeapp.generated.resources.select_photo
 import presentation.screen.login.InputField
 import presentation.screen.login.InputType
 import presentation.screen.login.StyledButton
-import presentation.screen.petDetail.CirclePhoto
-import presentation.screen.petDetail.DatePropField
+import presentation.screen.petCreate.CirclePhoto
+import presentation.screen.petCreate.DatePropField
 import presentation.theme.colors.LocalAppColors
 import utils.compose.toInstant
 

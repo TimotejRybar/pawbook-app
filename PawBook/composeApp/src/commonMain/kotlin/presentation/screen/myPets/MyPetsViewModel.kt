@@ -1,4 +1,4 @@
-package presentation.screen.petDetail
+package presentation.screen.petCreate
 
 import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel

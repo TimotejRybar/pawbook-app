@@ -41,6 +41,7 @@ import androidx.navigation.navArgument
 import compose.icons.FontAwesomeIcons
 import compose.icons.fontawesomeicons.Regular
 import compose.icons.fontawesomeicons.Solid
+import compose.icons.fontawesomeicons.regular.Edit
 import compose.icons.fontawesomeicons.regular.File
 import compose.icons.fontawesomeicons.regular.Folder
 import compose.icons.fontawesomeicons.solid.Plus
@@ -67,18 +68,15 @@ import pawbook.composeapp.generated.resources.screen_register
 import pawbook.composeapp.generated.resources.upload_file
 import presentation.components.button.FabItem
 import presentation.components.button.MultiFloatingActionButton
-import presentation.screen.calendar.PetCalendar
 import presentation.navigation.Navigation
+import presentation.screen.calendar.PetCalendar
 import presentation.screen.calendar.PetCalendarActivity
-import presentation.screen.chat.Chat
 import presentation.screen.contact.Contact
-import presentation.screen.conversations.Conversations
 import presentation.screen.gallery.Gallery
 import presentation.screen.home.Home
 import presentation.screen.login.LoginScreen
 import presentation.screen.myPets.MyPets
 import presentation.screen.petDashboard.PetDashboard
-import presentation.screen.petDetail.PetDetail
 import presentation.screen.profile.Profile
 import presentation.screen.register.RegisterScreen
 import presentation.screen.splash.Splash
@@ -214,6 +212,21 @@ fun AppContent(navController: NavHostController = rememberNavController()) {
                                                     contentDescription = "Menu"
                                                 )
                                             }
+                                        },
+                                        actions = {
+                                            if(navController.currentDestination?.route == AppScreen.PetDashboard.name) {
+                                                IconButton(onClick = {
+                                                    val petId = selectedPet.value?.id
+                                                    if (petId != null) {
+                                                        navController.navigate("PetEdit/$petId")
+                                                    }
+                                                }) {
+                                                    Icon(
+                                                        FontAwesomeIcons.Regular.Edit,
+                                                        contentDescription = "Edit pet"
+                                                    )
+                                                }
+                                            }
                                         }
                                     )
                                 }
@@ -260,8 +273,12 @@ fun AppContent(navController: NavHostController = rememberNavController()) {
                             })
                         }
 
-                        composable(route = AppScreen.PetEdit.name) {
-                            PetDetail(selectedPet.value, onSaved = {
+                        composable(
+                            route = "PetEdit/{petId}",
+                            arguments = listOf(navArgument("petId") { type = NavType.StringType })
+                        ) { backStackEntry ->
+                            val petId = backStackEntry.arguments?.getString("petId") ?: return@composable
+                            PetEdit(petId, onSaved = {
                                 navController.navigate(AppScreen.Login.name)
                             })
                         }

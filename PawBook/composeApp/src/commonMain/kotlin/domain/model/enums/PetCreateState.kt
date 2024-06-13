@@ -1,6 +1,6 @@
 package domain.model.enums
 
-enum class PetDetailState {
+enum class PetCreateState {
     INIT,
     VIEW,
     EDIT,

@@ -16,9 +16,9 @@ import presentation.screen.calendar.PetCalendarViewModel
 import presentation.screen.contact.ContactViewModel
 import presentation.screen.home.HomeViewModel
 import presentation.screen.login.LoginViewModel
+import presentation.screen.petCreate.MyPetsViewModel
+import presentation.screen.petCreate.PetCreateViewModel
 import presentation.screen.petDashboard.PetDashboardViewModel
-import presentation.screen.petDetail.MyPetsViewModel
-import presentation.screen.petDetail.PetDetailViewModel
 import presentation.screen.profile.ProfileViewModel
 import presentation.screen.register.RegisterViewModel
 import presentation.screen.splash.SplashViewModel
@@ -73,7 +73,7 @@ fun appModule() = module {
     single<PetsRepoitoryImpl> { PetsRepoitoryImpl() }
     single { KoinModule.providePetsApi(get()) }
 
-    single<PetDetailViewModel> { PetDetailViewModel() }
+    single<PetCreateViewModel> { PetCreateViewModel() }
     single<PetDetailRepositoryImpl> { PetDetailRepositoryImpl() }
     single { KoinModule.provideBreedsApi(get()) }
     single { KoinModule.provideDoctorsApi(get()) }

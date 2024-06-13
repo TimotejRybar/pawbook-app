@@ -9,7 +9,7 @@ import data.model.entity.PetEntity
 import data.repository.PetDashboardRepositoryImpl
 import domain.model.EpilepsyRecord
 import domain.model.WeightRecord
-import domain.model.enums.PetDetailState
+import domain.model.enums.PetCreateState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -21,8 +21,8 @@ import org.koin.core.component.inject
 class PetDashboardViewModel() : ViewModel(), KoinComponent {
     private val petDashboardRepository: PetDashboardRepositoryImpl by inject()
 
-    private val _state = MutableStateFlow(PetDetailState.INIT)
-    val state: StateFlow<PetDetailState> = _state
+    private val _state = MutableStateFlow(PetCreateState.INIT)
+    val state: StateFlow<PetCreateState> = _state
 
     private val _pet = MutableStateFlow<PetEntity?>(null)
     val pet: StateFlow<PetEntity?> = _pet.asStateFlow()
@@ -33,12 +33,16 @@ class PetDashboardViewModel() : ViewModel(), KoinComponent {
     private val _petDoctor = MutableStateFlow<DoctorEntity?>(null)
     val petDoctor: StateFlow<DoctorEntity?> = _petDoctor.asStateFlow()
 
-    fun hexColorsToColorEntities(hexColors: List<String>) {
+    fun hexColorsToColorEntities(hexColors: List<String>): StateFlow<Boolean>  {
+        val isLoading = MutableStateFlow(false)
         viewModelScope.launch {
+            isLoading.value = true
             petDashboardRepository.loadColors(hexColors).collect {
                 _petColors.value = it
+                isLoading.value = false
             }
         }
+        return isLoading.asStateFlow()
     }
 
     fun loadDoctor(doctorId: String) {

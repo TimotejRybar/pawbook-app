@@ -27,7 +27,7 @@ import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.InternalResourceApi
 import presentation.navbar.Navbar
 import presentation.screen.calendar.PetCalendar
-import presentation.screen.petDetail.CirclePhoto
+import presentation.screen.petCreate.CirclePhoto
 import presentation.theme.colors.LocalAppColors
 
 @Composable

@@ -1,6 +1,7 @@
 package presentation.screen.petDashboard
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,11 +12,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.KeyboardArrowDown
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
+import androidx.compose.material3.ListItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -24,25 +24,23 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import compose.icons.FontAwesomeIcons
 import compose.icons.fontawesomeicons.Solid
-import compose.icons.fontawesomeicons.solid.BirthdayCake
+import compose.icons.fontawesomeicons.solid.ClinicMedical
 import compose.icons.fontawesomeicons.solid.Venus
 import data.model.entity.ColorEntity
 import data.model.entity.DoctorEntity
 import data.model.entity.PetEntity
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.datetime.LocalDateTime
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.imageResource
-import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
 import pawbook.composeapp.generated.resources.Res
 import pawbook.composeapp.generated.resources.sofka
-import pawbook.composeapp.generated.resources.weight_unit
 import presentation.components.color.colorField.ColorFieldReadOnly
 import presentation.screen.petDashboard.trackEpilepsy.TrackEpilepsyOverview
 import presentation.screen.petDashboard.trackWeight.TrackWeightOverview
@@ -55,11 +53,19 @@ fun PetDashboard(petId: String, viewModel: PetDashboardViewModel = koinInject())
     val pet by viewModel.pet.collectAsState()
     val petColors by viewModel.petColors.collectAsState()
     val petDoctor by viewModel.petDoctor.collectAsState()
+    var colorsLoading: StateFlow<Boolean>? = null //  TODO: try collecting this from viewmodel this is wrong impl
 
     LaunchedEffect(key1 = true) {
         viewModel.loadPet(petId)
-        pet?.color?.let { viewModel.hexColorsToColorEntities(it) }
-        pet?.doctor?.let { viewModel.loadDoctor(it) }
+        pet?.color?.let {
+            colorsLoading = viewModel.hexColorsToColorEntities(it)
+        }
+    }
+
+    colorsLoading?.collectAsState()?.let { isLoading ->
+        if (!isLoading.value) {
+            viewModel.loadDoctor(pet?.doctor as String)
+        }
     }
 
     Box(
@@ -86,7 +92,6 @@ fun PetDashboard(petId: String, viewModel: PetDashboardViewModel = koinInject())
                                 contentDescription = "female",
                                 tint = LocalAppColors.current.primary
                             )
-
                         }
                         PetBirthday(pet?.birthDay)
                         PetColors(petColors)
@@ -102,7 +107,7 @@ fun PetDashboard(petId: String, viewModel: PetDashboardViewModel = koinInject())
                         PetGender(pet?.gender as String)
                     }
                 }
-                //PetDoctor(petDoctor)
+                PetDoctor(petDoctor)
                 TrackWeightOverview(viewModel, pet as PetEntity)
                 TrackEpilepsyOverview(viewModel, pet as PetEntity)
             }
@@ -112,15 +117,35 @@ fun PetDashboard(petId: String, viewModel: PetDashboardViewModel = koinInject())
 
 @Composable
 fun PetDoctor(doctor: DoctorEntity?) {
-    Text(text = doctor?.name.toString())
-    IconButton(onClick = {  }) {
-        Icon(
-            modifier = Modifier.size(24.dp),
-            imageVector = Icons.Rounded.KeyboardArrowDown,
-            contentDescription = "arrow",
-            tint = Color.Black
-        )
-    }
+    ListItem(
+        modifier = Modifier
+            .padding(16.dp)
+            .fillMaxWidth()
+            .clickable {
+
+            },
+        leadingContent = {
+            Row {
+                if(doctor != null) {
+                    Icon(
+                        FontAwesomeIcons.Solid.ClinicMedical,
+                        modifier = Modifier.size(24.dp),
+                        contentDescription = "last seizure icon"
+                    )
+                    Spacer(modifier = Modifier.width(5.dp))
+                    Text(
+                        text = doctor.name,
+                        fontSize = 18.sp
+                    )
+                }
+            }
+        },
+        headlineContent = {
+
+        },
+        trailingContent = {
+
+        })
 }
 
 @Composable
@@ -139,12 +164,6 @@ fun PetGender(gender: String) {
 fun PetBreed(breed: String?) {
 }
 
-@OptIn(ExperimentalResourceApi::class)
-@Composable
-fun PetWeight(weight: Float?) {
-    Text(weight.toString() + " " + stringResource(Res.string.weight_unit), color = LocalAppColors.current.primary)
-}
-
 @Composable
 fun PetBirthday(birthDay: LocalDateTime?) {
     Row {
@@ -152,12 +171,12 @@ fun PetBirthday(birthDay: LocalDateTime?) {
             text = birthDay?.format().toString(),
             color = LocalAppColors.current.primary
         )
-        Icon(
+        /*Icon(
             modifier = Modifier.size(24.dp),
             imageVector = FontAwesomeIcons.Solid.BirthdayCake,
             contentDescription = "weight",
             tint = LocalAppColors.current.primary
-        )
+        )*/
     }
 }
 

@@ -28,7 +28,7 @@ import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.koinInject
 import pawbook.composeapp.generated.resources.Res
 import pawbook.composeapp.generated.resources.sofka
-import presentation.screen.petDetail.MyPetsViewModel
+import presentation.screen.petCreate.MyPetsViewModel
 import presentation.theme.colors.LocalAppColors
 
 @Composable

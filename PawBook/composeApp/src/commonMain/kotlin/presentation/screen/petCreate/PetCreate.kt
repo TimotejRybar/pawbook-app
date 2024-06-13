@@ -1,4 +1,4 @@
-package presentation.screen.petDetail
+package presentation.screen.petCreate
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -64,7 +64,7 @@ import data.model.entity.ColorEntity
 import data.model.entity.DoctorEntity
 import data.model.entity.PetEntity
 import domain.model.Pet
-import domain.model.enums.PetDetailState
+import domain.model.enums.PetCreateState
 import domain.model.enums.PetPropFieldType
 import io.ktor.util.date.GMTDate
 import kotlinx.coroutines.launch
@@ -98,12 +98,12 @@ import presentation.theme.colors.LocalAppColors
 import utils.compose.PetPropFieldUtils
 
 @Composable
-fun PetDetail(pet: PetEntity?, viewModel: PetDetailViewModel = koinInject(), onSaved: () -> Unit) {
+fun PetCreate(pet: PetEntity?, viewModel: PetCreateViewModel = koinInject(), onSaved: () -> Unit) {
 
     val state by viewModel.state.collectAsState()
 
     LaunchedEffect(true){
-        if(state == PetDetailState.EDIT) {
+        if(state == PetCreateState.EDIT) {
             if (pet != null) {
                 viewModel.loadPetColors(pet)
                 viewModel.loadPetDoctor(pet)
@@ -111,8 +111,8 @@ fun PetDetail(pet: PetEntity?, viewModel: PetDetailViewModel = koinInject(), onS
         }
     }
 
-    LaunchedEffect(state == PetDetailState.SAVED) {
-        if(state == PetDetailState.SAVED)
+    LaunchedEffect(state == PetCreateState.SAVED) {
+        if(state == PetCreateState.SAVED)
         onSaved()
     }
 
@@ -129,7 +129,7 @@ fun PetDetail(pet: PetEntity?, viewModel: PetDetailViewModel = koinInject(), onS
 }
 
 @Composable
-fun PetInfo(viewModel: PetDetailViewModel, pet: PetEntity?) {
+fun PetInfo(viewModel: PetCreateViewModel, pet: PetEntity?) {
     val breeds by viewModel.breeds.collectAsState()
     val doctors by viewModel.doctors.collectAsState()
     val colors by viewModel.colors.collectAsState()
@@ -159,7 +159,7 @@ fun SaveButton(onFormSubmit: () -> Unit) {
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
-fun PetPhoto(viewModel: PetDetailViewModel, pet: PetEntity?) {
+fun PetPhoto(viewModel: PetCreateViewModel, pet: PetEntity?) {
     val openDialog = remember { mutableStateOf(false) }
     val currentPhoto = remember { mutableStateOf("") }
     val currentPhotoFile = remember { mutableStateOf<ByteArray?>(null) }
@@ -229,7 +229,7 @@ fun PetPhoto(viewModel: PetDetailViewModel, pet: PetEntity?) {
 
 @Composable
 fun PetProps(
-    viewModel: PetDetailViewModel,
+    viewModel: PetCreateViewModel,
     breeds: List<BreedEntity>,
     colors: List<ColorEntity>,
     doctors: List<DoctorEntity>,
