@@ -12,5 +12,9 @@ data class EpilepsyRecord (
     var spasms: Int = 1, // intensity 0-3
     var duration: Int = 2, // minutes
     var note: String = "",
-    val created: LocalDateTime = LocalDateTime(0,0,0,0,0,0)
-)
+    val created: LocalDateTime = LocalDateTime(1,1,1,1,1,1)
+) {
+    fun calculatePoints(): Double {
+
+    }
+}

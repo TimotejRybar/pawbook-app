@@ -2,9 +2,11 @@ package presentation.screen.petDashboard.trackEpilepsy
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -14,10 +16,12 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CheckboxColors
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.Slider
+import androidx.compose.material3.SliderColors
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -31,25 +35,28 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import com.aay.compose.baseComponents.model.GridOrientation
+import com.aay.compose.lineChart.LineChart
+import com.aay.compose.lineChart.model.LineParameters
+import com.aay.compose.lineChart.model.LineType
 import compose.icons.FontAwesomeIcons
 import compose.icons.fontawesomeicons.Solid
 import compose.icons.fontawesomeicons.solid.Heartbeat
 import data.model.entity.PetEntity
 import domain.model.EpilepsyRecord
 import kotlinx.coroutines.launch
-import org.jetbrains.compose.resources.ExperimentalResourceApi
-import presentation.components.petField.DialogTitle
 import presentation.components.progressBars.ProgressInput
+import presentation.screen.calendar.formatDate
 import presentation.screen.login.StyledButton
 import presentation.screen.petDashboard.PetDashboardViewModel
-import presentation.screen.petDashboard.trackWeight.TrackWeightDialog
 import presentation.theme.colors.LocalAppColors
 
-@OptIn(ExperimentalResourceApi::class)
 @Composable
 fun TrackEpilepsyOverview(
     viewModel: PetDashboardViewModel,
@@ -89,21 +96,21 @@ fun TrackEpilepsyOverview(
         })
 
     if(openDialog) {
-        TrackWeightDialog(viewModel, pet, "test"){
+        TrackEpilepsyDialog(viewModel, pet){
             openDialog = false
         }
     }
 }
 
 @Composable
-fun TrackEpilepsyDialog(viewModel: PetDashboardViewModel, pet: PetEntity, title: String) {
+fun TrackEpilepsyDialog(viewModel: PetDashboardViewModel, pet: PetEntity, onDismiss: () -> Unit) {
 
     var openInputDialog by remember { mutableStateOf(false) }
     val coroutineScope = rememberCoroutineScope()
 
     Dialog(
         onDismissRequest = {
-
+            onDismiss()
         },
         properties = DialogProperties(),
     ) {
@@ -119,7 +126,10 @@ fun TrackEpilepsyDialog(viewModel: PetDashboardViewModel, pet: PetEntity, title:
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Spacer(modifier = Modifier.height(16.dp))
-                DialogTitle(title)
+                DialogTitle("História záznamov")
+                EpilepsyHistoryChart(pet.epilepsyHistory) {
+
+                }
                 StyledButton("Pridať záznam") {
                     openInputDialog = true
                 }
@@ -129,8 +139,8 @@ fun TrackEpilepsyDialog(viewModel: PetDashboardViewModel, pet: PetEntity, title:
     }
 
     if(openInputDialog) {
-        EpilepsyRecordDialog {
-            // save weight record
+        EpilepsyRecordDialog(onDismiss = { openInputDialog = false }) {
+            // save epilepsy record
             coroutineScope.launch {
                 viewModel.addEpilepsyRecord(pet, it)
             }
@@ -139,13 +149,13 @@ fun TrackEpilepsyDialog(viewModel: PetDashboardViewModel, pet: PetEntity, title:
 }
 
 @Composable
-fun EpilepsyRecordDialog(onSubmit: (EpilepsyRecord) -> Unit) {
+fun EpilepsyRecordDialog(onDismiss: () -> Unit, onSubmit: (EpilepsyRecord) -> Unit) {
 
-    val epilepsyRecord by remember { mutableStateOf<EpilepsyRecord>(EpilepsyRecord()) }
+    val epilepsyRecord by remember { mutableStateOf(EpilepsyRecord()) }
 
     Dialog(
         onDismissRequest = {
-
+            onDismiss()
         },
         properties = DialogProperties(),
     ) {
@@ -157,9 +167,15 @@ fun EpilepsyRecordDialog(onSubmit: (EpilepsyRecord) -> Unit) {
             shape = RoundedCornerShape(20.dp),
         ) {
             Column(
-                modifier = Modifier.fillMaxWidth().background(LocalAppColors.current.secondary),
+                modifier = Modifier.fillMaxWidth().background(LocalAppColors.current.secondary)
+                    .padding(16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
+                Text("Nový záznam", fontSize = 24.sp, color = LocalAppColors.current.primary)
+                Spacer(modifier = Modifier.height(16.dp))
+                ProgressInput("Intenzita kŕčov", "Slabé", "Silné",3,2) {
+                    epilepsyRecord.spasms = it
+                }
                 Spacer(modifier = Modifier.height(16.dp))
                 BasicCheckbox("Zvracanie") {
                     epilepsyRecord.barfing = it
@@ -170,20 +186,18 @@ fun EpilepsyRecordDialog(onSubmit: (EpilepsyRecord) -> Unit) {
                 BasicCheckbox("Strata vedomia") {
                     epilepsyRecord.fainting = it
                 }
-                ProgressInput("Intenzita kŕčov", "Slabé", "Silné",3,2) {
-                    epilepsyRecord.spasms = it
-                }
+                Spacer(modifier = Modifier.height(16.dp))
                 SeizureDurationSlider(){
                     epilepsyRecord.duration = it
                 }
                 NoteField {
                     epilepsyRecord.note = it
                 }
-
+                Spacer(modifier = Modifier.height(8.dp))
                 StyledButton("Potvrdiť") {
-                    epilepsyRecord.let { onSubmit(it) }
+                    onSubmit(epilepsyRecord)
                 }
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(8.dp))
             }
         }
     }
@@ -196,12 +210,14 @@ fun NoteField(onTextChanged: (value: String) -> Unit) {
 
     TextField(
         label = {
-            Text("Poznámky", color = Color.Black)
+            Text("Poznámky", color = LocalAppColors.current.primary)
         },
-        maxLines = 6,
-        minLines = 3,
+        modifier = Modifier.padding(16.dp, 0.dp),
+        maxLines = 3,
+        minLines = 1,
         value = value.value,
         onValueChange = {
+            value.value = it
             onTextChanged(it)
         },
         colors = TextFieldDefaults.textFieldColors(
@@ -218,17 +234,31 @@ fun NoteField(onTextChanged: (value: String) -> Unit) {
 @Composable
 fun SeizureDurationSlider(onValueChange: (sliderValue: Int) -> Unit) {
     var sliderValue by remember { mutableIntStateOf(0) }
-    Column {
+    Column (
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.padding(16.dp, 0.dp)
+    ) {
+        Text(text = "Dĺžka záchvatu: $sliderValue minút", textAlign = TextAlign.Center, color = LocalAppColors.current.primary)
         Slider(
+            colors = SliderColors(
+                activeTickColor = LocalAppColors.current.primary,
+                inactiveTickColor = LocalAppColors.current.primary,
+                inactiveTrackColor = LocalAppColors.current.primary,
+                activeTrackColor = LocalAppColors.current.primary,
+                thumbColor = LocalAppColors.current.primary,
+                disabledThumbColor = LocalAppColors.current.darkGray,
+                disabledActiveTrackColor = LocalAppColors.current.darkGray,
+                disabledActiveTickColor = LocalAppColors.current.darkGray,
+                disabledInactiveTickColor = LocalAppColors.current.darkGray,
+                disabledInactiveTrackColor = LocalAppColors.current.darkGray
+            ),
             value = sliderValue.toFloat(),
-            steps = 1,
             valueRange = 0f..10f,
             onValueChange = {
                 sliderValue = it.toInt()
                 onValueChange(sliderValue)
             }
         )
-        Text(text = "Dĺžka záchvatu: $sliderValue minút")
     }
 }
 
@@ -240,13 +270,89 @@ fun BasicCheckbox(title: String, onChecked: (Boolean) -> Unit){
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(
-            title
+            title,
+            color = LocalAppColors.current.primary
         )
         Checkbox(
+            colors = CheckboxColors(
+                checkedCheckmarkColor = LocalAppColors.current.secondary,
+                checkedBorderColor = LocalAppColors.current.primary,
+                checkedBoxColor =LocalAppColors.current.primary,
+                disabledBorderColor = LocalAppColors.current.primary,
+                uncheckedBoxColor = Color.Transparent,
+                uncheckedBorderColor = LocalAppColors.current.primary,
+                disabledCheckedBoxColor = LocalAppColors.current.primary,
+                uncheckedCheckmarkColor = LocalAppColors.current.primary,
+                disabledUncheckedBoxColor = LocalAppColors.current.primary,
+                disabledIndeterminateBorderColor = LocalAppColors.current.primary,
+                disabledUncheckedBorderColor = LocalAppColors.current.primary,
+                disabledIndeterminateBoxColor = LocalAppColors.current.primary
+            ),
             checked = checked,
             onCheckedChange = {
                 checked = it
                 onChecked(it)
+            }
+        )
+    }
+}
+
+@Composable
+fun DialogTitle(title: String) {
+    Text(title, fontSize = 18.sp, color = LocalAppColors.current.primary, textAlign = TextAlign.Center)
+}
+
+@Composable
+fun EpilepsyHistoryChart(epilepsyHistory: ArrayList<EpilepsyRecord>, onAddClick: ()-> Unit) {
+
+    val weightData = epilepsyHistory.map { it.calculatePoints() }
+
+    val lineParameters = arrayListOf(
+        LineParameters(
+        label = "Váha (kg)",
+        data = weightData,
+        lineColor = LocalAppColors.current.primary,
+        lineType = LineType.CURVED_LINE,
+        lineShadow = true,
+    )
+    )
+
+    Column(modifier = Modifier.fillMaxSize().padding(32.dp)) {
+        if (epilepsyHistory.isNotEmpty()) {
+            Box(modifier = Modifier.weight(1f).fillMaxSize()) {
+                LineChart(
+                    modifier = Modifier.fillMaxSize(),
+                    linesParameters = lineParameters,
+                    isGrid = true,
+                    gridColor = LocalAppColors.current.darkGray,
+                    xAxisData = epilepsyHistory.map { formatDate(it.created) },
+                    animateChart = true,
+                    showGridWithSpacer = true,
+                    yAxisStyle = TextStyle(
+                        fontSize = 14.sp,
+                        color = Color.Gray,
+                    ),
+                    xAxisStyle = TextStyle(
+                        fontSize = 14.sp,
+                        color = Color.Gray,
+                    ),
+                    yAxisRange = 14,
+                    oneLineChart = false,
+                    gridOrientation = GridOrientation.VERTICAL
+                )
+            }
+        } else {
+            Text(
+                "Žiadne dáta",
+                modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp),
+                textAlign = TextAlign.Center
+            )
+        }
+        Spacer(modifier = Modifier.height(16.dp))
+        StyledButton(
+            "Pridať záznam",
+            onClick = {
+                onAddClick()
             }
         )
     }

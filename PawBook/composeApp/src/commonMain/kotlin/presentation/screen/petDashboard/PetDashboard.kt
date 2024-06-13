@@ -26,12 +26,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import compose.icons.FontAwesomeIcons
 import compose.icons.fontawesomeicons.Solid
-import compose.icons.fontawesomeicons.solid.Female
+import compose.icons.fontawesomeicons.solid.BirthdayCake
+import compose.icons.fontawesomeicons.solid.Venus
 import data.model.entity.ColorEntity
 import data.model.entity.DoctorEntity
 import data.model.entity.PetEntity
@@ -44,6 +44,7 @@ import pawbook.composeapp.generated.resources.Res
 import pawbook.composeapp.generated.resources.sofka
 import pawbook.composeapp.generated.resources.weight_unit
 import presentation.components.color.colorField.ColorFieldReadOnly
+import presentation.screen.petDashboard.trackEpilepsy.TrackEpilepsyOverview
 import presentation.screen.petDashboard.trackWeight.TrackWeightOverview
 import presentation.theme.colors.LocalAppColors
 import utils.compose.format
@@ -81,14 +82,13 @@ fun PetDashboard(petId: String, viewModel: PetDashboardViewModel = koinInject())
                             PetName(pet?.name as String)
                             Icon(
                                 modifier = Modifier.size(24.dp),
-                                imageVector = FontAwesomeIcons.Solid.Female,
+                                imageVector = FontAwesomeIcons.Solid.Venus,
                                 contentDescription = "female",
-                                tint = Color.Black
+                                tint = LocalAppColors.current.primary
                             )
 
                         }
                         PetBirthday(pet?.birthDay)
-                        PetWeight(pet?.weight)
                         PetColors(petColors)
                     }
                 }
@@ -104,7 +104,7 @@ fun PetDashboard(petId: String, viewModel: PetDashboardViewModel = koinInject())
                 }
                 //PetDoctor(petDoctor)
                 TrackWeightOverview(viewModel, pet as PetEntity)
-                //TrackEpilepsyOverview(viewModel, pet as PetEntity)
+                TrackEpilepsyOverview(viewModel, pet as PetEntity)
             }
         }
     }
@@ -142,14 +142,23 @@ fun PetBreed(breed: String?) {
 @OptIn(ExperimentalResourceApi::class)
 @Composable
 fun PetWeight(weight: Float?) {
-    Text(weight.toString() + " " + stringResource(Res.string.weight_unit))
+    Text(weight.toString() + " " + stringResource(Res.string.weight_unit), color = LocalAppColors.current.primary)
 }
 
 @Composable
 fun PetBirthday(birthDay: LocalDateTime?) {
-    Text(
-        text = birthDay?.format().toString()
-    )
+    Row {
+        Text(
+            text = birthDay?.format().toString(),
+            color = LocalAppColors.current.primary
+        )
+        Icon(
+            modifier = Modifier.size(24.dp),
+            imageVector = FontAwesomeIcons.Solid.BirthdayCake,
+            contentDescription = "weight",
+            tint = LocalAppColors.current.primary
+        )
+    }
 }
 
 @OptIn(ExperimentalResourceApi::class)
@@ -168,5 +177,5 @@ fun CirclePhoto(photoURL: String) {
 
 @Composable
 fun PetName(name: String) {
-    Text(name, color = LocalAppColors.current.primary, fontSize = 32.sp, textDecoration = TextDecoration.Underline)
+    Text(name, color = LocalAppColors.current.primary, fontSize = 32.sp)
 }

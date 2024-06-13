@@ -25,7 +25,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshots.SnapshotStateList
-import androidx.compose.ui.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -98,7 +99,7 @@ fun PetPicker(
 
 @Composable
 fun DialogTitle(title: String) {
-    Text(title, fontSize = 18.sp, color = Color.Black, textAlign = TextAlign.Center)
+    Text(title, fontSize = 18.sp, color = LocalAppColors.current.primary, textAlign = TextAlign.Center)
 }
 
 @Composable
