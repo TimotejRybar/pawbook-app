@@ -4,6 +4,7 @@ import de.jensklingenberg.ktorfit.http.Body
 import de.jensklingenberg.ktorfit.http.GET
 import de.jensklingenberg.ktorfit.http.POST
 import de.jensklingenberg.ktorfit.http.Path
+import domain.model.EpilepsyRecord
 import domain.model.Pet
 import domain.model.WeightRecord
 import domain.model.result.CreatePetResult
@@ -24,4 +25,6 @@ interface PetApi
     @POST("pets/addWeightRecord/{petId}")
     suspend fun addWeightRecord(@Path("petId") petId: String, @Body weightRecord: WeightRecord): WeightRecord
 
+    @POST("pets/addEpilepsyRecord/{petId}")
+    fun addEpilepsyRecord(@Path("petId") petId: String, @Body epilepsyRecord: EpilepsyRecord): EpilepsyRecord
 }

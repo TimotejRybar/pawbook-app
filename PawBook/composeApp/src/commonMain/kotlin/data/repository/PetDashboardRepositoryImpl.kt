@@ -6,6 +6,7 @@ import data.model.entity.ColorEntity
 import data.model.entity.DoctorEntity
 import data.model.entity.PetEntity
 import data.remote.PetApi
+import domain.model.EpilepsyRecord
 import domain.model.WeightRecord
 import domain.repository.PetDashboardRepository
 import kotlinx.coroutines.flow.Flow
@@ -28,7 +29,6 @@ class PetDashboardRepositoryImpl: PetDashboardRepository, KoinComponent {
     }
 
     override suspend fun addWeightRecord(petId: String, weight: WeightRecord): Flow<Resources<WeightRecord>> = flow {
-
         try {
             val saved = petApi.addWeightRecord(petId, weight)
             emit(Resources.Success(saved))
@@ -41,7 +41,22 @@ class PetDashboardRepositoryImpl: PetDashboardRepository, KoinComponent {
             emit(Resources.Error("no_internet"))
         } catch (e: Exception) {
             emit(Resources.Error("internal_error"))
-            e.printStackTrace()
+        }
+    }
+
+    override suspend fun addEpilepsyRecord(petId: String, epilepsyRecord: EpilepsyRecord): Flow<Resources<EpilepsyRecord>> = flow {
+        try {
+            val saved = petApi.addEpilepsyRecord(petId, epilepsyRecord)
+            emit(Resources.Success(saved))
+
+            database.getPetDao().getById(petId).collect {
+                it.epilepsyHistory.add(saved)
+                database.getPetDao().update(it)
+            }
+        } catch (e: NetworkException) {
+            emit(Resources.Error("no_internet"))
+        } catch (e: Exception) {
+            emit(Resources.Error("internal_error"))
         }
     }
 

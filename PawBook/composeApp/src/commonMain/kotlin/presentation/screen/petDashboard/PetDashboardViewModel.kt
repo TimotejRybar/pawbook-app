@@ -78,6 +78,21 @@ class PetDashboardViewModel() : ViewModel(), KoinComponent {
     }
 
     fun addEpilepsyRecord(pet: PetEntity, epilepsyRecord: EpilepsyRecord) {
-        TODO("Not yet implemented")
+        viewModelScope.launch {
+            petDashboardRepository.addEpilepsyRecord(pet.id, epilepsyRecord).collect {
+                // update state if needed...
+                when(it){
+                    is Resources.Error -> {
+
+                    }
+                    is Resources.Loading -> {
+
+                    }
+                    is Resources.Success -> {
+                        _pet.value?.epilepsyHistory?.add(it.data as EpilepsyRecord)
+                    }
+                }
+            }
+        }
     }
 }

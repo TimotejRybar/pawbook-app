@@ -22,6 +22,7 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
 class PetDetailViewModel() : ViewModel(), KoinComponent {
+
     private val petDetailRepository: PetDetailRepositoryImpl by inject()
 
     private val _state = MutableStateFlow(PetDetailState.INIT)
