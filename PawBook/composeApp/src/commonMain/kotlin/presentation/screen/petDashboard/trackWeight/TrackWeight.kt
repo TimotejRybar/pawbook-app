@@ -59,7 +59,7 @@ import presentation.theme.colors.LocalAppColors
 @Composable
 fun TrackWeightOverview(
     viewModel: PetDashboardViewModel,
-    pet: PetEntity
+    pet: PetEntity?
 ) {
     var openDialog by remember { mutableStateOf(false) }
 
@@ -78,7 +78,7 @@ fun TrackWeightOverview(
                     contentDescription = "last weight icon"
                 )
                 Spacer(modifier = Modifier.width(5.dp))
-                if(pet.weightHistory.size > 0) {
+                if(pet?.weightHistory?.isNotEmpty() == true) {
                     Text(
                         text = "Posledné váženie",
                         fontSize = 18.sp,
@@ -92,16 +92,16 @@ fun TrackWeightOverview(
             }
         },
         trailingContent = {
-            if(pet.weightHistory.size > 0) {
+            if(pet?.weightHistory?.isNotEmpty() == true) {
                 Text(
                     text = pet.weightHistory.last().weight.toString() + " " + stringResource(Res.string.weight_unit),
                     fontSize = 14.sp,
                 )
-            } else {
-                Text(
-                    text = "",
-                    fontSize = 18.sp
-                )
+                } else {
+                    Text(
+                        text = "",
+                        fontSize = 18.sp
+                    )
             }
         },
         headlineContent = {
@@ -120,7 +120,7 @@ fun TrackWeightOverview(
 }
 
 @Composable
-fun TrackWeightDialog(viewModel: PetDashboardViewModel, pet: PetEntity, title: String, onDismiss: () -> Unit) {
+fun TrackWeightDialog(viewModel: PetDashboardViewModel, pet: PetEntity?, title: String, onDismiss: () -> Unit) {
 
     var openInputDialog by remember { mutableStateOf(false) }
     val coroutineScope = rememberCoroutineScope()
@@ -145,7 +145,7 @@ fun TrackWeightDialog(viewModel: PetDashboardViewModel, pet: PetEntity, title: S
                 Spacer(modifier = Modifier.height(16.dp))
                 DialogTitle(title)
                 Spacer(modifier = Modifier.height(16.dp))
-                WeightHistoryChart(pet.weightHistory) {
+                WeightHistoryChart(pet?.weightHistory) {
                     openInputDialog = true
                 }
                 Spacer(modifier = Modifier.height(16.dp))
@@ -164,13 +164,13 @@ fun TrackWeightDialog(viewModel: PetDashboardViewModel, pet: PetEntity, title: S
 }
 
 @Composable
-fun WeightHistoryChart(weightHistory: ArrayList<WeightRecord>, onAddClick: ()-> Unit) {
+fun WeightHistoryChart(weightHistory: ArrayList<WeightRecord>?, onAddClick: ()-> Unit) {
 
-    val weightData = weightHistory.map { it.weight.toDouble() }
+    val weightData = weightHistory?.map { it.weight.toDouble() }
 
     val lineParameters = arrayListOf(LineParameters(
         label = "Váha (kg)",
-        data = weightData,
+        data = weightData as List<Double>,
         lineColor = LocalAppColors.current.primary,
         lineType = LineType.CURVED_LINE,
         lineShadow = true,

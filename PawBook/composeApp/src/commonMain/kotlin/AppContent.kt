@@ -77,6 +77,7 @@ import presentation.screen.home.Home
 import presentation.screen.login.LoginScreen
 import presentation.screen.myPets.MyPets
 import presentation.screen.petDashboard.PetDashboard
+import presentation.screen.petEdit.PetEdit
 import presentation.screen.profile.Profile
 import presentation.screen.register.RegisterScreen
 import presentation.screen.splash.Splash
@@ -92,6 +93,7 @@ fun AppContent(navController: NavHostController = rememberNavController()) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val topBarState = rememberSaveable { mutableStateOf(false) }
     val selectedPet = remember { mutableStateOf<PetEntity?>(null) }
+    val redirect = remember { mutableStateOf("") }
 
     val routeToLabelMap = mapOf(
         AppScreen.Splash.name to stringResource(Res.string.loading),

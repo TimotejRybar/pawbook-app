@@ -9,7 +9,7 @@ import data.model.entity.PetEntity
 import data.repository.PetDashboardRepositoryImpl
 import domain.model.EpilepsyRecord
 import domain.model.WeightRecord
-import domain.model.enums.PetCreateState
+import domain.model.enums.PetDashboardState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -21,8 +21,8 @@ import org.koin.core.component.inject
 class PetDashboardViewModel() : ViewModel(), KoinComponent {
     private val petDashboardRepository: PetDashboardRepositoryImpl by inject()
 
-    private val _state = MutableStateFlow(PetCreateState.INIT)
-    val state: StateFlow<PetCreateState> = _state
+    private val _state = MutableStateFlow(PetDashboardState.INIT)
+    val state: StateFlow<PetDashboardState> = _state
 
     private val _pet = MutableStateFlow<PetEntity?>(null)
     val pet: StateFlow<PetEntity?> = _pet.asStateFlow()
@@ -57,14 +57,15 @@ class PetDashboardViewModel() : ViewModel(), KoinComponent {
         viewModelScope.launch {
             petDashboardRepository.loadPet(petId).collect {
                 _pet.value = it
+                _state.value = PetDashboardState.LOADED
             }
         }
     }
 
-    suspend fun addWeightRecord(pet: PetEntity, weight: Float) {
+    suspend fun addWeightRecord(pet: PetEntity?, weight: Float) {
         viewModelScope.launch {
             val weightRecord = WeightRecord(null, weight, LocalDateTime(1,1,1,1,1,1))
-            petDashboardRepository.addWeightRecord(pet.id, weightRecord).collect {
+            petDashboardRepository.addWeightRecord(pet?.id.toString(), weightRecord).collect {
                 // update state if needed...
                 when(it){
                     is Resources.Error -> {

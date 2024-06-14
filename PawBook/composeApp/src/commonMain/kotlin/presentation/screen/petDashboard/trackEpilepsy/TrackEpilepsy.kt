@@ -60,7 +60,7 @@ import presentation.theme.colors.LocalAppColors
 @Composable
 fun TrackEpilepsyOverview(
     viewModel: PetDashboardViewModel,
-    pet: PetEntity
+    pet: PetEntity?
 ) {
     var openDialog by remember { mutableStateOf(false) }
 
@@ -96,8 +96,10 @@ fun TrackEpilepsyOverview(
         })
 
     if(openDialog) {
-        TrackEpilepsyDialog(viewModel, pet){
-            openDialog = false
+        if (pet != null) {
+            TrackEpilepsyDialog(viewModel, pet){
+                openDialog = false
+            }
         }
     }
 }
