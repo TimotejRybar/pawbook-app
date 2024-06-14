@@ -49,6 +49,7 @@ import presentation.theme.colors.LocalAppColors
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalResourceApi::class)
 @Composable
 fun AutoComplete(
+    value: String?,
     label: String,
     hint: String,
     options: List<Selectable>,
@@ -57,7 +58,7 @@ fun AutoComplete(
     var selectedValue by remember { mutableStateOf<Selectable?>(null) }
     var textFieldSize by remember { mutableStateOf(Size.Zero) }
     var expanded by remember { mutableStateOf(false) }
-    var inputValue by remember { mutableStateOf("") }
+    var inputValue by remember { mutableStateOf(value) }
 
     Column(
         modifier = Modifier.padding().padding(horizontal = 32.dp)
@@ -78,12 +79,12 @@ fun AutoComplete(
                         color = Color.Black,
                     )
                 },
-                value = inputValue,
-                isError = inputValue.isNotEmpty() && (options.find {it.name == inputValue} == null),
+                value = inputValue.toString(),
+                isError = (inputValue?.isNotEmpty() == true) && (options.find {it.name == inputValue} == null),
                 onValueChange = {
-                    inputValue = it
                     selectedValue =
                         options.find { option -> option.name.equals(it, ignoreCase = true) }
+                    inputValue = it
                     expanded = it.isNotEmpty()
                 },
                 placeholder = { Text(hint) },
@@ -126,7 +127,7 @@ fun AutoComplete(
                         .background(LocalAppColors.current.primary)
                 ) {
                     val filteredOptions = options
-                        .filter { it.name.contains(inputValue, ignoreCase = true) }
+                        .filter { it.name.contains(inputValue.toString(), ignoreCase = true) }
                     items(filteredOptions) { item ->
                         Option(selectable = item) { selectedTitle ->
                             selectedValue = selectedTitle

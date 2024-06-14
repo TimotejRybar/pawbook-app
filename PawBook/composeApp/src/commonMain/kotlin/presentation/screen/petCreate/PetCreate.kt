@@ -12,8 +12,10 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.AlertDialog
@@ -101,13 +103,16 @@ fun PetCreate(petId: String, viewModel: PetCreateViewModel = koinInject(), onSav
 
     val state by viewModel.state.collectAsState()
     val pet by viewModel.pet.collectAsState()
+    var loaded by remember { mutableStateOf(false) }
 
     LaunchedEffect(true){
-        if(state == PetCreateState.EDIT) {
+        if(petId != "") {
             if (pet != null) {
                 viewModel.loadPetColors(pet as PetEntity)
                 viewModel.loadPetDoctor(pet as PetEntity)
             }
+        } else {
+            loaded = true
         }
     }
 
@@ -118,13 +123,24 @@ fun PetCreate(petId: String, viewModel: PetCreateViewModel = koinInject(), onSav
 
     Row (
         modifier = Modifier.fillMaxSize(),
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
     ) {
-        PetInfo(viewModel, pet)
+        if(petId == "") {
+            PetInfo(viewModel, pet)
+        }
+        else {
+            if(pet != null) {
+                PetInfo(viewModel, pet)
+            }
+        }
     }
     LaunchedEffect(key1 = true) {
         viewModel.pet.value?.id = "CREATE"
         viewModel.init()
+
+        if(petId != "") {
+            viewModel.loadPet(petId)
+        }
     }
 }
 
@@ -139,7 +155,8 @@ fun PetInfo(viewModel: PetCreateViewModel, pet: PetEntity?) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         Column(
             verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.verticalScroll(rememberScrollState())
         ) {
             Spacer(modifier = Modifier.height(50.dp))
             PetPhoto(viewModel, pet)
@@ -249,40 +266,48 @@ fun PetProps(
     val doctor = remember { mutableStateOf<DoctorEntity?>(null) }
     val photo by viewModel.profilePicture.collectAsState()
 
-    PetPropField(PetPropFieldType.NAME) {
+    PetPropField(pet, PetPropFieldType.NAME) {
         name.value = it
     }
-    DatePropField(PetPropFieldUtils.getPropFieldText(PetPropFieldType.BIRTH)) {
+    DatePropField(pet, PetPropFieldUtils.getPropFieldText(PetPropFieldType.BIRTH)) {
         // TODO
     }
-    PetPropField(PetPropFieldType.WEIGHT) {
+    PetPropField(pet, PetPropFieldType.WEIGHT) {
         weight.value = it
     }
     ColorSpinner(pet, petColors, colors) { it1 ->
         color.clear()
-        color.addAll(it1.map{it.color})
+        color.addAll(it1.map { it.color })
     }
-    BreedSpinner(breeds) {
+    BreedSpinner(pet, breeds) {
         breed.value = it
     }
-    GenderSpinner {
+    GenderSpinner(pet) {
         gender.value = it
     }
-    DoctorSpinner(doctors) {
+    DoctorSpinner(pet, doctors) {
         doctor.value = it
     }
     Spacer(modifier = Modifier.height(20.dp))
     SaveButton {
-       // create new pet
-       viewModel.createPet(Pet(null, name.value, "", PetType.Dog, null, birthDay.value, (gender.value as Gender).value,weight.value.toFloat(),
-           color, breed.value?.id as String, doctor.value?.id, photo, true, arrayListOf(), false, arrayListOf(), null, null))
+        // create new pet
+        val petData =  Pet(null, name.value, "", PetType.Dog, null, birthDay.value, (gender.value as Gender).value,
+            weight.value.toFloat(), ArrayList(color), breed.value?.id as String, doctor.value?.id, photo, true, arrayListOf(), false,
+            arrayListOf(), null, null)
+
+        if (pet?.id == "") {
+            viewModel.createPet(petData)
+        } else {
+            // update pet
+            viewModel.updatePet(pet, petData)
+        }
     }
 }
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
-fun DoctorSpinner(doctors: List<DoctorEntity>, onSelected: (DoctorEntity) -> Unit) {
-    AutoComplete(stringResource(Res.string.doctor), stringResource(Res.string.search_doctor), doctors) {
+fun DoctorSpinner(pet: PetEntity?, doctors: List<DoctorEntity>, onSelected: (DoctorEntity) -> Unit) {
+    AutoComplete(pet?.doctor, stringResource(Res.string.doctor), stringResource(Res.string.search_doctor), doctors) {
         onSelected(it as DoctorEntity)
     }
 }
@@ -296,7 +321,7 @@ fun ColorSpinner(pet: PetEntity?, defaultColors: List<ColorEntity>, availableCol
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
-fun GenderSpinner(onSelected: (Gender) -> Unit) {
+fun GenderSpinner(pet: PetEntity?, onSelected: (Gender) -> Unit) {
     val genderOptions = arrayListOf(stringResource(Res.string.male), stringResource(Res.string.female))
     Spinner(text = stringResource(Res.string.gender), options = genderOptions) {
         val option = genderOptions.find{ option -> it == option }
@@ -307,8 +332,10 @@ fun GenderSpinner(onSelected: (Gender) -> Unit) {
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
-fun BreedSpinner(breeds: List<BreedEntity>, onSelected: (BreedEntity) -> Unit) {
-    AutoComplete(stringResource(Res.string.breed),
+fun BreedSpinner(pet: PetEntity?, breeds: List<BreedEntity>, onSelected: (BreedEntity) -> Unit) {
+    AutoComplete(
+        pet?.breed.toString(),
+        stringResource(Res.string.breed),
         stringResource(Res.string.search_pet_breed), breeds) {
         onSelected(it as BreedEntity)
     }
@@ -316,11 +343,15 @@ fun BreedSpinner(breeds: List<BreedEntity>, onSelected: (BreedEntity) -> Unit) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PetPropField(petPropFieldType: PetPropFieldType, onValueChange: (String) -> Unit) {
+fun PetPropField(pet: PetEntity?, petPropFieldType: PetPropFieldType, onValueChange: (String) -> Unit) {
     val text = PetPropFieldUtils.getPropFieldText(petPropFieldType)
     var inputType = KeyboardOptions(keyboardType = KeyboardType.Text)
     val value = remember { mutableStateOf("") }
     var isValid by remember { mutableStateOf(false) }
+
+    if(pet != null) {
+        value.value = PetPropFieldUtils.getPropFieldValue(petPropFieldType, pet)
+    }
 
     when(petPropFieldType) {
         PetPropFieldType.WEIGHT -> {
@@ -374,7 +405,7 @@ fun validateField(petPropFieldType: PetPropFieldType, it: String): Boolean {
 }
 
 @Composable
-fun DatePropField(title: String, onDateSelected: (date: GMTDate) -> Unit) {
+fun DatePropField(pet: PetEntity?, title: String, onDateSelected: (date: GMTDate) -> Unit) {
     val date = remember { mutableStateOf(GMTDate()) }
     val isOpen = remember { mutableStateOf(false) }
 

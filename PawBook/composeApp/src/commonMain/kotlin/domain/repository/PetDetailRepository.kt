@@ -8,6 +8,7 @@ import data.model.entity.PetEntity
 import domain.model.Pet
 import domain.model.WeightRecord
 import domain.model.result.CreatePetResult
+import domain.model.result.UpdatePetResult
 import kotlinx.coroutines.flow.Flow
 
 interface PetDetailRepository {
@@ -20,4 +21,5 @@ interface PetDetailRepository {
     suspend fun loadPetDoctor(petEntity: PetEntity): Flow<DoctorEntity>
     suspend fun loadPetColors(petEntity: PetEntity): Flow<List<ColorEntity>>
     suspend fun loadPet(petId: String): Flow<PetEntity>
+    suspend fun updatePet(pet: PetEntity?, petData: Pet): Flow<Resources<UpdatePetResult>>
 }

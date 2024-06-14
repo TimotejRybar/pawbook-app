@@ -66,11 +66,11 @@ object Converters {
 
     @JvmStatic
     @TypeConverter
-    fun fromStringList(stringList: List<String>): String = Json.encodeToString(stringList)
+    fun fromStringList(stringList: ArrayList<String>): String = Json.encodeToString(stringList)
 
     @JvmStatic
     @TypeConverter
-    fun toStringList(value: String): List<String> = Json.decodeFromString(value)
+    fun toStringList(value: String): ArrayList<String> = Json.decodeFromString(value)
 
     @JvmStatic
     @TypeConverter

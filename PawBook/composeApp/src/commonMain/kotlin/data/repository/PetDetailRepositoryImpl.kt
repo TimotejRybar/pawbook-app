@@ -9,8 +9,10 @@ import data.model.entity.PetEntity
 import data.remote.PetApi
 import domain.model.Pet
 import domain.model.WeightRecord
+import domain.model.request.UpdatePetRequest
 import domain.model.result.CreatePetPhotoResult
 import domain.model.result.CreatePetResult
+import domain.model.result.UpdatePetResult
 import domain.repository.PetDetailRepository
 import io.ktor.client.request.forms.MultiPartFormDataContent
 import io.ktor.client.request.forms.formData
@@ -87,6 +89,35 @@ class PetDetailRepositoryImpl: PetDetailRepository, KoinComponent {
 
     override suspend fun loadPet(petId: String): Flow<PetEntity> {
         return database.getPetDao().getById(petId)
+    }
+
+    override suspend fun updatePet(
+        pet: PetEntity?,
+        petData: Pet
+    ): Flow<Resources<UpdatePetResult>> = flow {
+        emit(Resources.Loading(true))
+        try {
+            val updatePetRequest = UpdatePetRequest(
+                _id = pet?.id as String,
+                name = petData.name,
+                birthday = petData.birthday,
+                breed = petData.breed,
+                color = petData.color,
+                doctor = petData.doctor,
+                gender = petData.gender,
+                owner = petData.owner,
+                petType = petData.petType,
+                photo = petData.photo,
+                shortDescription = petData.shortDescription,
+                trackEpilepsy = false,
+                trackWeight = true,
+                weight = petData.weight
+            )
+            val result = petApi.update(updatePetRequest)
+            emit(Resources.Success(result))
+        } catch (e: Exception) {
+            emit(Resources.Error("internal_error"))
+        }
     }
 
 }

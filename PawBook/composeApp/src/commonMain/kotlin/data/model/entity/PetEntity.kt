@@ -11,13 +11,13 @@ import kotlinx.datetime.LocalDateTime
 data class PetEntity(
     @PrimaryKey var id: String,
     val petType: PetType,
-    val name: String,
+    var name: String,
     val shortDescription: String?,
     val gender: String,
     val birthDay: LocalDateTime?,
-    val weight: Float,
-    val color: List<String>,
-    val breed: String,
+    var weight: Float,
+    val color: ArrayList<String>,
+    var breed: String,
     val doctor: String?,
     val photo: String?,
     val trackWeight: Boolean,
@@ -27,4 +27,3 @@ data class PetEntity(
     val createdAt: LocalDateTime,
     val updatedAt: LocalDateTime
 )
-

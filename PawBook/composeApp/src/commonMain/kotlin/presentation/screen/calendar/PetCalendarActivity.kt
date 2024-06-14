@@ -115,7 +115,7 @@ fun PetCalendarActivity (viewModel: PetCalendarActivityViewModel = koinInject(),
             }
             Spacer(modifier = Modifier.height(20.dp))
             StyledButton(stringResource(Res.string.add)) {
-                viewModel.createActivity(CalendarActivity(null, selectedPets.map { mapPetEntityToDto(it) }, start.value, calculateEnd(start.value, duration.value),  activity.value as ActivityType, location.value, description.value, null, null))
+                viewModel.createActivity(CalendarActivity(null, ArrayList(selectedPets.map { mapPetEntityToDto(it) }), start.value, calculateEnd(start.value, duration.value),  activity.value as ActivityType, location.value, description.value, null, null))
                 onSubmit()
             }
             Spacer(modifier = Modifier.height(16.dp))

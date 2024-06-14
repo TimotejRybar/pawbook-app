@@ -8,7 +8,7 @@ import kotlinx.datetime.LocalDateTime
 data class PetPhotoEntity(
     @PrimaryKey val id: String,
     val author: String,
-    val pets: List<String>,
+    val pets: ArrayList<String>,
     val description: String?,
     val file: String,
     val createdAt: LocalDateTime?,

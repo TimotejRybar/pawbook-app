@@ -45,13 +45,10 @@ import com.mohamedrejeb.calf.picker.FilePickerSelectionMode
 import com.mohamedrejeb.calf.picker.rememberFilePickerLauncher
 import domain.model.result.User
 import kotlinx.coroutines.launch
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toLocalDateTime
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
 import pawbook.composeapp.generated.resources.Res
-import pawbook.composeapp.generated.resources.birthday
 import pawbook.composeapp.generated.resources.cancel
 import pawbook.composeapp.generated.resources.city
 import pawbook.composeapp.generated.resources.confirm
@@ -63,9 +60,7 @@ import presentation.screen.login.InputField
 import presentation.screen.login.InputType
 import presentation.screen.login.StyledButton
 import presentation.screen.petCreate.CirclePhoto
-import presentation.screen.petCreate.DatePropField
 import presentation.theme.colors.LocalAppColors
-import utils.compose.toInstant
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
@@ -89,14 +84,15 @@ fun Profile(viewModel: ProfileViewModel = koinInject()){
             ) {
                 viewModel.updateProfileField(userProfile?.copy(name = it))
             }
-            DatePropField(stringResource(Res.string.birthday),) {
+            /* // TODO
+            DatePropField( stringResource(Res.string.birthday),) {
                 viewModel.updateProfileField(
                     userProfile?.copy(
                         birthDay = it.toInstant()
                             .toLocalDateTime(TimeZone.currentSystemDefault())
                     )
                 )
-            }
+            }*/
             InputField(stringResource(Res.string.city), city, InputType.TEXT, 1) {
                 viewModel.updateProfileField(userProfile?.copy(city = it))
             }

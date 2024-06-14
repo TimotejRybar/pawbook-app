@@ -2,7 +2,6 @@ package presentation.screen.petCreate
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.mohamedrejeb.calf.core.PlatformContext
 import com.mohamedrejeb.calf.io.KmpFile
 import com.mohamedrejeb.calf.io.readByteArray
@@ -60,6 +59,7 @@ class PetCreateViewModel() : ViewModel(), KoinComponent {
         // get from database
         viewModelScope.launch {
             petDetailRepository.fetchBreeds().collect {
+                breeds.value.clear()
                 breeds.value.addAll(it)
             }
         }
@@ -68,6 +68,7 @@ class PetCreateViewModel() : ViewModel(), KoinComponent {
     private fun fetchColors() {
         viewModelScope.launch {
             petDetailRepository.fetchColors().collect {
+                colors.value.clear()
                 colors.value.addAll(it)
             }
         }
@@ -76,12 +77,14 @@ class PetCreateViewModel() : ViewModel(), KoinComponent {
     private fun fetchDoctors() {
         viewModelScope.launch {
             petDetailRepository.fetchDoctors().collect {
+                doctors.value.clear()
                 doctors.value.addAll(it)
             }
         }
     }
 
     fun loadPet(petId: String) {
+        if(petId == "") return
         viewModelScope.launch {
             petDetailRepository.loadPet(petId).collect {
                 _pet.value = it
@@ -140,6 +143,25 @@ class PetCreateViewModel() : ViewModel(), KoinComponent {
                     is Resources.Success -> {
                         _profilePicture.value = it.data ?: ""
                         _state.update { PetCreateState.UPLOADED_PHOTO }
+                    }
+                }
+            }
+        }
+    }
+
+    fun updatePet(pet: PetEntity?, petData: Pet) {
+        viewModelScope.launch {
+            petDetailRepository.updatePet(pet, petData).collect {
+                when(it) {
+                    is Resources.Error -> {
+                        if(it.message == "no_internet") _state.update { PetCreateState.NO_INTERNET }
+                        if(it.message == "internal_error") _state.update { PetCreateState.ERROR }
+                    }
+                    is Resources.Loading -> {
+                        _state.update { PetCreateState.LOADING }
+                    }
+                    is Resources.Success -> {
+                        _state.update { PetCreateState.SAVED }
                     }
                 }
             }

@@ -14,9 +14,9 @@ data class Pet(
     var owner: String?,
     val birthday: LocalDateTime?,
     val gender: String,
-    val weight: Float,
-    val color: List<String>,
-    val breed: String, // key
+    var weight: Float,
+    val color: ArrayList<String>,
+    var breed: String, // key
     val doctor: String?, // ID
     val photo: String?,
     val trackWeight: Boolean,

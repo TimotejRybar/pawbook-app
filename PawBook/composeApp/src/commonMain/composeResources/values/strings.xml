@@ -404,7 +404,8 @@
     <string name="screen_login">Prihlásenie</string>
     <string name="screen_register">Registrácia</string>
     <string name="screen_my_pets">Moje zvieratká</string>
-    <string name="screen_pet_edit">Nové zvieratko</string>
+    <string name="screen_pet_create">Nové zvieratko</string>
+    <string name="screen_pet_edit">Úprava zvieratka</string>
     <string name="screen_calendar">Kalendár</string>
     <string name="screen_calendar_activity">Plánovanie aktivity</string>
     <string name="screen_pet_dashboard">Detail zvieratka</string>

@@ -2,9 +2,9 @@ package presentation.screen.login
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -69,8 +69,8 @@ import presentation.theme.colors.LocalAppColors
 fun LoginScreen(viewModel: LoginViewModel = koinInject(), onLoginSuccess: () -> Unit, onCreateAccount: () -> Unit ) {
     val loginState by viewModel.state.collectAsState()
 
-    Box(
-        contentAlignment = Alignment.Center,
+    Row (
+        verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier.fillMaxSize()
     ) {
         Column(

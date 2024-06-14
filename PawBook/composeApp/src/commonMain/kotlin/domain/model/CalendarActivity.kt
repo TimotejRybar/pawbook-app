@@ -7,7 +7,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class CalendarActivity(
     val _id: String?,
-    val pets: List<String>,
+    val pets: ArrayList<String>,
     val start: LocalDateTime?,
     val end: LocalDateTime?,
     val activityType: ActivityType,

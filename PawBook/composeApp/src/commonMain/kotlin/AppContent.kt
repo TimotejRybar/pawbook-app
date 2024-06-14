@@ -24,7 +24,6 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -64,6 +63,7 @@ import pawbook.composeapp.generated.resources.screen_calendar_activity
 import pawbook.composeapp.generated.resources.screen_home
 import pawbook.composeapp.generated.resources.screen_login
 import pawbook.composeapp.generated.resources.screen_my_pets
+import pawbook.composeapp.generated.resources.screen_pet_create
 import pawbook.composeapp.generated.resources.screen_pet_dashboard
 import pawbook.composeapp.generated.resources.screen_pet_edit
 import pawbook.composeapp.generated.resources.screen_register
@@ -93,14 +93,13 @@ fun AppContent(navController: NavHostController = rememberNavController()) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val topBarState = rememberSaveable { mutableStateOf(false) }
     val selectedPet = remember { mutableStateOf<PetEntity?>(null) }
-    val redirect = remember { mutableStateOf("") }
 
     val routeToLabelMap = mapOf(
         AppScreen.Splash.name to stringResource(Res.string.loading),
         AppScreen.Login.name to stringResource(Res.string.screen_login),
         AppScreen.Register.name to stringResource(Res.string.screen_register),
         AppScreen.MyPets.name to stringResource(Res.string.screen_my_pets),
-        AppScreen.PetCreate.name to stringResource(Res.string.screen_pet_edit),
+        AppScreen.PetCreate.name to stringResource(Res.string.screen_pet_create),
         AppScreen.Calendar.name to stringResource(Res.string.screen_calendar),
         AppScreen.CalendarActivity.name to stringResource(Res.string.screen_calendar_activity),
         AppScreen.PetDashboard.name to stringResource(Res.string.screen_pet_dashboard),
@@ -111,8 +110,22 @@ fun AppContent(navController: NavHostController = rememberNavController()) {
         AppScreen.Conversations.name to stringResource(Res.string.messages)
     )
 
-    val currentRoute = navBackStackEntry?.destination?.route?.substringBefore("/")
+    var currentRoute = navBackStackEntry?.destination?.route
     val label = remember(currentRoute) { mutableStateOf(routeToLabelMap[currentRoute] ?: "Unknown") }
+
+    if(currentRoute?.startsWith("PetCreate") == true) {
+        if(currentRoute.contains("/")) {
+            label.value = stringResource(Res.string.screen_pet_edit)
+        } else {
+            label.value = stringResource(Res.string.screen_pet_create)
+        }
+    }
+
+    if(currentRoute?.startsWith("PetDashboard") == true) {
+        label.value = stringResource(Res.string.screen_pet_dashboard)
+    }
+
+    currentRoute = currentRoute?.substringBefore("/")
 
     when (navBackStackEntry?.destination?.route) {
         AppScreen.Splash.name -> {
@@ -145,7 +158,7 @@ fun AppContent(navController: NavHostController = rememberNavController()) {
                                     containerColor = LocalAppColors.current.primary,
                                     shape = CircleShape,
                                     contentColor = LocalAppColors.current.secondary,
-                                    onClick = { navController.navigate(AppScreen.PetCreate.name + "/" + selectedPet.value?.id) }
+                                    onClick = { navController.navigate(AppScreen.PetCreate.name) }
                                 ) {
                                     Icon(Icons.Filled.Add, "")
                                 }
@@ -232,11 +245,6 @@ fun AppContent(navController: NavHostController = rememberNavController()) {
                                                     )
                                                 }
                                             }
-
-                                            LaunchedEffect(navController.currentDestination?.route) {
-                                                // This will run whenever the route changes
-                                                var a = true
-                                            }
                                         }
                                     )
                                 }
@@ -281,6 +289,13 @@ fun AppContent(navController: NavHostController = rememberNavController()) {
                         ) { backStackEntry ->
                             val petId = backStackEntry.arguments?.getString("petId") ?: return@composable
                             PetCreate(petId, onSaved = {
+                                navController.navigate(AppScreen.MyPets.name)
+                            })
+                        }
+                        composable(
+                            route = "PetCreate",
+                        ) { backStackEntry ->
+                            PetCreate("", onSaved = {
                                 navController.navigate(AppScreen.MyPets.name)
                             })
                         }
