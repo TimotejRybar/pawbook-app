@@ -2,6 +2,7 @@ package presentation.screen.petDashboard
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import core.util.IntentLauncher
 import core.util.Resources
 import data.model.entity.ColorEntity
 import data.model.entity.DoctorEntity
@@ -20,6 +21,7 @@ import org.koin.core.component.inject
 
 class PetDashboardViewModel() : ViewModel(), KoinComponent {
     private val petDashboardRepository: PetDashboardRepositoryImpl by inject()
+    private val intentLauncher: IntentLauncher by inject()
 
     private val _state = MutableStateFlow(PetDashboardState.INIT)
     val state: StateFlow<PetDashboardState> = _state
@@ -98,6 +100,18 @@ class PetDashboardViewModel() : ViewModel(), KoinComponent {
                     }
                 }
             }
+        }
+    }
+
+    fun callDoctor(doctor: DoctorEntity?) {
+        viewModelScope.launch {
+            intentLauncher.callPhone("+421123456789")
+        }
+    }
+
+    fun navigateToDoctor(doctor: DoctorEntity?) {
+        viewModelScope.launch {
+            intentLauncher.openMap(doctor?.address?.street + ", " + doctor?.address?.city)
         }
     }
 }

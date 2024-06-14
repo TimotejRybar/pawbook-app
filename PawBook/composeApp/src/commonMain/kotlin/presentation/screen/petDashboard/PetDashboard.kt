@@ -2,14 +2,11 @@ package presentation.screen.petDashboard
 
 import AppScreen
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -26,18 +23,15 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import compose.icons.FontAwesomeIcons
 import compose.icons.fontawesomeicons.Solid
-import compose.icons.fontawesomeicons.solid.ClinicMedical
 import compose.icons.fontawesomeicons.solid.Cut
 import compose.icons.fontawesomeicons.solid.Venus
 import data.model.entity.CalendarActivityEntity
 import data.model.entity.ColorEntity
-import data.model.entity.DoctorEntity
 import domain.model.enums.PetDashboardState
 import kotlinx.datetime.LocalDateTime
 import org.jetbrains.compose.resources.ExperimentalResourceApi
@@ -46,6 +40,7 @@ import org.koin.compose.koinInject
 import pawbook.composeapp.generated.resources.Res
 import pawbook.composeapp.generated.resources.sofka
 import presentation.components.color.colorField.ColorFieldReadOnly
+import presentation.screen.petDashboard.itemDoctor.PetDoctor
 import presentation.screen.petDashboard.trackEpilepsy.TrackEpilepsyOverview
 import presentation.screen.petDashboard.trackWeight.TrackWeightOverview
 import presentation.theme.colors.LocalAppColors
@@ -67,21 +62,19 @@ fun PetDashboard(petId: String, viewModel: PetDashboardViewModel = koinInject())
         viewModel.loadDoctor(pet?.doctor as String)
     }
 
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
         if (pet != null) {
             Column(
                 modifier = Modifier.padding(16.dp, 32.dp).fillMaxWidth()
             ) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Center
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
                     CirclePhoto(pet?.id as String)
                     Column(
-                        modifier = Modifier.padding(start = 16.dp)
+                        modifier = Modifier.padding(start = 16.dp),
+                        verticalArrangement = Arrangement.Center
                     ) {
                         Row {
                             PetName(pet?.name as String)
@@ -107,7 +100,9 @@ fun PetDashboard(petId: String, viewModel: PetDashboardViewModel = koinInject())
                     }
                 }
                 if(pet != null) {
-                    PetDoctor(petDoctor)
+                    if(petDoctor != null) {
+                        PetDoctor(viewModel, petDoctor)
+                    }
                     TrackWeightOverview(viewModel, pet)
                     TrackEpilepsyOverview(viewModel, pet)
                     NextTrimmingOverview(viewModel, null) {
@@ -115,49 +110,13 @@ fun PetDashboard(petId: String, viewModel: PetDashboardViewModel = koinInject())
                 }
             }
         }
-    }
-}
-
-@Composable
-fun PetDoctor(doctor: DoctorEntity?) {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier
-            .padding(16.dp)
-            .fillMaxWidth()
-            .background(Color.White)
-            .clickable {
-                // Handle click if necessary
-            }
-    ) {
-        if (doctor != null) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)
-            ) {
-                Icon(
-                    FontAwesomeIcons.Solid.ClinicMedical,
-                    modifier = Modifier.size(24.dp),
-                    contentDescription = "clinic icon"
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(
-                    text = doctor.name,
-                    fontSize = 18.sp,
-                    modifier = Modifier.fillMaxWidth()
-                )
-            }
-        }
-    }
 }
 
 @Composable
 fun NextTrimmingOverview(viewModel: PetDashboardViewModel, nextTrimmingActivity: CalendarActivityEntity?, onRedirect: (route: String) -> Unit){
     ListItem(
         modifier = Modifier
-            .padding(16.dp)
+            .padding(16.dp, 16.dp)
             .fillMaxWidth()
             .clickable {
                 onRedirect(AppScreen.CalendarActivity.name)

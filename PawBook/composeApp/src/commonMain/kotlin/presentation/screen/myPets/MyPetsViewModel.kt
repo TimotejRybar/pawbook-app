@@ -26,6 +26,7 @@ class MyPetsViewModel() : ViewModel(), KoinComponent {
         viewModelScope.launch {
             petsRepository.fetch().collect {
                 _state.update { MyPetsState.SUCCESS }
+                pets.clear()
                 it.let { it1 -> pets.addAll(it1) }
 
             }

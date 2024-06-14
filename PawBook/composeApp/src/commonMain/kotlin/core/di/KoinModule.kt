@@ -2,15 +2,17 @@ package core.di
 
 import com.russhwolf.settings.Settings
 import core.common.DatabaseSync
+import core.util.IntentLauncher
+import core.util.getIntentLauncher
 import data.local.AppDatabase
+import data.local.Preferences
 import data.local.getDatabase
+import data.remote.AuthApi
 import data.remote.BreedApi
 import data.remote.CalendarActivityApi
 import data.remote.ColorApi
 import data.remote.DoctorApi
-import data.remote.AuthApi
 import data.remote.PetApi
-import data.local.Preferences
 import data.remote.StorageApi
 import de.jensklingenberg.ktorfit.Ktorfit
 import io.ktor.client.HttpClient
@@ -70,6 +72,7 @@ object KoinModule {
     fun provideSettings(): Settings = Settings()
     fun provideDatabase(): AppDatabase = getDatabase()
     fun provideDatabaseSync(): DatabaseSync = DatabaseSync()
+    fun provideIntentLauncher(): IntentLauncher = getIntentLauncher()
 
     // called by iOS
     fun doInitKoin() = initKoin {}

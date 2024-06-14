@@ -5,9 +5,8 @@ import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
@@ -17,6 +16,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonColors
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -24,12 +24,14 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -76,8 +78,8 @@ import presentation.screen.gallery.Gallery
 import presentation.screen.home.Home
 import presentation.screen.login.LoginScreen
 import presentation.screen.myPets.MyPets
+import presentation.screen.petCreate.PetCreate
 import presentation.screen.petDashboard.PetDashboard
-import presentation.screen.petEdit.PetEdit
 import presentation.screen.profile.Profile
 import presentation.screen.register.RegisterScreen
 import presentation.screen.splash.Splash
@@ -85,9 +87,7 @@ import presentation.screen.storage.Storage
 import presentation.theme.colors.LightThemeAppColors
 import presentation.theme.colors.LocalAppColors
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class,
-    ExperimentalResourceApi::class
-)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class, ExperimentalResourceApi::class)
 @Composable
 fun AppContent(navController: NavHostController = rememberNavController()) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -100,7 +100,7 @@ fun AppContent(navController: NavHostController = rememberNavController()) {
         AppScreen.Login.name to stringResource(Res.string.screen_login),
         AppScreen.Register.name to stringResource(Res.string.screen_register),
         AppScreen.MyPets.name to stringResource(Res.string.screen_my_pets),
-        AppScreen.PetEdit.name to stringResource(Res.string.screen_pet_edit),
+        AppScreen.PetCreate.name to stringResource(Res.string.screen_pet_edit),
         AppScreen.Calendar.name to stringResource(Res.string.screen_calendar),
         AppScreen.CalendarActivity.name to stringResource(Res.string.screen_calendar_activity),
         AppScreen.PetDashboard.name to stringResource(Res.string.screen_pet_dashboard),
@@ -118,66 +118,61 @@ fun AppContent(navController: NavHostController = rememberNavController()) {
         AppScreen.Splash.name -> {
             topBarState.value = false
         }
-
         AppScreen.Login.name -> {
             topBarState.value = false
         }
-
         AppScreen.Register.name -> {
             topBarState.value = false
         }
-
         else -> {
             topBarState.value = true
         }
     }
 
-    CompositionLocalProvider(
-        LocalAppColors provides LightThemeAppColors
-    ) {
-        MaterialTheme(
-        ) {
+    CompositionLocalProvider(LocalAppColors provides LightThemeAppColors) {
+        MaterialTheme {
             val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
             val scope = rememberCoroutineScope()
             val storageState = remember { mutableStateOf(StorageState.INIT) }
             val subPage = remember { mutableStateOf(false) }
 
-            Navigation(drawerState, onNavigate = {
-                navController.navigate(it.name)
-            }) {
+            Navigation(drawerState, onNavigate = { navController.navigate(it.name) }) {
                 Scaffold(
                     floatingActionButton = {
-                        if (navController.currentDestination?.route == AppScreen.MyPets.name) {
-                            FloatingActionButton(containerColor = LocalAppColors.current.primary,
-                                shape = CircleShape,
-                                contentColor = LocalAppColors.current.secondary,
-                                onClick = {
-                                    navController.navigate(AppScreen.PetEdit.name)
-                                }) {
-                                Icon(Icons.Filled.Add, "")
-                            }
-                        }
-                        if (navController.currentDestination?.route == AppScreen.Calendar.name) {
-                            FloatingActionButton(containerColor = LocalAppColors.current.primary,
-                                shape = CircleShape,
-                                contentColor = LocalAppColors.current.secondary,
-                                onClick = {
-                                    navController.navigate(AppScreen.CalendarActivity.name)
-                                }) {
-                                Icon(Icons.Filled.Add, "")
-                            }
-                        }
-                        if (navController.currentDestination?.route == AppScreen.Storage.name) {
-                            MultiFloatingActionButton(fabIcon = FontAwesomeIcons.Solid.Plus, items = arrayListOf(
-                                FabItem(FontAwesomeIcons.Regular.Folder, label = stringResource(Res.string.new_folder)) {
-                                    storageState.value = StorageState.CREATE_FOLDER
-
-                                },
-                                FabItem(FontAwesomeIcons.Regular.File, label = stringResource(Res.string.upload_file)) {
-                                    storageState.value = StorageState.UPLOAD_FILE
+                        when (navController.currentDestination?.route) {
+                            AppScreen.MyPets.name -> {
+                                FloatingActionButton(
+                                    containerColor = LocalAppColors.current.primary,
+                                    shape = CircleShape,
+                                    contentColor = LocalAppColors.current.secondary,
+                                    onClick = { navController.navigate(AppScreen.PetCreate.name + "/" + selectedPet.value?.id) }
+                                ) {
+                                    Icon(Icons.Filled.Add, "")
                                 }
-
-                            ))
+                            }
+                            AppScreen.Calendar.name -> {
+                                FloatingActionButton(
+                                    containerColor = LocalAppColors.current.primary,
+                                    shape = CircleShape,
+                                    contentColor = LocalAppColors.current.secondary,
+                                    onClick = { navController.navigate(AppScreen.CalendarActivity.name) }
+                                ) {
+                                    Icon(Icons.Filled.Add, "")
+                                }
+                            }
+                            AppScreen.Storage.name -> {
+                                MultiFloatingActionButton(
+                                    fabIcon = FontAwesomeIcons.Solid.Plus,
+                                    items = arrayListOf(
+                                        FabItem(FontAwesomeIcons.Regular.Folder, label = stringResource(Res.string.new_folder)) {
+                                            storageState.value = StorageState.CREATE_FOLDER
+                                        },
+                                        FabItem(FontAwesomeIcons.Regular.File, label = stringResource(Res.string.upload_file)) {
+                                            storageState.value = StorageState.UPLOAD_FILE
+                                        }
+                                    )
+                                )
+                            }
                         }
                     },
                     topBar = {
@@ -187,9 +182,8 @@ fun AppContent(navController: NavHostController = rememberNavController()) {
                             exit = slideOutVertically(targetOffsetY = { -it }),
                             initiallyVisible = false,
                             content = {
-
                                 subPage.value = when (navController.currentDestination?.route) {
-                                    AppScreen.PetEdit.name, AppScreen.CalendarActivity.name, AppScreen.PetDashboard.name-> true
+                                    AppScreen.PetCreate.name, AppScreen.CalendarActivity.name, AppScreen.PetDashboard.name -> true
                                     else -> false
                                 }
 
@@ -216,90 +210,93 @@ fun AppContent(navController: NavHostController = rememberNavController()) {
                                             }
                                         },
                                         actions = {
-                                            if(navController.currentDestination?.route == AppScreen.PetDashboard.name) {
-                                                IconButton(onClick = {
+                                            if (navController.currentDestination?.route?.startsWith(AppScreen.PetDashboard.name, 0) == true) {
+                                                IconButton(
+                                                    colors = IconButtonColors(
+                                                        contentColor = Color.White,
+                                                        containerColor = Color.White,
+                                                        disabledContentColor = LocalAppColors.current.darkGray,
+                                                        disabledContainerColor = LocalAppColors.current.darkGray
+                                                    ),
+                                                    onClick = {
                                                     val petId = selectedPet.value?.id
                                                     if (petId != null) {
-                                                        navController.navigate("PetEdit/$petId")
+                                                        navController.navigate("PetCreate/$petId")
                                                     }
                                                 }) {
                                                     Icon(
                                                         FontAwesomeIcons.Regular.Edit,
+                                                        tint = LocalAppColors.current.primary,
+                                                        modifier = Modifier.size(24.dp),
                                                         contentDescription = "Edit pet"
                                                     )
                                                 }
                                             }
+
+                                            LaunchedEffect(navController.currentDestination?.route) {
+                                                // This will run whenever the route changes
+                                                var a = true
+                                            }
                                         }
                                     )
                                 }
-                            },
+                            }
                         )
-
-                    }) {
+                    }
+                ) { contentPadding ->
                     NavHost(
                         navController = navController,
                         startDestination = AppScreen.Splash.name,
                         modifier = Modifier
                             .fillMaxSize()
                             .background(LocalAppColors.current.secondary)
-                            .verticalScroll(rememberScrollState())
-                            .padding(5.dp)
+                            .padding(contentPadding) // Apply padding provided by Scaffold
                     ) {
-
                         composable(route = AppScreen.Splash.name) {
-                            Splash{
+                            Splash {
                                 navController.navigate(AppScreen.Login.name)
                             }
                         }
-
                         composable(route = AppScreen.Register.name) {
                             RegisterScreen {
                                 navController.navigate(AppScreen.MyPets.name)
                             }
                         }
-
                         composable(route = AppScreen.Login.name) {
                             LoginScreen(
-                                onCreateAccount = {
-                                    navController.navigate(AppScreen.Register.name)
-                                },
-                                onLoginSucces = {
-                                    navController.navigate(AppScreen.MyPets.name)
-                                })
+                                onCreateAccount = { navController.navigate(AppScreen.Register.name) },
+                                onLoginSuccess = { navController.navigate(AppScreen.MyPets.name) }
+                            )
                         }
-
                         composable(route = AppScreen.MyPets.name) {
                             MyPets(onItemClick = {
                                 selectedPet.value = it
                                 navController.navigate(AppScreen.petDashboardRoute(it.id))
                             })
                         }
-
+                        val rr = navController.currentDestination?.route
                         composable(
-                            route = "PetEdit/{petId}",
+                            route = "PetCreate/{petId}",
                             arguments = listOf(navArgument("petId") { type = NavType.StringType })
                         ) { backStackEntry ->
                             val petId = backStackEntry.arguments?.getString("petId") ?: return@composable
-                            PetEdit(petId, onSaved = {
-                                navController.navigate(AppScreen.Login.name)
+                            PetCreate(petId, onSaved = {
+                                navController.navigate(AppScreen.MyPets.name)
                             })
                         }
-
                         composable(route = AppScreen.Calendar.name) {
                             PetCalendar()
                         }
-
                         composable(route = AppScreen.CalendarActivity.name) {
-                            PetCalendarActivity() {
+                            PetCalendarActivity {
                                 navController.navigate(AppScreen.Calendar.name)
                             }
                         }
-
                         composable(route = AppScreen.Gallery.name) {
-                            Gallery(){
+                            Gallery {
+
                             }
                         }
-
                         composable(
                             route = "PetDashboard/{petId}",
                             arguments = listOf(navArgument("petId") { type = NavType.StringType })
@@ -307,19 +304,15 @@ fun AppContent(navController: NavHostController = rememberNavController()) {
                             val petId = backStackEntry.arguments?.getString("petId") ?: return@composable
                             PetDashboard(petId = petId)
                         }
-
                         composable(route = AppScreen.Home.name) {
                             Home()
                         }
-
                         composable(route = AppScreen.Profile.name) {
                             Profile()
                         }
-
                         composable(route = AppScreen.Contact.name) {
                             Contact()
                         }
-
                         composable(route = AppScreen.Storage.name) {
                             Storage(storageState.value)
                         }

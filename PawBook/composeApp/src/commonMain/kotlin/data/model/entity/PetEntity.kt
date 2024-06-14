@@ -9,7 +9,7 @@ import kotlinx.datetime.LocalDateTime
 
 @Entity
 data class PetEntity(
-    @PrimaryKey val id: String,
+    @PrimaryKey var id: String,
     val petType: PetType,
     val name: String,
     val shortDescription: String?,

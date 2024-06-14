@@ -1,5 +1,7 @@
 import androidx.compose.runtime.Composable
 import core.di.KoinModule
+import core.di.KoinModule.provideIntentLauncher
+import core.util.IntentLauncher
 import data.local.Preferences
 import data.repository.LoginRepositoryImpl
 import data.repository.PetCalendarRepositoryImpl
@@ -27,7 +29,7 @@ import presentation.screen.storage.StorageViewModel
 enum class AppScreen() {
     Splash,
     Login,
-    PetEdit,
+    PetCreate,
     MyPets,
     Calendar,
     CalendarActivity,
@@ -38,8 +40,6 @@ enum class AppScreen() {
     Profile,
     Contact,
     Storage,
-    StorageNewFolder,
-    StorageUploadFile,
     Conversations;
 
     companion object {
@@ -101,6 +101,8 @@ fun appModule() = module {
 
     single<StorageViewModel> { StorageViewModel() }
     single<StorageRepositoryImpl> { StorageRepositoryImpl() }
+
+    single<IntentLauncher> { provideIntentLauncher() }
 }
 
 

@@ -1,8 +1,8 @@
 package presentation.screen.petCreate
 
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.mohamedrejeb.calf.core.PlatformContext
 import com.mohamedrejeb.calf.io.KmpFile
 import com.mohamedrejeb.calf.io.readByteArray
@@ -28,7 +28,8 @@ class PetCreateViewModel() : ViewModel(), KoinComponent {
     private val _state = MutableStateFlow(PetCreateState.INIT)
     val state: StateFlow<PetCreateState> = _state
 
-    val pet = mutableStateOf(Pet.empty())
+    private val _pet = MutableStateFlow<PetEntity?>(null)
+    val pet: StateFlow<PetEntity?> = _pet
 
     private val _profilePicture = MutableStateFlow("")
     val profilePicture: StateFlow<String> = _profilePicture
@@ -76,6 +77,14 @@ class PetCreateViewModel() : ViewModel(), KoinComponent {
         viewModelScope.launch {
             petDetailRepository.fetchDoctors().collect {
                 doctors.value.addAll(it)
+            }
+        }
+    }
+
+    fun loadPet(petId: String) {
+        viewModelScope.launch {
+            petDetailRepository.loadPet(petId).collect {
+                _pet.value = it
             }
         }
     }

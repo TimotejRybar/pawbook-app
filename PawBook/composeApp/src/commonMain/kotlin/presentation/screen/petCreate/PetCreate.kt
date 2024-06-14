@@ -5,7 +5,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -98,15 +97,16 @@ import presentation.theme.colors.LocalAppColors
 import utils.compose.PetPropFieldUtils
 
 @Composable
-fun PetCreate(pet: PetEntity?, viewModel: PetCreateViewModel = koinInject(), onSaved: () -> Unit) {
+fun PetCreate(petId: String, viewModel: PetCreateViewModel = koinInject(), onSaved: () -> Unit) {
 
     val state by viewModel.state.collectAsState()
+    val pet by viewModel.pet.collectAsState()
 
     LaunchedEffect(true){
         if(state == PetCreateState.EDIT) {
             if (pet != null) {
-                viewModel.loadPetColors(pet)
-                viewModel.loadPetDoctor(pet)
+                viewModel.loadPetColors(pet as PetEntity)
+                viewModel.loadPetDoctor(pet as PetEntity)
             }
         }
     }
@@ -116,14 +116,14 @@ fun PetCreate(pet: PetEntity?, viewModel: PetCreateViewModel = koinInject(), onS
         onSaved()
     }
 
-    Box(
+    Row (
         modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
+        verticalAlignment = Alignment.CenterVertically
     ) {
         PetInfo(viewModel, pet)
     }
     LaunchedEffect(key1 = true) {
-        viewModel.pet.value._id = "CREATE"
+        viewModel.pet.value?.id = "CREATE"
         viewModel.init()
     }
 }

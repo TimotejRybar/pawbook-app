@@ -85,4 +85,8 @@ class PetDetailRepositoryImpl: PetDetailRepository, KoinComponent {
         return database.getColorDao().getFromHexStrings(petEntity.color)
     }
 
+    override suspend fun loadPet(petId: String): Flow<PetEntity> {
+        return database.getPetDao().getById(petId)
+    }
+
 }

@@ -66,7 +66,7 @@ fun TrackEpilepsyOverview(
 
     ListItem(
         modifier = Modifier
-            .padding(16.dp)
+            .padding(16.dp, 0.dp)
             .fillMaxWidth()
             .clickable {
                 openDialog = true

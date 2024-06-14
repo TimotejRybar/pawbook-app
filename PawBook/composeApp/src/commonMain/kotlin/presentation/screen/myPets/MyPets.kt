@@ -3,10 +3,8 @@ package presentation.screen.myPets
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
@@ -33,14 +31,11 @@ import presentation.theme.colors.LocalAppColors
 
 @Composable
 fun MyPets(viewModel: MyPetsViewModel = koinInject(),  onItemClick: (PetEntity) -> Unit) {
-    LaunchedEffect(key1 = true){
+    LaunchedEffect(false){
         viewModel.fetch()
     }
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.CenterStart,
-    ) {
-        Pets(items = viewModel.pets){
+    Row( verticalAlignment = Alignment.CenterVertically) {
+        Pets(items = viewModel.pets) {
             onItemClick(it)
         }
     }

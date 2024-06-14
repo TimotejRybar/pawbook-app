@@ -19,4 +19,5 @@ interface PetDetailRepository {
     suspend fun addWeightRecord(petId: String, weightRecord: WeightRecord): Flow<Resources<WeightRecord>>
     suspend fun loadPetDoctor(petEntity: PetEntity): Flow<DoctorEntity>
     suspend fun loadPetColors(petEntity: PetEntity): Flow<List<ColorEntity>>
+    suspend fun loadPet(petId: String): Flow<PetEntity>
 }

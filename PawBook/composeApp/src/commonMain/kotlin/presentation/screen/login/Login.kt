@@ -66,7 +66,7 @@ import presentation.theme.colors.LocalAppColors
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalResourceApi::class)
 @Composable
-fun LoginScreen(viewModel: LoginViewModel = koinInject(), onLoginSucces: () -> Unit, onCreateAccount: () -> Unit ) {
+fun LoginScreen(viewModel: LoginViewModel = koinInject(), onLoginSuccess: () -> Unit, onCreateAccount: () -> Unit ) {
     val loginState by viewModel.state.collectAsState()
 
     Box(
@@ -81,7 +81,7 @@ fun LoginScreen(viewModel: LoginViewModel = koinInject(), onLoginSucces: () -> U
             LogInForm() { username, password ->
                 viewModel.login(username, password) {
                     viewModel.synchronizeAuthenticated()
-                    onLoginSucces()
+                    onLoginSuccess()
                 }
             }
             LogInSocial()

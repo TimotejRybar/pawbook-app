@@ -3,7 +3,6 @@ package presentation.screen.storage
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -38,7 +37,6 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.mohamedrejeb.calf.core.LocalPlatformContext
-import com.mohamedrejeb.calf.io.KmpFile
 import com.mohamedrejeb.calf.picker.FilePickerFileType
 import com.mohamedrejeb.calf.picker.FilePickerSelectionMode
 import com.mohamedrejeb.calf.picker.rememberFilePickerLauncher
@@ -67,7 +65,6 @@ import pawbook.composeapp.generated.resources.directory_name
 import pawbook.composeapp.generated.resources.new_folder
 import presentation.screen.login.InputField
 import presentation.screen.login.InputType
-import presentation.screen.storage.StorageViewModel.Companion.DEFAULT_DIRECTORY
 import presentation.theme.colors.LocalAppColors
 
 @OptIn(ExperimentalResourceApi::class)
@@ -83,9 +80,9 @@ fun Storage(storageState: StorageState, viewModel: StorageViewModel = koinInject
         viewModel.fetchStorage(currentPath.value, backString)
     }
 
-    Box(
+    Row (
         modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.CenterStart,
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         FileManager(viewModel)
     }

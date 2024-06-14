@@ -75,27 +75,34 @@ fun Profile(viewModel: ProfileViewModel = koinInject()){
     val city by remember { mutableStateOf("") }
     val userProfilePhotoUploaded by remember { mutableStateOf(viewModel.isUserProfilePhotoUploaded()) }
 
-    Box(
+    Row(
         modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center,
-    ) {
-        Row {
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                UserPhoto(viewModel, userProfile, userProfilePhotoUploaded){
-                }
-                InputField(stringResource(Res.string.my_name), userProfile?.name ?: "", InputType.TEXT) {
-                    viewModel.updateProfileField(userProfile?.copy(name = it ))
-                }
-                DatePropField(stringResource(Res.string.birthday), ){
-                    viewModel.updateProfileField(userProfile?.copy(birthDay = it.toInstant().toLocalDateTime(TimeZone.currentSystemDefault())))
-                }
-                InputField(stringResource(Res.string.city), city, InputType.TEXT, 1){
-                    viewModel.updateProfileField(userProfile?.copy(city = it ))
-                }
-                Spacer(modifier = Modifier.height(20.dp))
-                StyledButton(text = stringResource(Res.string.confirm)) {
-                    viewModel.updateProfile()
-                }
+        verticalAlignment = Alignment.CenterVertically,
+        ) {
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            UserPhoto(viewModel, userProfile, userProfilePhotoUploaded) {
+            }
+            InputField(
+                stringResource(Res.string.my_name),
+                userProfile?.name ?: "",
+                InputType.TEXT
+            ) {
+                viewModel.updateProfileField(userProfile?.copy(name = it))
+            }
+            DatePropField(stringResource(Res.string.birthday),) {
+                viewModel.updateProfileField(
+                    userProfile?.copy(
+                        birthDay = it.toInstant()
+                            .toLocalDateTime(TimeZone.currentSystemDefault())
+                    )
+                )
+            }
+            InputField(stringResource(Res.string.city), city, InputType.TEXT, 1) {
+                viewModel.updateProfileField(userProfile?.copy(city = it))
+            }
+            Spacer(modifier = Modifier.height(20.dp))
+            StyledButton(text = stringResource(Res.string.confirm)) {
+                viewModel.updateProfile()
             }
         }
     }

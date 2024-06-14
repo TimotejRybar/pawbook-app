@@ -6,7 +6,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
@@ -31,18 +30,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import core.util.YearMonth
+import data.model.entity.CalendarActivityEntity
 import kotlinx.datetime.DayOfWeek
+import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.Month
+import org.koin.compose.koinInject
+import presentation.components.calendar.CalendarUiState
 import presentation.theme.colors.LocalAppColors
 import utils.compose.CalendarDataSource
 import utils.compose.CalendarUtils
-import core.util.YearMonth
-import data.model.entity.CalendarActivityEntity
-import domain.model.CalendarActivity
-import domain.model.enums.PetCalendarState
-import kotlinx.datetime.LocalDateTime
-import org.koin.compose.koinInject
-import presentation.components.calendar.CalendarUiState
 import utils.compose.getDisplayName
 
 @Composable
@@ -52,15 +49,10 @@ fun PetCalendar(viewModel: PetCalendarViewModel = koinInject()) {
     val yearMonth = remember { mutableStateOf(YearMonth(
         CalendarUtils.getCurrentYear(), Month(CalendarUtils.getCurrentMonth()))) }
 
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.CenterStart,
-    ) {
-        Row {
-            Column {
-                PetCalendarContent(dataSource.getDates(yearMonth.value)) {}
-                PetCalendarOverview(activities)
-            }
+    Row (verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(32.dp)) {
+        Column {
+            PetCalendarContent(dataSource.getDates(yearMonth.value)) {}
+            PetCalendarOverview(activities)
         }
     }
 
