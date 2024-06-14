@@ -30,7 +30,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -50,7 +49,7 @@ import compose.icons.fontawesomeicons.Solid
 import compose.icons.fontawesomeicons.solid.Heartbeat
 import data.model.entity.PetEntity
 import domain.model.EpilepsyRecord
-import kotlinx.coroutines.launch
+import kotlinx.datetime.LocalDateTime
 import presentation.components.progressBars.ProgressInput
 import presentation.screen.calendar.formatDate
 import presentation.screen.login.StyledButton
@@ -108,7 +107,6 @@ fun TrackEpilepsyOverview(
 fun TrackEpilepsyDialog(viewModel: PetDashboardViewModel, pet: PetEntity, onDismiss: () -> Unit) {
 
     var openInputDialog by remember { mutableStateOf(false) }
-    val coroutineScope = rememberCoroutineScope()
 
     Dialog(
         onDismissRequest = {
@@ -128,7 +126,7 @@ fun TrackEpilepsyDialog(viewModel: PetDashboardViewModel, pet: PetEntity, onDism
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Spacer(modifier = Modifier.height(16.dp))
-                DialogTitle("História záznamov")
+                DialogTitle("História záchvatov")
                 EpilepsyHistoryChart(pet.epilepsyHistory) {
                     openInputDialog = true
                 }
@@ -140,9 +138,7 @@ fun TrackEpilepsyDialog(viewModel: PetDashboardViewModel, pet: PetEntity, onDism
     if(openInputDialog) {
         EpilepsyRecordDialog(onDismiss = { openInputDialog = false }) {
             // save epilepsy record
-            coroutineScope.launch {
-                viewModel.addEpilepsyRecord(pet, it)
-            }
+            viewModel.addEpilepsyRecord(pet, it)
         }
     }
 }
@@ -150,7 +146,13 @@ fun TrackEpilepsyDialog(viewModel: PetDashboardViewModel, pet: PetEntity, onDism
 @Composable
 fun EpilepsyRecordDialog(onDismiss: () -> Unit, onSubmit: (EpilepsyRecord) -> Unit) {
 
-    val epilepsyRecord by remember { mutableStateOf(EpilepsyRecord()) }
+    val epilepsyRecord by remember { mutableStateOf<EpilepsyRecord?>(null) }
+    var drooling by remember { mutableStateOf(false) }
+    var barfing by remember { mutableStateOf(false) }
+    var fainting by remember { mutableStateOf(false) }
+    var duration by remember { mutableStateOf(2) }
+    var spasms by remember { mutableStateOf(2) }
+    var note by remember { mutableStateOf("") }
 
     Dialog(
         onDismissRequest = {
@@ -173,28 +175,28 @@ fun EpilepsyRecordDialog(onDismiss: () -> Unit, onSubmit: (EpilepsyRecord) -> Un
                 Text("Nový záznam", fontSize = 24.sp, color = LocalAppColors.current.primary)
                 Spacer(modifier = Modifier.height(16.dp))
                 ProgressInput("Intenzita kŕčov", "Slabé", "Silné",3,2) {
-                    epilepsyRecord.spasms = it
+                    spasms = it
                 }
                 Spacer(modifier = Modifier.height(16.dp))
                 BasicCheckbox("Zvracanie") {
-                    epilepsyRecord.barfing = it
+                    barfing = it
                 }
                 BasicCheckbox("Slintanie") {
-                    epilepsyRecord.drooling = it
+                    drooling = it
                 }
                 BasicCheckbox("Strata vedomia") {
-                    epilepsyRecord.fainting = it
+                    fainting = it
                 }
                 Spacer(modifier = Modifier.height(16.dp))
                 SeizureDurationSlider(){
-                    epilepsyRecord.duration = it
+                    duration = it
                 }
                 NoteField {
-                    epilepsyRecord.note = it
+                    note = it
                 }
                 Spacer(modifier = Modifier.height(8.dp))
                 StyledButton("Potvrdiť") {
-                    onSubmit(epilepsyRecord)
+                    onSubmit(EpilepsyRecord(null, barfing, drooling, fainting, spasms, duration, note, LocalDateTime(1,1,1,1,1,1)))
                 }
                 Spacer(modifier = Modifier.height(8.dp))
             }
@@ -315,7 +317,7 @@ fun EpilepsyHistoryChart(epilepsyHistory: ArrayList<EpilepsyRecord>, onAddClick:
         lineShadow = true,
     ))
 
-    Column(modifier = Modifier.fillMaxSize().padding(32.dp)) {
+    Column(modifier = Modifier.padding(16.dp)) {
         if (epilepsyHistory.isNotEmpty()) {
             Box(modifier = Modifier.weight(1f).fillMaxSize()) {
                 LineChart(

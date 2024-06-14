@@ -13,8 +13,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -44,6 +42,10 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import compose.icons.FontAwesomeIcons
+import compose.icons.fontawesomeicons.Solid
+import compose.icons.fontawesomeicons.solid.Lock
+import compose.icons.fontawesomeicons.solid.Unlock
 import domain.model.enums.LoginState
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
@@ -238,13 +240,13 @@ fun InputPasswordField(title: String, value: String, onTextChange: (String) -> U
             ),
         trailingIcon = {
             val image = if (passwordVisible)
-                Icons.Filled.Lock
-            else Icons.Filled.Lock
+                FontAwesomeIcons.Solid.Unlock
+            else FontAwesomeIcons.Solid.Lock
 
             val description = if (passwordVisible) stringResource(Res.string.hide_password) else stringResource(Res.string.show_password)
 
             IconButton(onClick = {passwordVisible = !passwordVisible}){
-                Icon(imageVector  = image, description)
+                Icon(imageVector  = image, description, modifier = Modifier.size(24.dp))
             }
         }
 

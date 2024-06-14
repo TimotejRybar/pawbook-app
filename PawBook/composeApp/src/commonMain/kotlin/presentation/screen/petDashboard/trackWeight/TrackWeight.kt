@@ -157,6 +157,7 @@ fun TrackWeightDialog(viewModel: PetDashboardViewModel, pet: PetEntity?, title: 
         WeightRecordDialog(onDismiss = { openInputDialog = false }) {
             // save weight record
             coroutineScope.launch {
+                openInputDialog = false
                 viewModel.addWeightRecord(pet, it)
             }
         }

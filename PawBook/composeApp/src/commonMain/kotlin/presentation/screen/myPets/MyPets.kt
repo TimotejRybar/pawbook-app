@@ -5,6 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
@@ -53,8 +54,8 @@ fun Pets(items: SnapshotStateList<PetEntity>, onItemClick: (PetEntity) -> Unit) 
 
 @Composable
 fun PetCard(petItem: PetEntity, onItemClick: (PetEntity) -> Unit) {
-    Row (horizontalArrangement = Arrangement.Center,
-        modifier = Modifier.clickable { onItemClick(petItem) }.padding(16.dp, 16.dp),
+    Row (horizontalArrangement = Arrangement.Start,
+        modifier = Modifier.fillMaxWidth().clickable { onItemClick(petItem) }.padding(32.dp, 16.dp),
         ) {
         Column {
             CirclePhoto()
