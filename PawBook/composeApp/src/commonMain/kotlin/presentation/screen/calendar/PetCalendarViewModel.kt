@@ -48,7 +48,7 @@ class PetCalendarViewModel: ViewModel(), KoinComponent {
 
     fun getCalendarActivity(dayDate: LocalDate, activities: List<CalendarActivityEntity>): CalendarActivityEntity? {
         return activities.find {
-            it.start.date >= dayDate
+            it.start.date == dayDate
         }
     }
 

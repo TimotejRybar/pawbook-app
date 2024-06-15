@@ -9,10 +9,9 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -30,11 +29,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import compose.icons.FontAwesomeIcons
+import compose.icons.fontawesomeicons.Solid
+import compose.icons.fontawesomeicons.solid.Cut
 import core.util.YearMonth
 import data.model.entity.CalendarActivityEntity
 import kotlinx.datetime.Clock
 import kotlinx.datetime.DayOfWeek
-import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.Month
 import kotlinx.datetime.TimeZone
@@ -123,32 +124,41 @@ fun PetCalendarContent(
     dates: List<CalendarUiState.Date>,
     onDateClickListener: (CalendarUiState.Date) -> Unit,
 ) {
+    val currentMoment = Clock.System.now()
+    val currentDateTime = currentMoment.toLocalDateTime(TimeZone.currentSystemDefault())
+    val currentYear = currentDateTime.year
+    val currentMonth = currentDateTime.month
+
     Column {
         var index = 0
         Row {
-
-            for(i in 1..daysOfWeek.size) {
-                PetCalendarWeekDay(daysOfWeek[i-1], modifier = Modifier.weight(1f))
+            for (i in 1..daysOfWeek.size) {
+                PetCalendarWeekDay(daysOfWeek[i - 1], modifier = Modifier.weight(1f))
             }
         }
         repeat(6) {
             if (index >= dates.size) return@repeat
             Row {
-                repeat(7) {day ->
-                    val dayDate = LocalDate(1,1,1)
-                    val item = if (index < dates.size) dates[index] else CalendarUiState.empty()
-                    PetCalendarItem(
-                        activity = viewModel.getCalendarActivity(dayDate, activities),
-                        date = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()),
-                        onClickListener = onDateClickListener,
-                        modifier = Modifier.weight(1f).heightIn(48.dp, 128.dp)
-                    )
-                    index++
+                repeat(7) { day ->
+                    if (index < dates.size) {
+                        val date = dates[index]
+                        val dateTime = LocalDateTime(currentYear, currentMonth, date.dayOfMonth.toInt(), 12, 0)
+                        val activity = viewModel.getCalendarActivity(dateTime.date, activities)
+                        PetCalendarItem(
+                            activity = activity,
+                            date = dateTime,
+                            onClickListener = { onDateClickListener(date) },
+                            modifier = Modifier.weight(1f).heightIn(48.dp, 128.dp)
+                        )
+                        index++
+                    }
                 }
             }
         }
     }
 }
+
+
 
 @Composable
 fun PetCalendarWeekDay(s: String, modifier: Modifier) {
@@ -192,13 +202,15 @@ fun PetCalendarItem(
             .clickable {
             }
     ) {
-        Box(contentAlignment = Alignment.Center, modifier = Modifier.padding(32.dp)) {
-            Icon(
-                Icons.Filled.Warning,
-                "",
-                tint = LocalAppColors.current.primary,
-                modifier = Modifier.align(Alignment.Center)
-            )
+        Box(contentAlignment = Alignment.Center, modifier = Modifier.padding(4.dp).align(Alignment.Center)) {
+            if(activity != null) {
+                Icon(
+                    FontAwesomeIcons.Solid.Cut,
+                    "",
+                    tint = LocalAppColors.current.primary,
+                    modifier = Modifier.align(Alignment.Center).size(16.dp)
+                )
+            }
         }
         Text(
             text = date.dayOfMonth.toString(),
