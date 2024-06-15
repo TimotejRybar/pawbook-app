@@ -3,10 +3,13 @@ package presentation.screen.calendar
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -54,8 +57,10 @@ fun PetCalendar(viewModel: PetCalendarViewModel = koinInject()) {
     val yearMonth = remember { mutableStateOf(YearMonth(
         CalendarUtils.getCurrentYear(), Month(CalendarUtils.getCurrentMonth()))) }
 
-    Row (verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(32.dp)) {
-        Column {
+    Row (verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center, modifier = Modifier.padding(32.dp)) {
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            PetCalendarTitle(viewModel)
+            Spacer(modifier = Modifier.height(16.dp))
             PetCalendarContent(viewModel, activities, dataSource.getDates(yearMonth.value)) {}
             PetCalendarOverview(activities)
         }
@@ -64,6 +69,11 @@ fun PetCalendar(viewModel: PetCalendarViewModel = koinInject()) {
     LaunchedEffect(true){
         viewModel.loadCalendarActivities()
     }
+}
+
+@Composable
+fun PetCalendarTitle(viewModel: PetCalendarViewModel) {
+    Text(text = viewModel.getCurrentYearMonthLocalized(), textAlign = TextAlign.Center, fontSize = 24.sp)
 }
 
 @Composable

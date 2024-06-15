@@ -13,9 +13,11 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.Month
+import kotlinx.datetime.format
+import kotlinx.datetime.format.MonthNames
+import kotlinx.datetime.format.char
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import utils.compose.CalendarDataSource
 import utils.compose.CalendarUtils
 
 class PetCalendarViewModel: ViewModel(), KoinComponent {
@@ -52,9 +54,7 @@ class PetCalendarViewModel: ViewModel(), KoinComponent {
         }
     }
 
-    init {
-
-        val dataSource = CalendarDataSource()
+    fun getCurrentYearMonthLocalized(): String {
         var yearMonth = mutableStateOf(
             YearMonth(
                 CalendarUtils.getCurrentYear(), Month(
@@ -62,5 +62,13 @@ class PetCalendarViewModel: ViewModel(), KoinComponent {
                 )
             )
         )
+
+        val dateFormat = LocalDate.Format {
+            monthName(names = MonthNames.ENGLISH_FULL)
+            char(' ')
+            year()
+        }
+
+        return LocalDate(yearMonth.value.year, yearMonth.value.month, 1).format(dateFormat)
     }
 }
