@@ -48,6 +48,8 @@ class PetCreateViewModel() : ViewModel(), KoinComponent {
     private val _petDoctor = MutableStateFlow<DoctorEntity?>(null)
     val petDoctor: StateFlow<DoctorEntity?> = _petDoctor
 
+    private val _petBreed = MutableStateFlow<BreedEntity?>(null)
+    val petBreed: StateFlow<BreedEntity?> = _petBreed
 
     fun init() {
         fetchBreeds()
@@ -100,11 +102,18 @@ class PetCreateViewModel() : ViewModel(), KoinComponent {
         }
     }
 
+    fun loadPetBreed(petEntity: PetEntity) {
+        viewModelScope.launch {
+            petDetailRepository.loadPetBreed(petEntity).collect {
+                _petBreed.value = it
+            }
+        }
+    }
+
     fun loadPetColors(petEntity: PetEntity) {
         viewModelScope.launch {
             petDetailRepository.loadPetColors(petEntity).collect {
-                _petColors.value.clear()
-                _petColors.value.addAll(it)
+                _petColors.value = ArrayList(it)
             }
         }
     }

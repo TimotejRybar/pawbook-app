@@ -130,6 +130,7 @@ fun RepeatEvent() {
     val options = remember { arrayListOf("Len raz", "Každý deň", "Každý týždeň", "Každý mesiac") }
 
     Spinner(
+        defaultValue = "",
         text = stringResource(Res.string.repeated_activity),
         options = options)
     {
@@ -160,7 +161,7 @@ fun calculateEnd(value: LocalDateTime?, activityDuration: ActivityDuration?): Lo
 fun DurationField(onSelected: (ActivityDuration) -> Unit) {
     val activityOptions = arrayListOf("15 minút", "30 minút", "1 hodina", "2 hodiny", "4 hodiny", "Celý deň")
 
-    Spinner(text = stringResource(Res.string.activity_duration_type), options = activityOptions) {
+    Spinner(defaultValue = "", text = stringResource(Res.string.activity_duration_type), options = activityOptions) {
         onSelected(ActivityDuration.entries[activityOptions.indexOf(it)])
     }
 
@@ -313,7 +314,7 @@ fun MultiPetInput(pets: List<PetEntity>, onPetSelected: (pets: List<PetEntity>) 
 @Composable
 fun ActivitySpinner(onSelected: (ActivityType) -> Unit) {
     val activityOptions = arrayListOf("Vychádzka", "Návšteva veterinára", "Lieky")
-    Spinner(text = stringResource(Res.string.activity_type), options = activityOptions) {
+    Spinner(defaultValue = "", text = stringResource(Res.string.activity_type), options = activityOptions) {
         onSelected(ActivityType.entries[activityOptions.indexOf(it)])
     }
 }

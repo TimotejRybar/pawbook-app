@@ -49,7 +49,7 @@ import presentation.theme.colors.LocalAppColors
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalResourceApi::class)
 @Composable
 fun AutoComplete(
-    value: String?,
+    value: String,
     label: String,
     hint: String,
     options: List<Selectable>,
@@ -79,8 +79,8 @@ fun AutoComplete(
                         color = Color.Black,
                     )
                 },
-                value = inputValue.toString(),
-                isError = (inputValue?.isNotEmpty() == true) && (options.find {it.name == inputValue} == null),
+                value = inputValue,
+                isError = inputValue.isNotEmpty() && (options.find {it.name == inputValue} == null),
                 onValueChange = {
                     selectedValue =
                         options.find { option -> option.name.equals(it, ignoreCase = true) }

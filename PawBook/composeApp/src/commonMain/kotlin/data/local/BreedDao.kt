@@ -14,4 +14,7 @@ interface BreedDao {
 
     @Query("SELECT * FROM BreedEntity")
     fun getAllAsFlow(): Flow<List<BreedEntity>>
+
+    @Query("SELECT * FROM BreedEntity WHERE id=:breedId")
+    fun getById(breedId: String): Flow<BreedEntity>
 }

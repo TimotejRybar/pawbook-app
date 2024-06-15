@@ -120,4 +120,8 @@ class PetDetailRepositoryImpl: PetDetailRepository, KoinComponent {
         }
     }
 
+    override suspend fun loadPetBreed(petEntity: PetEntity): Flow<BreedEntity> {
+        return database.getBreedDao().getById(petEntity.breed)
+    }
+
 }

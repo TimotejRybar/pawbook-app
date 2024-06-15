@@ -49,10 +49,12 @@ fun ColorFieldReadOnly(title: String, defaultColors: List<ColorEntity>) {
 }
 
 @Composable
-fun ColorField(title: String, defaultColors: List<ColorEntity>, availableColors: List<ColorEntity>, onColorSelected: (List<ColorEntity>) -> Unit) {
+fun ColorField(title: String, defaultColors: ArrayList<ColorEntity>, availableColors: List<ColorEntity>, onColorSelected: (List<ColorEntity>) -> Unit) {
     var showDialog by remember { mutableStateOf(false) }
     val colors = remember { mutableStateListOf<ColorEntity>() }
-    val newColors = remember { mutableStateListOf<ColorEntity>() }
+    val newColors = remember { mutableStateOf(defaultColors) }
+
+    newColors.value.addAll(defaultColors)
 
     LaunchedEffect(true){
         colors.clear()
@@ -63,7 +65,7 @@ fun ColorField(title: String, defaultColors: List<ColorEntity>, availableColors:
     Row(
         verticalAlignment = Alignment.CenterVertically
     ) {
-        newColors.forEach { petColor ->
+        newColors.value.forEach { petColor ->
             ColorCircle(petColor, 24.dp, true, false) { color: ColorEntity, selected: Boolean ->
 
             }
@@ -83,10 +85,10 @@ fun ColorField(title: String, defaultColors: List<ColorEntity>, availableColors:
         ColorPicker(
             title = title,
             onColorsSelected = { updatedColors ->
-                newColors.clear()
-                newColors.addAll(updatedColors)
+                newColors.value.clear()
+                newColors.value.addAll(updatedColors)
                 showDialog = false
-                onColorSelected(newColors)
+                onColorSelected(newColors.value)
             },
             selectedColors = colors,
             availableColors = availableColors,

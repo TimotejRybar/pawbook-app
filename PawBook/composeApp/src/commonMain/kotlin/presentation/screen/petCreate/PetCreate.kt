@@ -60,6 +60,7 @@ import com.mohamedrejeb.calf.picker.FilePickerSelectionMode
 import com.mohamedrejeb.calf.picker.rememberFilePickerLauncher
 import core.enums.Gender
 import core.enums.PetType
+import core.util.stringByKey.data.BreedString
 import data.model.entity.BreedEntity
 import data.model.entity.ColorEntity
 import data.model.entity.DoctorEntity
@@ -71,6 +72,7 @@ import io.ktor.util.date.GMTDate
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toInstant
 import kotlinx.datetime.toLocalDateTime
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
@@ -105,11 +107,12 @@ fun PetCreate(petId: String, viewModel: PetCreateViewModel = koinInject(), onSav
     val pet by viewModel.pet.collectAsState()
     var loaded by remember { mutableStateOf(false) }
 
-    LaunchedEffect(true){
+    LaunchedEffect(pet){
         if(petId != "") {
             if (pet != null) {
                 viewModel.loadPetColors(pet as PetEntity)
                 viewModel.loadPetDoctor(pet as PetEntity)
+                viewModel.loadPetBreed(pet as PetEntity)
             }
         } else {
             loaded = true
@@ -151,6 +154,7 @@ fun PetInfo(viewModel: PetCreateViewModel, pet: PetEntity?) {
     val colors by viewModel.colors.collectAsState()
     val petColors by viewModel.petColors.collectAsState()
     val petDoctor by viewModel.petDoctor.collectAsState()
+    val petBreed by viewModel.petBreed.collectAsState()
 
     Row(verticalAlignment = Alignment.CenterVertically) {
         Column(
@@ -160,7 +164,7 @@ fun PetInfo(viewModel: PetCreateViewModel, pet: PetEntity?) {
         ) {
             Spacer(modifier = Modifier.height(50.dp))
             PetPhoto(viewModel, pet)
-            PetProps(viewModel, breeds, colors, doctors, pet, petColors, petDoctor)
+            PetProps(viewModel, breeds, colors, doctors, pet, petColors, petDoctor, petBreed)
             Spacer(modifier = Modifier.height(20.dp))
         }
     }
@@ -252,7 +256,8 @@ fun PetProps(
     doctors: List<DoctorEntity>,
     pet: PetEntity?,
     petColors: ArrayList<ColorEntity>,
-    petDoctor: DoctorEntity?
+    petDoctor: DoctorEntity?,
+    petBreed: BreedEntity?
 ) {
     val name = remember { mutableStateOf("") }
     val weight = remember { mutableStateOf("") }
@@ -279,13 +284,13 @@ fun PetProps(
         color.clear()
         color.addAll(it1.map { it.color })
     }
-    BreedSpinner(pet, breeds) {
+    BreedSpinner(petBreed, breeds) {
         breed.value = it
     }
     GenderSpinner(pet) {
         gender.value = it
     }
-    DoctorSpinner(pet, doctors) {
+    DoctorSpinner(petDoctor, doctors) {
         doctor.value = it
     }
     Spacer(modifier = Modifier.height(20.dp))
@@ -306,14 +311,16 @@ fun PetProps(
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
-fun DoctorSpinner(pet: PetEntity?, doctors: List<DoctorEntity>, onSelected: (DoctorEntity) -> Unit) {
-    AutoComplete(pet?.doctor, stringResource(Res.string.doctor), stringResource(Res.string.search_doctor), doctors) {
+fun DoctorSpinner(petDoctor: DoctorEntity?, doctors: List<DoctorEntity>, onSelected: (DoctorEntity) -> Unit) {
+    val doctorValue = petDoctor?.name ?: ""
+
+    AutoComplete(doctorValue, stringResource(Res.string.doctor), stringResource(Res.string.search_doctor), doctors) {
         onSelected(it as DoctorEntity)
     }
 }
 
 @Composable
-fun ColorSpinner(pet: PetEntity?, defaultColors: List<ColorEntity>, availableColors: List<ColorEntity>, onColorSelected: (colors: List<ColorEntity>) -> Unit) {
+fun ColorSpinner(pet: PetEntity?, defaultColors: ArrayList<ColorEntity>, availableColors: List<ColorEntity>, onColorSelected: (colors: List<ColorEntity>) -> Unit) {
     ColorField("Farba zvieratka", defaultColors, availableColors) {
         onColorSelected(availableColors)
     }
@@ -323,7 +330,10 @@ fun ColorSpinner(pet: PetEntity?, defaultColors: List<ColorEntity>, availableCol
 @Composable
 fun GenderSpinner(pet: PetEntity?, onSelected: (Gender) -> Unit) {
     val genderOptions = arrayListOf(stringResource(Res.string.male), stringResource(Res.string.female))
-    Spinner(text = stringResource(Res.string.gender), options = genderOptions) {
+    val defValue = if(pet?.id != "") {
+        if(pet?.gender?.equals("Female") == true) stringResource(Res.string.female) else stringResource(Res.string.male)
+    } else ""
+    Spinner(defaultValue = defValue, text = stringResource(Res.string.gender), options = genderOptions) {
         val option = genderOptions.find{ option -> it == option }
         val gender = if(option == genderOptions[0]) Gender.BOY else Gender.GIRL
         onSelected(gender)
@@ -332,9 +342,10 @@ fun GenderSpinner(pet: PetEntity?, onSelected: (Gender) -> Unit) {
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
-fun BreedSpinner(pet: PetEntity?, breeds: List<BreedEntity>, onSelected: (BreedEntity) -> Unit) {
+fun BreedSpinner(petBreed: BreedEntity?, breeds: List<BreedEntity>, onSelected: (BreedEntity) -> Unit) {
+        val breedValue = if(petBreed == null) "" else stringResource(BreedString.getBreedStringResource(petBreed.key))
     AutoComplete(
-        pet?.breed.toString(),
+        breedValue,
         stringResource(Res.string.breed),
         stringResource(Res.string.search_pet_breed), breeds) {
         onSelected(it as BreedEntity)
@@ -406,7 +417,7 @@ fun validateField(petPropFieldType: PetPropFieldType, it: String): Boolean {
 
 @Composable
 fun DatePropField(pet: PetEntity?, title: String, onDateSelected: (date: GMTDate) -> Unit) {
-    val date = remember { mutableStateOf(GMTDate()) }
+    val date = remember { mutableStateOf(GMTDate(pet?.birthDay?.toInstant(TimeZone.currentSystemDefault())?.epochSeconds)) }
     val isOpen = remember { mutableStateOf(false) }
 
     TextField(
@@ -501,11 +512,12 @@ fun CustomDatePickerDialog(
 @Composable
 fun Spinner(
     text: String,
+    defaultValue: String,
     options: List<String>,
     onSelected: (String) -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
-    var selectedOptionText by remember { mutableStateOf("") }
+    var selectedOptionText by remember { mutableStateOf(defaultValue) }
 
     ExposedDropdownMenuBox(
         expanded = expanded,
