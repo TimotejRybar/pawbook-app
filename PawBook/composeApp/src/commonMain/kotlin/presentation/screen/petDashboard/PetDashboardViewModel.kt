@@ -14,6 +14,7 @@ import domain.model.enums.PetDashboardState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDateTime
 import org.koin.core.component.KoinComponent
@@ -34,6 +35,9 @@ class PetDashboardViewModel() : ViewModel(), KoinComponent {
 
     private val _petDoctor = MutableStateFlow<DoctorEntity?>(null)
     val petDoctor: StateFlow<DoctorEntity?> = _petDoctor.asStateFlow()
+
+    private val _profilePicture = MutableStateFlow<ByteArray?>(null)
+    val profilePicture: StateFlow<ByteArray?> = _profilePicture
 
     fun hexColorsToColorEntities(hexColors: List<String>): StateFlow<Boolean>  {
         val isLoading = MutableStateFlow(false)
@@ -112,6 +116,25 @@ class PetDashboardViewModel() : ViewModel(), KoinComponent {
     fun navigateToDoctor(doctor: DoctorEntity?) {
         viewModelScope.launch {
             intentLauncher.openMap(doctor?.address?.street + ", " + doctor?.address?.city)
+        }
+    }
+
+    fun loadPetProfilePhoto(petId: String) {
+        viewModelScope.launch {
+            petDashboardRepository.loadPetProfilePhoto(petId).collect {
+                when(it) {
+                    is Resources.Error -> {
+                        if(it.message == "no_internet") _state.update { PetDashboardState.NO_INTERNET }
+                        if(it.message == "internal_error") _state.update { PetDashboardState.ERROR }
+                    }
+                    is Resources.Loading -> {
+                        _state.update { PetDashboardState.LOADING }
+                    }
+                    is Resources.Success -> {
+                        _profilePicture.value = it.data
+                    }
+                }
+            }
         }
     }
 }

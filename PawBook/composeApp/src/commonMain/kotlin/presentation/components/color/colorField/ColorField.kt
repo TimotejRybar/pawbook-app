@@ -54,6 +54,7 @@ fun ColorField(title: String, defaultColors: ArrayList<ColorEntity>, availableCo
     val colors = remember { mutableStateListOf<ColorEntity>() }
     val newColors = remember { mutableStateOf(defaultColors) }
 
+    newColors.value.clear()
     newColors.value.addAll(defaultColors)
 
     LaunchedEffect(true){

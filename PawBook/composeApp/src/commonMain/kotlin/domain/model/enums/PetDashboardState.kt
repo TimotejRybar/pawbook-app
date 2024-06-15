@@ -2,5 +2,8 @@ package domain.model.enums
 
 enum class PetDashboardState {
     INIT,
-    LOADED
+    LOADED,
+    NO_INTERNET,
+    ERROR,
+    LOADING
 }

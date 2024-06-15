@@ -130,7 +130,7 @@ fun UserPhoto(viewModel: ProfileViewModel, userProfile: User?, userProfilePhotoU
             }
         })
 
-    CirclePhoto(currentPhotoFile.value, currentPhoto.value) {
+    CirclePhoto(currentPhotoFile.value) {
         openDialog.value = true
     }
     if (openDialog.value) {
@@ -168,7 +168,7 @@ fun UserPhoto(viewModel: ProfileViewModel, userProfile: User?, userProfilePhotoU
         )
     }
     if(userProfilePhotoUploaded) {
-        CirclePhoto(imageUrl = userProfile?.id ?: "", imageData = currentPhotoFile.value) {
+        CirclePhoto(imageData = currentPhotoFile.value) {
             // open photo picker
             openDialog.value = true
         }

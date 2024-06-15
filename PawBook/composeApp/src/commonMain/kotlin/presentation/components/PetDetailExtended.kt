@@ -48,7 +48,7 @@ fun PetInfoExtended(pet: Pet) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Navbar()
-            PetPhoto(pet._id as String)
+            PetPhoto()
             PetName(pet.name)
             Spacer(modifier = Modifier.height(20.dp))
             PetQuestions()
@@ -89,9 +89,9 @@ fun PetQuestions() {
 }
 
 @Composable
-fun PetPhoto(petId: String) {
+fun PetPhoto() {
     var openDialog = remember { mutableStateOf(true) }
-    CirclePhoto(null, petId) {
+    CirclePhoto(null) {
         openDialog.value = true
     }
     if (openDialog.value) {

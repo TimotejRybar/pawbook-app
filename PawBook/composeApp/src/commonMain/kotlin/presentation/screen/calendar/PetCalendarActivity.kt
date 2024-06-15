@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -55,7 +57,6 @@ import utils.compose.addHours
 import utils.compose.addMinutes
 
 enum class ActivityDuration {
-   // val activityOptions = arrayListOf("15 minút", "30 minút", "1 hodina", "2 hodiny", "4 hodiny", "Celý deň")
     MINUTES_15,
     MINUTES_30,
     HOURS_1,
@@ -85,8 +86,8 @@ fun PetCalendarActivity (viewModel: PetCalendarActivityViewModel = koinInject(),
         contentAlignment = Alignment.CenterStart,
     ) {
         Column(
-            modifier = Modifier.fillMaxWidth().background(LocalAppColors.current.secondary),
-            horizontalAlignment = Alignment.CenterHorizontally
+            modifier = Modifier.fillMaxWidth().background(LocalAppColors.current.secondary).verticalScroll(rememberScrollState()),
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Spacer(modifier = Modifier.height(48.dp))
             DateField() {

@@ -14,4 +14,5 @@ interface PetDashboardRepository {
     suspend fun loadPet(petId: String): Flow<PetEntity>
     suspend fun addWeightRecord(petId: String, weight: WeightRecord): Flow<Resources<WeightRecord>>
     suspend fun addEpilepsyRecord(petId: String, epilepsyRecord: EpilepsyRecord): Flow<Resources<EpilepsyRecord>>
+    suspend fun loadPetProfilePhoto(petId: String): Flow<Resources<ByteArray>>
 }

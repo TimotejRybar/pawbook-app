@@ -63,4 +63,14 @@ class PetDashboardRepositoryImpl: PetDashboardRepository, KoinComponent {
     override suspend fun loadDoctor(doctorId: String): Flow<DoctorEntity> {
         return database.getDoctorDao().getById(doctorId);
     }
+
+    override suspend fun loadPetProfilePhoto(petId: String): Flow<Resources<ByteArray>> = flow {
+        emit(Resources.Loading(true))
+        try {
+            val result = petApi.getProfilePhoto(petId)
+            emit((Resources.Success(result?.body())))
+        } catch (e: Exception) {
+            emit(Resources.Error("internal_error"))
+        }
+    }
 }

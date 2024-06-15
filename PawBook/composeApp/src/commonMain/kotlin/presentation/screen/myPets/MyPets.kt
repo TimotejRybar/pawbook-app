@@ -12,6 +12,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -21,44 +22,46 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil3.compose.rememberAsyncImagePainter
 import data.model.entity.PetEntity
-import org.jetbrains.compose.resources.ExperimentalResourceApi
-import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.koinInject
-import pawbook.composeapp.generated.resources.Res
-import pawbook.composeapp.generated.resources.sofka
 import presentation.screen.petCreate.MyPetsViewModel
 import presentation.theme.colors.LocalAppColors
 
 @Composable
 fun MyPets(viewModel: MyPetsViewModel = koinInject(),  onItemClick: (PetEntity) -> Unit) {
+
     LaunchedEffect(false){
         viewModel.fetch()
     }
     Row( verticalAlignment = Alignment.CenterVertically) {
-        Pets(items = viewModel.pets) {
+        Pets(viewModel, items = viewModel.pets) {
             onItemClick(it)
         }
     }
 }
 
 @Composable
-fun Pets(items: SnapshotStateList<PetEntity>, onItemClick: (PetEntity) -> Unit) {
+fun Pets(viewModel: MyPetsViewModel, items: SnapshotStateList<PetEntity>, onItemClick: (PetEntity) -> Unit) {
+
+    val petProfilePhotos = viewModel.petProfilePhotos.collectAsState()
+
     items.forEach {
         PetCard(
             petItem = it,
-            onItemClick = onItemClick
+            onItemClick = onItemClick,
+            profilePhoto = petProfilePhotos.value[it.id]
         )
     }
 }
 
 @Composable
-fun PetCard(petItem: PetEntity, onItemClick: (PetEntity) -> Unit) {
+fun PetCard(petItem: PetEntity, onItemClick: (PetEntity) -> Unit, profilePhoto: ByteArray?) {
     Row (horizontalArrangement = Arrangement.Start,
         modifier = Modifier.fillMaxWidth().clickable { onItemClick(petItem) }.padding(32.dp, 16.dp),
         ) {
         Column {
-            CirclePhoto()
+            CirclePhoto(profilePhoto)
         }
         Column(
             modifier = Modifier.padding(12.dp, 0.dp, 0.dp, 0.dp)
@@ -74,17 +77,19 @@ fun ShortDescription(shortDescription: String) {
     Text(shortDescription, color = Color.Black, fontSize = 10.sp, lineHeight = 15.sp)
 }
 
-@OptIn(ExperimentalResourceApi::class)
 @Composable
-fun CirclePhoto() {
-    Image(
-        painter = painterResource(Res.drawable.sofka),
-        contentDescription = "Pet photo",
-        contentScale = ContentScale.Crop,
-        modifier = Modifier
-            .size(60.dp)
-            .clip(CircleShape)
-    )
+fun CirclePhoto(profilePhoto: ByteArray?) {
+    if(profilePhoto != null) {
+        val painter = rememberAsyncImagePainter(model = profilePhoto)
+        Image(
+            painter = painter,
+            contentDescription = "Pet photo",
+            contentScale = ContentScale.Crop,
+            modifier = Modifier
+                .size(60.dp)
+                .clip(CircleShape)
+        )
+    }
 }
 
 @Composable

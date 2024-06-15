@@ -124,4 +124,13 @@ class PetDetailRepositoryImpl: PetDetailRepository, KoinComponent {
         return database.getBreedDao().getById(petEntity.breed)
     }
 
+    override suspend fun loadPetProfilePhoto(pet: PetEntity): Flow<Resources<ByteArray>> = flow {
+        emit(Resources.Loading(true))
+        try {
+            val result = petApi.getProfilePhoto(pet.id)
+            emit((Resources.Success(result?.body())))
+        } catch (e: Exception) {
+            emit(Resources.Error("internal_error"))
+        }
+    }
 }

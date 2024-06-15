@@ -40,7 +40,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -54,7 +53,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
 import coil3.compose.rememberAsyncImagePainter
 import com.mohamedrejeb.calf.core.LocalPlatformContext
-import com.mohamedrejeb.calf.io.readByteArray
 import com.mohamedrejeb.calf.picker.FilePickerFileType
 import com.mohamedrejeb.calf.picker.FilePickerSelectionMode
 import com.mohamedrejeb.calf.picker.rememberFilePickerLauncher
@@ -69,7 +67,6 @@ import domain.model.Pet
 import domain.model.enums.PetCreateState
 import domain.model.enums.PetPropFieldType
 import io.ktor.util.date.GMTDate
-import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toInstant
@@ -113,6 +110,7 @@ fun PetCreate(petId: String, viewModel: PetCreateViewModel = koinInject(), onSav
                 viewModel.loadPetColors(pet as PetEntity)
                 viewModel.loadPetDoctor(pet as PetEntity)
                 viewModel.loadPetBreed(pet as PetEntity)
+                viewModel.loadPetProfilePhoto(pet as PetEntity)
             }
         } else {
             loaded = true
@@ -155,6 +153,7 @@ fun PetInfo(viewModel: PetCreateViewModel, pet: PetEntity?) {
     val petColors by viewModel.petColors.collectAsState()
     val petDoctor by viewModel.petDoctor.collectAsState()
     val petBreed by viewModel.petBreed.collectAsState()
+    val photo by viewModel.profilePicture.collectAsState()
 
     Row(verticalAlignment = Alignment.CenterVertically) {
         Column(
@@ -163,8 +162,8 @@ fun PetInfo(viewModel: PetCreateViewModel, pet: PetEntity?) {
             modifier = Modifier.verticalScroll(rememberScrollState())
         ) {
             Spacer(modifier = Modifier.height(50.dp))
-            PetPhoto(viewModel, pet)
-            PetProps(viewModel, breeds, colors, doctors, pet, petColors, petDoctor, petBreed)
+            PetPhoto(viewModel, pet, photo)
+            PetProps(viewModel, breeds, colors, doctors, pet, petColors, petDoctor, petBreed, photo)
             Spacer(modifier = Modifier.height(20.dp))
         }
     }
@@ -180,11 +179,8 @@ fun SaveButton(onFormSubmit: () -> Unit) {
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
-fun PetPhoto(viewModel: PetCreateViewModel, pet: PetEntity?) {
+fun PetPhoto(viewModel: PetCreateViewModel, pet: PetEntity?, currentPhotoFile: ByteArray?) {
     val openDialog = remember { mutableStateOf(false) }
-    val currentPhoto = remember { mutableStateOf("") }
-    val currentPhotoFile = remember { mutableStateOf<ByteArray?>(null) }
-    val localScope = rememberCoroutineScope()
 
     val context = LocalPlatformContext.current
     val pickerLauncher = rememberFilePickerLauncher(
@@ -192,16 +188,10 @@ fun PetPhoto(viewModel: PetCreateViewModel, pet: PetEntity?) {
     selectionMode = FilePickerSelectionMode.Single,
     onResult = { files ->
             viewModel.uploadProfilePicture(context, pet, files)
-            localScope.launch {
-                currentPhoto.value = "local"
-                currentPhotoFile.value = files[0].readByteArray(context)
-            }
         })
 
-    val petProfilePhotoUploaded = false
-
-    if(petProfilePhotoUploaded) {
-        CirclePhoto(currentPhotoFile.value, currentPhoto.value) {
+    if(currentPhotoFile != null) {
+        CirclePhoto(currentPhotoFile) {
             openDialog.value = true
         }
     } else {
@@ -257,7 +247,8 @@ fun PetProps(
     pet: PetEntity?,
     petColors: ArrayList<ColorEntity>,
     petDoctor: DoctorEntity?,
-    petBreed: BreedEntity?
+    petBreed: BreedEntity?,
+    photo: ByteArray?
 ) {
     val name = remember { mutableStateOf("") }
     val weight = remember { mutableStateOf("") }
@@ -269,7 +260,6 @@ fun PetProps(
     val gender = remember { mutableStateOf<Gender?>(null) }
     val color = remember { mutableStateListOf("") }
     val doctor = remember { mutableStateOf<DoctorEntity?>(null) }
-    val photo by viewModel.profilePicture.collectAsState()
 
     PetPropField(pet, PetPropFieldType.NAME) {
         name.value = it
@@ -280,7 +270,7 @@ fun PetProps(
     PetPropField(pet, PetPropFieldType.WEIGHT) {
         weight.value = it
     }
-    ColorSpinner(pet, petColors, colors) { it1 ->
+    ColorSpinner(petColors, colors) { it1 ->
         color.clear()
         color.addAll(it1.map { it.color })
     }
@@ -297,7 +287,7 @@ fun PetProps(
     SaveButton {
         // create new pet
         val petData =  Pet(null, name.value, "", PetType.Dog, null, birthDay.value, (gender.value as Gender).value,
-            weight.value.toFloat(), ArrayList(color), breed.value?.id as String, doctor.value?.id, photo, true, arrayListOf(), false,
+            weight.value.toFloat(), ArrayList(color), breed.value?.id as String, doctor.value?.id, "", true, arrayListOf(), false,
             arrayListOf(), null, null)
 
         if (pet?.id == "") {
@@ -320,7 +310,11 @@ fun DoctorSpinner(petDoctor: DoctorEntity?, doctors: List<DoctorEntity>, onSelec
 }
 
 @Composable
-fun ColorSpinner(pet: PetEntity?, defaultColors: ArrayList<ColorEntity>, availableColors: List<ColorEntity>, onColorSelected: (colors: List<ColorEntity>) -> Unit) {
+fun ColorSpinner(
+    defaultColors: ArrayList<ColorEntity>,
+    availableColors: List<ColorEntity>,
+    onColorSelected: (colors: List<ColorEntity>) -> Unit
+) {
     ColorField("Farba zvieratka", defaultColors, availableColors) {
         onColorSelected(availableColors)
     }
@@ -462,11 +456,9 @@ fun DatePropField(pet: PetEntity?, title: String, onDateSelected: (date: GMTDate
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
-fun CirclePhoto(imageData: ByteArray? = null, imageUrl: String? = null, onClick: () -> Unit) {
+fun CirclePhoto(imageData: ByteArray? = null, onClick: () -> Unit) {
     val painter: Painter = if (imageData != null) {
         rememberAsyncImagePainter(model = imageData)
-    } else if (imageUrl != null) {
-        rememberAsyncImagePainter(model = imageUrl)
     } else {
         painterResource(Res.drawable.sofka) // Replace with your placeholder resource
     }

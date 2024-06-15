@@ -1,5 +1,6 @@
 package data.remote
 
+import de.jensklingenberg.ktorfit.Response
 import de.jensklingenberg.ktorfit.http.Body
 import de.jensklingenberg.ktorfit.http.GET
 import de.jensklingenberg.ktorfit.http.POST
@@ -24,6 +25,9 @@ interface PetApi
 
     @POST("pets/uploadProfilePhoto/{petId}")
     suspend fun uploadProfilePhoto(@Path("petId") petId: String, @Body file: MultiPartFormDataContent): String?
+
+    @GET("pets/getProfilePhoto/{petId}")
+    suspend fun getProfilePhoto(@Path("petId") petId: String): Response<ByteArray>?
 
     @POST("pets/addWeightRecord/{petId}")
     suspend fun addWeightRecord(@Path("petId") petId: String, @Body weightRecord: WeightRecord): WeightRecord

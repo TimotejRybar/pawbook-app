@@ -30,8 +30,8 @@ class PetCreateViewModel() : ViewModel(), KoinComponent {
     private val _pet = MutableStateFlow<PetEntity?>(null)
     val pet: StateFlow<PetEntity?> = _pet
 
-    private val _profilePicture = MutableStateFlow("")
-    val profilePicture: StateFlow<String> = _profilePicture
+    private val _profilePicture = MutableStateFlow<ByteArray?>(null)
+    val profilePicture: StateFlow<ByteArray?> = _profilePicture
 
     private val _breeds = MutableStateFlow<ArrayList<BreedEntity>>(arrayListOf())
     val breeds: StateFlow<ArrayList<BreedEntity>> = _breeds
@@ -150,7 +150,7 @@ class PetCreateViewModel() : ViewModel(), KoinComponent {
                         _state.update { PetCreateState.LOADING }
                     }
                     is Resources.Success -> {
-                        _profilePicture.value = it.data ?: ""
+                        _profilePicture.value = fileBytes[0].readByteArray(context)
                         _state.update { PetCreateState.UPLOADED_PHOTO }
                     }
                 }
@@ -171,6 +171,25 @@ class PetCreateViewModel() : ViewModel(), KoinComponent {
                     }
                     is Resources.Success -> {
                         _state.update { PetCreateState.SAVED }
+                    }
+                }
+            }
+        }
+    }
+
+    fun loadPetProfilePhoto(petEntity: PetEntity) {
+        viewModelScope.launch {
+            petDetailRepository.loadPetProfilePhoto(petEntity).collect {
+                when(it) {
+                    is Resources.Error -> {
+                        if(it.message == "no_internet") _state.update { PetCreateState.NO_INTERNET }
+                        if(it.message == "internal_error") _state.update { PetCreateState.ERROR }
+                    }
+                    is Resources.Loading -> {
+                        _state.update { PetCreateState.LOADING }
+                    }
+                    is Resources.Success -> {
+                        _profilePicture.value = it.data
                     }
                 }
             }

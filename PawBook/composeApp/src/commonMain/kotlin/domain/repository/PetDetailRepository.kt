@@ -23,4 +23,5 @@ interface PetDetailRepository {
     suspend fun loadPet(petId: String): Flow<PetEntity>
     suspend fun updatePet(pet: PetEntity?, petData: Pet): Flow<Resources<UpdatePetResult>>
     suspend fun loadPetBreed(petEntity: PetEntity): Flow<BreedEntity>
+    suspend fun loadPetProfilePhoto(pet: PetEntity): Flow<Resources<ByteArray>>
 }

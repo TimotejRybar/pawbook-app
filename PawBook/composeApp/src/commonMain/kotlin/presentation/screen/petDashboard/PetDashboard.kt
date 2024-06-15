@@ -4,6 +4,7 @@ import AppScreen
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -23,9 +24,18 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.graphics.Paint
+import androidx.compose.ui.graphics.PaintingStyle
+import androidx.compose.ui.graphics.PathEffect
+import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil3.compose.rememberAsyncImagePainter
 import compose.icons.FontAwesomeIcons
 import compose.icons.fontawesomeicons.Solid
 import compose.icons.fontawesomeicons.solid.Cut
@@ -35,7 +45,7 @@ import data.model.entity.ColorEntity
 import domain.model.enums.PetDashboardState
 import kotlinx.datetime.LocalDateTime
 import org.jetbrains.compose.resources.ExperimentalResourceApi
-import org.jetbrains.compose.resources.imageResource
+import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.koinInject
 import pawbook.composeapp.generated.resources.Res
 import pawbook.composeapp.generated.resources.sofka
@@ -53,9 +63,11 @@ fun PetDashboard(petId: String, viewModel: PetDashboardViewModel = koinInject())
     val pet by viewModel.pet.collectAsState()
     val petColors by viewModel.petColors.collectAsState()
     val petDoctor by viewModel.petDoctor.collectAsState()
+    val profilePicture by viewModel.profilePicture.collectAsState()
 
     LaunchedEffect(key1 = true) {
         viewModel.loadPet(petId)
+        viewModel.loadPetProfilePhoto(petId)
     }
 
     if(state == PetDashboardState.LOADED) {
@@ -71,7 +83,13 @@ fun PetDashboard(petId: String, viewModel: PetDashboardViewModel = koinInject())
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    CirclePhoto(pet?.id as String)
+                    if(profilePicture != null) {
+                        CirclePhoto(profilePicture)
+                    }
+                    else {
+                        CirclePhotoPlaceholder() {
+                        }
+                    }
                     Column(
                         modifier = Modifier.padding(start = 16.dp),
                         verticalArrangement = Arrangement.Center
@@ -110,6 +128,42 @@ fun PetDashboard(petId: String, viewModel: PetDashboardViewModel = koinInject())
                 }
             }
         }
+}
+
+@Composable
+fun CirclePhotoPlaceholder(onClick: () -> Unit) {
+    val primaryColor = LocalAppColors.current.primary
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = Modifier
+            .size(100.dp)
+            .clip(CircleShape)
+            .clickable { onClick() }
+            .drawBehind {
+                val paint = Paint().apply {
+                    isAntiAlias = true
+                    strokeWidth = 4f
+                    color = primaryColor
+                    style = PaintingStyle.Stroke
+                    pathEffect = PathEffect.dashPathEffect(floatArrayOf(10f, 10f), 0f)
+                }
+                drawIntoCanvas {
+                    it.drawCircle(
+                        center = center,
+                        radius = size.minDimension / 2 - paint.strokeWidth / 2,
+                        paint = paint
+                    )
+                }
+            }
+    ) {
+        Text(
+            text = "Tu bude fotka tvojho miláčika",
+            color = primaryColor,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.padding(8.dp),
+            style = TextStyle(fontSize = 12.sp)
+        )
+    }
 }
 
 @Composable
@@ -184,10 +238,15 @@ fun PetBirthday(birthDay: LocalDateTime?) {
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
-fun CirclePhoto(photoURL: String) {
+fun CirclePhoto(imageData: ByteArray? = null) {
+    val painter: Painter = if (imageData != null) {
+        rememberAsyncImagePainter(model = imageData)
+    } else {
+        painterResource(Res.drawable.sofka) // Replace with your placeholder resource
+    }
+
     Image(
-         imageResource(Res.drawable.sofka),
-        //resource = asyncPainterResource(Config.STORAGE_URl + photoURL),
+        painter = painter,
         contentDescription = "Pet photo",
         contentScale = ContentScale.Crop,
         modifier = Modifier

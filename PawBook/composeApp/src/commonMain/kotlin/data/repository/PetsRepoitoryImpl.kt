@@ -45,6 +45,15 @@ class PetsRepoitoryImpl: PetsRepository, KoinComponent {
             e.printStackTrace()
             emit(Resources.Error("Error while creating CalendarActivity"))
         }
+    }
 
+    override suspend fun fetchPetProfilePhoto(petId: String): Flow<Resources<ByteArray>> = flow {
+        emit(Resources.Loading(true))
+        try {
+            val result = petsApi.getProfilePhoto(petId)
+            emit((Resources.Success(result?.body())))
+        } catch (e: Exception) {
+            emit(Resources.Error("internal_error"))
+        }
     }
 }

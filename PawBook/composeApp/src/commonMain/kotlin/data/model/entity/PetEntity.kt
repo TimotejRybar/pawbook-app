@@ -19,7 +19,7 @@ data class PetEntity(
     val color: ArrayList<String>,
     var breed: String,
     val doctor: String?,
-    val photo: String?,
+    var photo: String?,
     val trackWeight: Boolean,
     val weightHistory: ArrayList<WeightRecord>,
     val trackEpilepsy: Boolean,

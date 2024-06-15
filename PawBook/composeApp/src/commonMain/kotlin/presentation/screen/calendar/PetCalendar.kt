@@ -32,9 +32,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import core.util.YearMonth
 import data.model.entity.CalendarActivityEntity
+import kotlinx.datetime.Clock
 import kotlinx.datetime.DayOfWeek
+import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.Month
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 import org.koin.compose.koinInject
 import presentation.components.calendar.CalendarUiState
 import presentation.theme.colors.LocalAppColors
@@ -51,7 +55,7 @@ fun PetCalendar(viewModel: PetCalendarViewModel = koinInject()) {
 
     Row (verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(32.dp)) {
         Column {
-            PetCalendarContent(dataSource.getDates(yearMonth.value)) {}
+            PetCalendarContent(viewModel, activities, dataSource.getDates(yearMonth.value)) {}
             PetCalendarOverview(activities)
         }
     }
@@ -114,6 +118,8 @@ fun PetCalendarOverview(items: List<CalendarActivityEntity>) {
 
 @Composable
 fun PetCalendarContent(
+    viewModel: PetCalendarViewModel,
+    activities: List<CalendarActivityEntity>,
     dates: List<CalendarUiState.Date>,
     onDateClickListener: (CalendarUiState.Date) -> Unit,
 ) {
@@ -128,10 +134,12 @@ fun PetCalendarContent(
         repeat(6) {
             if (index >= dates.size) return@repeat
             Row {
-                repeat(7) {
+                repeat(7) {day ->
+                    val dayDate = LocalDate(1,1,1)
                     val item = if (index < dates.size) dates[index] else CalendarUiState.empty()
                     PetCalendarItem(
-                        date = item,
+                        activity = viewModel.getCalendarActivity(dayDate, activities),
+                        date = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()),
                         onClickListener = onDateClickListener,
                         modifier = Modifier.weight(1f).heightIn(48.dp, 128.dp)
                     )
@@ -166,9 +174,10 @@ fun PetCalendarWeekDay(s: String, modifier: Modifier) {
 
 @Composable
 fun PetCalendarItem(
-    date: CalendarUiState.Date,
+    date: LocalDateTime,
     onClickListener: (CalendarUiState.Date) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    activity: CalendarActivityEntity?
 ) {
     Box(
         modifier = modifier
@@ -181,14 +190,18 @@ fun PetCalendarItem(
             )
             .border(1.dp, Color.Black)
             .clickable {
-                onClickListener(date)
             }
     ) {
-        Box(contentAlignment = Alignment.Center, modifier = Modifier.padding(32.dp)){
-            Icon(Icons.Filled.Warning, "", tint = LocalAppColors.current.primary, modifier = Modifier.align(Alignment.Center))
+        Box(contentAlignment = Alignment.Center, modifier = Modifier.padding(32.dp)) {
+            Icon(
+                Icons.Filled.Warning,
+                "",
+                tint = LocalAppColors.current.primary,
+                modifier = Modifier.align(Alignment.Center)
+            )
         }
         Text(
-            text = date.dayOfMonth,
+            text = date.dayOfMonth.toString(),
             fontSize = 10.sp,
             color = LocalAppColors.current.primary,
             textAlign = TextAlign.Right,
