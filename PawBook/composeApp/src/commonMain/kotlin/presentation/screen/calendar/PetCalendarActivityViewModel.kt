@@ -9,6 +9,7 @@ import domain.model.CalendarActivity
 import domain.model.enums.PetCalendarActivityState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -18,6 +19,9 @@ class PetCalendarActivityViewModel: ViewModel(), KoinComponent {
     val pets: StateFlow<ArrayList<PetEntity>> = _pets
     val petRepository: PetsRepoitoryImpl by inject()
 
+    private val _petProfilePhotos = MutableStateFlow<MutableMap<String, ByteArray>>(mutableMapOf())
+    val petProfilePhotos: StateFlow<Map<String, ByteArray>> = _petProfilePhotos
+
     private val _state = MutableStateFlow(PetCalendarActivityState.IDLE)
     val state: StateFlow<PetCalendarActivityState> = _state
 
@@ -26,6 +30,28 @@ class PetCalendarActivityViewModel: ViewModel(), KoinComponent {
             petRepository.fetch().collect {
                 pets.value.clear()
                 pets.value.addAll(it)
+                fetchPhotos(it)
+            }
+        }
+    }
+
+    private fun fetchPhotos(pets: List<PetEntity>) {
+        viewModelScope.launch {
+            pets.forEach {petEntity ->
+                petRepository.fetchPetProfilePhoto(petEntity.id).collect {
+                    when(it) {
+                        is Resources.Error -> {
+                            if(it.message == "no_internet") _state.update { PetCalendarActivityState.NO_INTERNET }
+                            if(it.message == "internal_error") _state.update { PetCalendarActivityState.ERROR }
+                        }
+                        is Resources.Loading -> {
+                            _state.update { PetCalendarActivityState.LOADING }
+                        }
+                        is Resources.Success -> {
+                            _petProfilePhotos.value.put(petEntity.id, it.data as ByteArray)
+                        }
+                    }
+                }
             }
         }
     }

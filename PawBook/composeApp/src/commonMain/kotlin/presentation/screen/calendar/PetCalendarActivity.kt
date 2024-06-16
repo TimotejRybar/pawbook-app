@@ -67,10 +67,11 @@ enum class ActivityDuration {
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
-fun PetCalendarActivity (viewModel: PetCalendarActivityViewModel = koinInject(), onSubmit: () -> Unit) {
+fun PetCalendarActivity (activityType: ActivityType?, petId: String?, viewModel: PetCalendarActivityViewModel = koinInject(), onSubmit: () -> Unit) {
     val pets = viewModel.pets.collectAsState()
+    val petProfilePhotos = viewModel.petProfilePhotos.collectAsState()
     val selectedPets = remember { mutableListOf<PetEntity>() }
-    val activity = remember { mutableStateOf<ActivityType?>(null) }
+    val activity = remember { mutableStateOf(activityType) }
     val description = remember { mutableStateOf("") }
     val location = remember { mutableStateOf("") }
     val start = remember { mutableStateOf<LocalDateTime?>(LocalDateTime(LocalDate(1,1,1), LocalTime(1,1))) }
@@ -101,11 +102,11 @@ fun PetCalendarActivity (viewModel: PetCalendarActivityViewModel = koinInject(),
                 duration.value = it
             }
             RepeatEvent()
-            MultiPetInput(pets.value) {
+            MultiPetInput(pets.value, petProfilePhotos.value) {
                 selectedPets.clear()
                 selectedPets.addAll(it)
             }
-            ActivitySpinner {
+            ActivitySpinner(activity.value) {
                 activity.value = it
             }
             LocationField(location.value){
@@ -305,17 +306,20 @@ fun DateField(onSelected: (LocalDate) -> Unit) {
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
-fun MultiPetInput(pets: List<PetEntity>, onPetSelected: (pets: List<PetEntity>) -> Unit) {
-    PetField(stringResource(Res.string.select_pets), pets) {
+fun MultiPetInput(
+    pets: List<PetEntity>, petProfilePhotos: Map<String, ByteArray>,
+    onPetSelected: (pets: List<PetEntity>) -> Unit) {
+    PetField(stringResource(Res.string.select_pets), pets, petProfilePhotos) {
         onPetSelected(pets)
     }
 }
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
-fun ActivitySpinner(onSelected: (ActivityType) -> Unit) {
+fun ActivitySpinner(value: ActivityType?, onSelected: (ActivityType) -> Unit) {
     val activityOptions = arrayListOf("Vychádzka", "Návšteva veterinára", "Lieky")
-    Spinner(defaultValue = "", text = stringResource(Res.string.activity_type), options = activityOptions) {
+    val defaultValue = value?.value ?: ""
+    Spinner(defaultValue = defaultValue, text = stringResource(Res.string.activity_type), options = activityOptions) {
         onSelected(ActivityType.entries[activityOptions.indexOf(it)])
     }
 }

@@ -1,5 +1,6 @@
 package presentation.components.petField
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -29,6 +30,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
@@ -36,18 +38,21 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import core.common.Config
+import coil3.compose.rememberAsyncImagePainter
 import data.model.entity.PetEntity
-import io.kamel.core.utils.URI
-import io.kamel.image.KamelImage
-import io.kamel.image.asyncPainterResource
+import org.jetbrains.compose.resources.ExperimentalResourceApi
+import org.jetbrains.compose.resources.painterResource
+import pawbook.composeapp.generated.resources.Res
+import pawbook.composeapp.generated.resources.sofka
 import presentation.screen.login.StyledButton
 import presentation.theme.colors.LocalAppColors
 
+@OptIn(ExperimentalResourceApi::class)
 @Composable
 fun PetPicker(
     title: String,
     availablePets: List<PetEntity>,
+    petProfiles: Map<String, ByteArray>,
     selectedPets: SnapshotStateList<PetEntity>,
     onPetsSelected: (List<PetEntity>) -> Unit,
     onDismissRequest: () -> Unit
@@ -78,7 +83,8 @@ fun PetPicker(
                     columns = GridCells.Fixed(cellCount)
                 ) {
                     items(availablePets) { pet ->
-                        PetCircle(pet, 50.dp, false, newPets.value.contains(pet)) { petEntity: PetEntity, selected: Boolean ->
+                        val imageData = petProfiles[pet.id]
+                        PetCircle(pet, imageData, 50.dp, false, newPets.value.contains(pet)) { petEntity: PetEntity, selected: Boolean ->
                             if(selected) {
                                 newPets.value.add(pet)
                             } else {
@@ -102,13 +108,22 @@ fun DialogTitle(title: String) {
     Text(title, fontSize = 18.sp, color = LocalAppColors.current.primary, textAlign = TextAlign.Center)
 }
 
+
+
+@OptIn(ExperimentalResourceApi::class)
 @Composable
-fun PetCircle(pet: PetEntity, circleSize: Dp = 50.dp, displayOnly: Boolean, isDefaultSelected: Boolean, onPetSelected: (PetEntity, Boolean) -> Unit) {
+fun PetCircle(pet: PetEntity, petProfilePhoto: ByteArray?, circleSize: Dp = 50.dp, displayOnly: Boolean, isDefaultSelected: Boolean, onPetSelected: (PetEntity, Boolean) -> Unit) {
 
     val isSelected = remember { mutableStateOf(isDefaultSelected) }
 
-    KamelImage(
-        resource = asyncPainterResource(data = URI(Config.STORAGE_URl)),
+    val painter: Painter = if (petProfilePhoto != null) {
+        rememberAsyncImagePainter(model = petProfilePhoto)
+    } else {
+        painterResource(Res.drawable.sofka) // TODO: replace with placeholder
+    }
+
+    Image(
+        painter = painter,
         contentDescription = "Pet photo",
         contentScale = ContentScale.Crop,
         modifier = Modifier

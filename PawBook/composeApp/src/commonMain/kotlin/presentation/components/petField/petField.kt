@@ -26,7 +26,7 @@ import data.model.entity.PetEntity
 import presentation.theme.colors.LocalAppColors
 
 @Composable
-fun PetField(title: String, availablePets: List<PetEntity>, onPetSelected: (List<PetEntity>) -> Unit) {
+fun PetField(title: String, availablePets: List<PetEntity>, petProfilePhotos: Map<String, ByteArray>, onPetSelected: (List<PetEntity>) -> Unit) {
     var showDialog by remember { mutableStateOf(false) }
     val colors = remember { mutableStateListOf<PetEntity>() }
     val newPets = remember { mutableStateListOf<PetEntity>() }
@@ -36,7 +36,8 @@ fun PetField(title: String, availablePets: List<PetEntity>, onPetSelected: (List
         verticalAlignment = Alignment.CenterVertically
     ) {
         newPets.forEach { pet ->
-            PetCircle(pet, 24.dp, true, false) { pet: PetEntity, selected: Boolean ->
+            val petProfilePhoto = petProfilePhotos[pet.id]
+            PetCircle(pet, petProfilePhoto, 24.dp, true, false) { pet: PetEntity, selected: Boolean ->
 
             }
         }
@@ -62,6 +63,7 @@ fun PetField(title: String, availablePets: List<PetEntity>, onPetSelected: (List
             },
             selectedPets = colors,
             availablePets = availablePets,
+            petProfiles = petProfilePhotos,
             onDismissRequest = { showDialog = false }
         )
     }

@@ -40,8 +40,10 @@ import compose.icons.FontAwesomeIcons
 import compose.icons.fontawesomeicons.Solid
 import compose.icons.fontawesomeicons.solid.Cut
 import compose.icons.fontawesomeicons.solid.Venus
+import core.enums.ActivityType
 import data.model.entity.CalendarActivityEntity
 import data.model.entity.ColorEntity
+import data.model.entity.PetEntity
 import domain.model.enums.PetDashboardState
 import kotlinx.datetime.LocalDateTime
 import org.jetbrains.compose.resources.ExperimentalResourceApi
@@ -57,7 +59,7 @@ import presentation.theme.colors.LocalAppColors
 import utils.compose.format
 
 @Composable
-fun PetDashboard(petId: String, viewModel: PetDashboardViewModel = koinInject()) {
+fun PetDashboard(petId: String, onRedirect: (route: String) -> Unit, viewModel: PetDashboardViewModel = koinInject()) {
 
     val state by viewModel.state.collectAsState()
     val pet by viewModel.pet.collectAsState()
@@ -123,8 +125,9 @@ fun PetDashboard(petId: String, viewModel: PetDashboardViewModel = koinInject())
                     }
                     TrackWeightOverview(viewModel, pet)
                     TrackEpilepsyOverview(viewModel, pet)
-                    NextTrimmingOverview(viewModel, null) {
-                    }
+                    NextTrimmingOverview(viewModel, pet,null, onRedirect = {
+                        onRedirect(it)
+                    })
                 }
             }
         }
@@ -167,13 +170,14 @@ fun CirclePhotoPlaceholder(onClick: () -> Unit) {
 }
 
 @Composable
-fun NextTrimmingOverview(viewModel: PetDashboardViewModel, nextTrimmingActivity: CalendarActivityEntity?, onRedirect: (route: String) -> Unit){
+fun NextTrimmingOverview(viewModel: PetDashboardViewModel, petEntity: PetEntity?, nextTrimmingActivity: CalendarActivityEntity?, onRedirect: (route: String) -> Unit){
     ListItem(
         modifier = Modifier
             .padding(16.dp, 16.dp)
             .fillMaxWidth()
             .clickable {
-                onRedirect(AppScreen.CalendarActivity.name)
+                if(nextTrimmingActivity == null)
+                onRedirect(AppScreen.CalendarActivity.name + "/" + ActivityType.NailTrimming.value + "/" + petEntity?.id)
             },
         leadingContent = {
             Row {

@@ -46,6 +46,7 @@ import compose.icons.fontawesomeicons.regular.Edit
 import compose.icons.fontawesomeicons.regular.File
 import compose.icons.fontawesomeicons.regular.Folder
 import compose.icons.fontawesomeicons.solid.Plus
+import core.enums.ActivityType
 import data.model.entity.PetEntity
 import domain.model.enums.StorageState
 import kotlinx.coroutines.launch
@@ -282,7 +283,6 @@ fun AppContent(navController: NavHostController = rememberNavController()) {
                                 navController.navigate(AppScreen.petDashboardRoute(it.id))
                             })
                         }
-                        val rr = navController.currentDestination?.route
                         composable(
                             route = "PetCreate/{petId}",
                             arguments = listOf(navArgument("petId") { type = NavType.StringType })
@@ -302,8 +302,19 @@ fun AppContent(navController: NavHostController = rememberNavController()) {
                         composable(route = AppScreen.Calendar.name) {
                             PetCalendar()
                         }
+                        composable(route = "CalendarActivity/{activityType}/{petId}",
+                            arguments = listOf(
+                                navArgument("activityType") { type = NavType.StringType },
+                                navArgument("petId") { type = NavType.StringType })
+                        ) {
+                            val activityType = it.arguments?.getString("activityType") ?: return@composable
+                            val petId = it.arguments?.getString("petId") ?: return@composable
+                            PetCalendarActivity(ActivityType.valueOf(activityType), petId = petId) {
+
+                            }
+                        }
                         composable(route = AppScreen.CalendarActivity.name) {
-                            PetCalendarActivity {
+                            PetCalendarActivity(null, null) {
                                 navController.navigate(AppScreen.Calendar.name)
                             }
                         }
@@ -317,7 +328,9 @@ fun AppContent(navController: NavHostController = rememberNavController()) {
                             arguments = listOf(navArgument("petId") { type = NavType.StringType })
                         ) { backStackEntry ->
                             val petId = backStackEntry.arguments?.getString("petId") ?: return@composable
-                            PetDashboard(petId = petId)
+                            PetDashboard(petId = petId, onRedirect = {
+                                navController.navigate(it)
+                            })
                         }
                         composable(route = AppScreen.Home.name) {
                             Home()

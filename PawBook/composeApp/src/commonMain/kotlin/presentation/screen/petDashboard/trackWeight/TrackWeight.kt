@@ -177,7 +177,7 @@ fun WeightHistoryChart(weightHistory: ArrayList<WeightRecord>?, onAddClick: ()->
         lineShadow = true,
     ))
 
-    Column(modifier = Modifier.fillMaxSize().padding(32.dp)) {
+    Column(modifier = Modifier.fillMaxSize().padding(0.dp, 32.dp)) {
         if (weightHistory.isNotEmpty()) {
             Box(modifier = Modifier.weight(1f).fillMaxSize()) {
                 LineChart(
