@@ -22,15 +22,22 @@ class PetCalendarActivityViewModel: ViewModel(), KoinComponent {
     private val _petProfilePhotos = MutableStateFlow<MutableMap<String, ByteArray>>(mutableMapOf())
     val petProfilePhotos: StateFlow<Map<String, ByteArray>> = _petProfilePhotos
 
+    private val _requestPet = MutableStateFlow<PetEntity?>(null)
+    val requestPet: StateFlow<PetEntity?> = _requestPet
+
     private val _state = MutableStateFlow(PetCalendarActivityState.IDLE)
     val state: StateFlow<PetCalendarActivityState> = _state
 
-    fun loadPets(){
+    fun loadPets(requestPetId: String?){
         viewModelScope.launch {
             petRepository.fetch().collect {
                 pets.value.clear()
                 pets.value.addAll(it)
                 fetchPhotos(it)
+
+                if(requestPetId != null) {
+                    _requestPet.value = pets.value.find { it.id == requestPetId}
+                }
             }
         }
     }

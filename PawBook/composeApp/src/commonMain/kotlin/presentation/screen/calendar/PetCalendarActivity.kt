@@ -19,6 +19,7 @@ import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -70,7 +71,8 @@ enum class ActivityDuration {
 fun PetCalendarActivity (activityType: ActivityType?, petId: String?, viewModel: PetCalendarActivityViewModel = koinInject(), onSubmit: () -> Unit) {
     val pets = viewModel.pets.collectAsState()
     val petProfilePhotos = viewModel.petProfilePhotos.collectAsState()
-    val selectedPets = remember { mutableListOf<PetEntity>() }
+    val requestPet = viewModel.requestPet.collectAsState()
+    val selectedPets = remember { mutableStateListOf<PetEntity>() }
     val activity = remember { mutableStateOf(activityType) }
     val description = remember { mutableStateOf("") }
     val location = remember { mutableStateOf("") }
@@ -79,7 +81,14 @@ fun PetCalendarActivity (activityType: ActivityType?, petId: String?, viewModel:
     val duration = remember { mutableStateOf<ActivityDuration?>(null) }
 
     LaunchedEffect(true) {
-        viewModel.loadPets()
+        viewModel.loadPets(petId)
+    }
+
+    LaunchedEffect(requestPet.value) {
+        if(requestPet.value != null) {
+            selectedPets.clear()
+            selectedPets.add(requestPet.value as PetEntity)
+        }
     }
 
     Box(
@@ -102,7 +111,7 @@ fun PetCalendarActivity (activityType: ActivityType?, petId: String?, viewModel:
                 duration.value = it
             }
             RepeatEvent()
-            MultiPetInput(pets.value, petProfilePhotos.value) {
+            MultiPetInput(selectedPets, pets.value, petProfilePhotos.value) {
                 selectedPets.clear()
                 selectedPets.addAll(it)
             }
@@ -307,9 +316,10 @@ fun DateField(onSelected: (LocalDate) -> Unit) {
 @OptIn(ExperimentalResourceApi::class)
 @Composable
 fun MultiPetInput(
+    selectedPets: List<PetEntity>,
     pets: List<PetEntity>, petProfilePhotos: Map<String, ByteArray>,
     onPetSelected: (pets: List<PetEntity>) -> Unit) {
-    PetField(stringResource(Res.string.select_pets), pets, petProfilePhotos) {
+    PetField(stringResource(Res.string.select_pets), selectedPets, pets, petProfilePhotos) {
         onPetSelected(pets)
     }
 }
