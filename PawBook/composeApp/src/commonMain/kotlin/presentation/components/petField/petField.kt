@@ -11,6 +11,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -29,8 +30,12 @@ import presentation.theme.colors.LocalAppColors
 fun PetField(title: String, selectedPets: List<PetEntity>, availablePets: List<PetEntity>, petProfilePhotos: Map<String, ByteArray>, onPetSelected: (List<PetEntity>) -> Unit) {
     var showDialog by remember { mutableStateOf(false) }
     val colors = remember { mutableStateListOf<PetEntity>() }
-    val newPets = remember { mutableStateListOf<PetEntity>() }
-    newPets.addAll(selectedPets)
+    val newPets = remember {  mutableStateListOf<PetEntity>() }
+
+    LaunchedEffect(key1 = selectedPets.size) {
+        newPets.clear()
+        newPets.addAll(selectedPets)
+    }
 
     Title(title)
     Row(

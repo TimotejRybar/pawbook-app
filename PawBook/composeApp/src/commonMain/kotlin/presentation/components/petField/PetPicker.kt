@@ -130,8 +130,10 @@ fun PetCircle(pet: PetEntity, petProfilePhoto: ByteArray?, circleSize: Dp = 50.d
             .size(circleSize)
             .clip(CircleShape)
             .clickable {
-                isSelected.value = !isSelected.value
-                onPetSelected(pet,isSelected.value)
+                if(!displayOnly) {
+                    isSelected.value = !isSelected.value
+                    onPetSelected(pet, isSelected.value)
+                }
             }
     )
     Box(
