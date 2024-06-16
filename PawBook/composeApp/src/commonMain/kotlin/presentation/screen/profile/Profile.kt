@@ -130,9 +130,6 @@ fun UserPhoto(viewModel: ProfileViewModel, userProfile: User?, userProfilePhotoU
             }
         })
 
-    CirclePhoto(currentPhotoFile.value) {
-        openDialog.value = true
-    }
     if (openDialog.value) {
         AlertDialog(
             containerColor = LocalAppColors.current.secondary,
