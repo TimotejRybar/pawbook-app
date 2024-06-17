@@ -424,4 +424,8 @@
     <string name="back">Naspäť</string>
     <string name="messages">Správy</string>
     <string name="repeated_activity">Opakovanie</string>
+    <string name="gallery">Galéria</string>
+    <string name="new_album">Nový album</string>
+    <string name="upload_photo">Nahrať fotku</string>
+    <string name="gallery_upload">Nahrať média</string>
 </resources>

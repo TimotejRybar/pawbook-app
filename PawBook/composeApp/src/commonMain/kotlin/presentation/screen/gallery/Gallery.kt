@@ -3,7 +3,7 @@ package presentation.screen.gallery
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.heightIn
@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import core.common.Config
 import data.model.entity.PetPhotoEntity
+import domain.model.enums.GalleryState
 import io.kamel.core.utils.URI
 import io.kamel.image.KamelImage
 import io.kamel.image.asyncPainterResource
@@ -36,7 +37,7 @@ import pawbook.composeapp.generated.resources.sofka
 import presentation.theme.colors.LocalAppColors
 
 @Composable
-fun Gallery(viewModel: GalleryViewModel = koinInject(),  onItemClick: (PetPhotoEntity) -> Unit) {
+fun Gallery(viewModel: GalleryViewModel = koinInject(), galleryState: GalleryState, onItemClick: (PetPhotoEntity) -> Unit) {
     val photos = remember { mutableListOf<PetPhotoEntity>() }
 
     LaunchedEffect(key1 = true){
@@ -45,9 +46,9 @@ fun Gallery(viewModel: GalleryViewModel = koinInject(),  onItemClick: (PetPhotoE
             photos.addAll(it)
         }
     }
-    Box(
+    Column(
         modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.CenterStart,
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         GalleryContent(items = photos, onItemClick)
     }

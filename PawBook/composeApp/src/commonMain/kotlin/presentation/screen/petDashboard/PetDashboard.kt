@@ -231,12 +231,6 @@ fun PetBirthday(birthDay: LocalDateTime?) {
             text = birthDay?.format().toString(),
             color = LocalAppColors.current.primary
         )
-        /*Icon(
-            modifier = Modifier.size(24.dp),
-            imageVector = FontAwesomeIcons.Solid.BirthdayCake,
-            contentDescription = "weight",
-            tint = LocalAppColors.current.primary
-        )*/
     }
 }
 

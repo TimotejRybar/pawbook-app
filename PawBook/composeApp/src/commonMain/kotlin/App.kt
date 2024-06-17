@@ -3,6 +3,7 @@ import core.di.KoinModule
 import core.di.KoinModule.provideIntentLauncher
 import core.util.IntentLauncher
 import data.local.Preferences
+import data.repository.GalleryRepositoryImpl
 import data.repository.LoginRepositoryImpl
 import data.repository.PetCalendarRepositoryImpl
 import data.repository.PetDashboardRepositoryImpl
@@ -16,6 +17,8 @@ import org.koin.dsl.module
 import presentation.screen.calendar.PetCalendarActivityViewModel
 import presentation.screen.calendar.PetCalendarViewModel
 import presentation.screen.contact.ContactViewModel
+import presentation.screen.gallery.GalleryViewModel
+import presentation.screen.galleryUpload.GalleryUploadViewModel
 import presentation.screen.home.HomeViewModel
 import presentation.screen.login.LoginViewModel
 import presentation.screen.petCreate.MyPetsViewModel
@@ -40,7 +43,8 @@ enum class AppScreen() {
     Profile,
     Contact,
     Storage,
-    Conversations;
+    Conversations,
+    GalleryUpload;
 
     companion object {
         fun petDashboardRoute(petId: String) = "PetDashboard/$petId"
@@ -103,6 +107,10 @@ fun appModule() = module {
     single<StorageRepositoryImpl> { StorageRepositoryImpl() }
 
     single<IntentLauncher> { provideIntentLauncher() }
+
+    single<GalleryRepositoryImpl> { GalleryRepositoryImpl() }
+    single<GalleryViewModel> { GalleryViewModel() }
+    single<GalleryUploadViewModel> { GalleryUploadViewModel()}
 }
 
 

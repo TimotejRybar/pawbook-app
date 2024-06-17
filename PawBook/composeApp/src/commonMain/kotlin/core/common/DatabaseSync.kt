@@ -7,6 +7,7 @@ import data.model.entity.CalendarActivityEntity
 import data.model.entity.ColorEntity
 import data.model.entity.DoctorEntity
 import data.model.entity.PetEntity
+import data.model.entity.PetPhotoEntity
 import data.model.entity.StorageEntryEntity
 import data.remote.BreedApi
 import data.remote.CalendarActivityApi
@@ -42,14 +43,13 @@ class DatabaseSync: KoinComponent {
     private val petApi: PetApi by inject()
     private val calendarApi: CalendarActivityApi by inject()
     private val storageApi: StorageApi by inject()
-
     private val database: AppDatabase by inject()
 
     suspend fun synchronizeData(): Flow<Resources<String>> = flow {
         try {
             val pets = petApi.fetch()
             val calendarActivities = calendarApi.fetch()
-            //val petPhotos = petPhotoApi.fetch()
+            val petPhotos = petApi.fetchGallery()
             val allFiles = storageApi.fetch();
 
             val myPets = pets.pets.map {
@@ -60,9 +60,9 @@ class DatabaseSync: KoinComponent {
                 CalendarActivityEntity(it._id as String, it.pets, it.start as LocalDateTime, it.end as LocalDateTime, it.activityType, it.location, it.description, it.createdAt as LocalDateTime, it.updatedAt as LocalDateTime)
             }
 
-            //val gallery = petPhotos.gallery.map {
-            //    PetPhotoEntity(it._id, it.author as String, it.pets, it.description, it.file, it.created, it.updated)
-            //}
+            val gallery = petPhotos.gallery.map {
+                PetPhotoEntity(it._id, it.author as String, it.pets, it.name, it.mediaType, it.description, it.file, it.created, it.updated)
+            }
 
             val storage = allFiles.storage.map {
                 StorageEntryEntity(it._id as String, StorageEntryType.fromValue(it.storageEntryType), it.name, it.vPath, it.storageKey, it.createdAt as LocalDateTime, it.updatedAt as LocalDateTime)
@@ -71,7 +71,7 @@ class DatabaseSync: KoinComponent {
             database.getPetDao().insertAll(myPets)
             database.getCalendarDao().insertAll(activities)
             database.getStorageDao().insertAll(storage)
-            //database.getPetPhotoDao().insertAll(gallery)
+            database.getPetPhotoDao().insertAll(gallery)
             emit(Resources.Success(""))
 
         } catch (e: Exception) {

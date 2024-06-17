@@ -6,4 +6,8 @@ enum class GalleryState {
     ERROR,
     SUCCESS,
     NO_INTERNET,
+    CREATE_ALBUM,
+    UPLOAD_PHOTO,
+    INVALID_FILE,
+    UPLOADED_FILE
 }

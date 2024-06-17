@@ -44,10 +44,13 @@ import compose.icons.fontawesomeicons.Regular
 import compose.icons.fontawesomeicons.Solid
 import compose.icons.fontawesomeicons.regular.Edit
 import compose.icons.fontawesomeicons.regular.File
+import compose.icons.fontawesomeicons.regular.FileImage
 import compose.icons.fontawesomeicons.regular.Folder
+import compose.icons.fontawesomeicons.solid.Folder
 import compose.icons.fontawesomeicons.solid.Plus
 import core.enums.ActivityType
 import data.model.entity.PetEntity
+import domain.model.enums.GalleryState
 import domain.model.enums.StorageState
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.ExperimentalResourceApi
@@ -55,8 +58,11 @@ import org.jetbrains.compose.resources.stringResource
 import pawbook.composeapp.generated.resources.Res
 import pawbook.composeapp.generated.resources.contact
 import pawbook.composeapp.generated.resources.documents
+import pawbook.composeapp.generated.resources.gallery
+import pawbook.composeapp.generated.resources.gallery_upload
 import pawbook.composeapp.generated.resources.loading
 import pawbook.composeapp.generated.resources.messages
+import pawbook.composeapp.generated.resources.new_album
 import pawbook.composeapp.generated.resources.new_folder
 import pawbook.composeapp.generated.resources.profile
 import pawbook.composeapp.generated.resources.screen_calendar
@@ -69,6 +75,7 @@ import pawbook.composeapp.generated.resources.screen_pet_dashboard
 import pawbook.composeapp.generated.resources.screen_pet_edit
 import pawbook.composeapp.generated.resources.screen_register
 import pawbook.composeapp.generated.resources.upload_file
+import pawbook.composeapp.generated.resources.upload_photo
 import presentation.components.button.FabItem
 import presentation.components.button.MultiFloatingActionButton
 import presentation.navigation.Navigation
@@ -76,6 +83,7 @@ import presentation.screen.calendar.PetCalendar
 import presentation.screen.calendar.PetCalendarActivity
 import presentation.screen.contact.Contact
 import presentation.screen.gallery.Gallery
+import presentation.screen.galleryUpload.GalleryUpload
 import presentation.screen.home.Home
 import presentation.screen.login.LoginScreen
 import presentation.screen.myPets.MyPets
@@ -108,7 +116,9 @@ fun AppContent(navController: NavHostController = rememberNavController()) {
         AppScreen.Profile.name to stringResource(Res.string.profile),
         AppScreen.Contact.name to stringResource(Res.string.contact),
         AppScreen.Storage.name to stringResource(Res.string.documents),
-        AppScreen.Conversations.name to stringResource(Res.string.messages)
+        AppScreen.Conversations.name to stringResource(Res.string.messages),
+        AppScreen.Gallery.name to stringResource(Res.string.gallery),
+        AppScreen.GalleryUpload.name to stringResource(Res.string.gallery_upload)
     )
 
     var currentRoute = navBackStackEntry?.destination?.route
@@ -148,6 +158,7 @@ fun AppContent(navController: NavHostController = rememberNavController()) {
             val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
             val scope = rememberCoroutineScope()
             val storageState = remember { mutableStateOf(StorageState.INIT) }
+            val galleryState = remember { mutableStateOf(GalleryState.IDLE) }
             val subPage = remember { mutableStateOf(false) }
 
             Navigation(drawerState, onNavigate = { navController.navigate(it.name) }) {
@@ -183,6 +194,20 @@ fun AppContent(navController: NavHostController = rememberNavController()) {
                                         },
                                         FabItem(FontAwesomeIcons.Regular.File, label = stringResource(Res.string.upload_file)) {
                                             storageState.value = StorageState.UPLOAD_FILE
+                                        }
+                                    )
+                                )
+                            }
+                            AppScreen.Gallery.name -> {
+                                MultiFloatingActionButton(
+                                    fabIcon = FontAwesomeIcons.Solid.Plus,
+                                    items = arrayListOf(
+                                        FabItem(FontAwesomeIcons.Solid.Folder, label = stringResource(Res.string.new_album)) {
+                                            galleryState.value = GalleryState.CREATE_ALBUM
+                                        },
+                                        FabItem(FontAwesomeIcons.Regular.FileImage, label = stringResource(Res.string.upload_photo)) {
+                                            galleryState.value = GalleryState.UPLOAD_PHOTO
+                                            navController.navigate(AppScreen.GalleryUpload.name)
                                         }
                                     )
                                 )
@@ -319,9 +344,12 @@ fun AppContent(navController: NavHostController = rememberNavController()) {
                             }
                         }
                         composable(route = AppScreen.Gallery.name) {
-                            Gallery {
+                            Gallery(galleryState = galleryState.value) {
 
                             }
+                        }
+                        composable(route = AppScreen.GalleryUpload.name) {
+                            GalleryUpload()
                         }
                         composable(
                             route = "PetDashboard/{petId}",

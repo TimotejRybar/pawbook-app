@@ -91,6 +91,7 @@ import pawbook.composeapp.generated.resources.select_photo
 import pawbook.composeapp.generated.resources.sofka
 import presentation.components.autocomplete.AutoComplete
 import presentation.components.color.colorField.ColorField
+import presentation.components.petTypeField.PetTypeField
 import presentation.screen.login.ButtonStyle
 import presentation.screen.login.StyledButton
 import presentation.screen.profile.CirclePhotoUploadPlaceholder
@@ -261,6 +262,9 @@ fun PetProps(
     val color = remember { mutableStateListOf("") }
     val doctor = remember { mutableStateOf<DoctorEntity?>(null) }
 
+    PetTypeField {
+
+    }
     PetPropField(pet, PetPropFieldType.NAME) {
         name.value = it
     }

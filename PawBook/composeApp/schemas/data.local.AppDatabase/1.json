@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "38864710e602ce415bcfa154895891d4",
+    "identityHash": "e6fe757448f02083f41608d9c8b6a55b",
     "entities": [
       {
         "tableName": "BreedEntity",
@@ -344,7 +344,7 @@
       },
       {
         "tableName": "PetPhotoEntity",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `author` TEXT NOT NULL, `pets` TEXT NOT NULL, `description` TEXT, `file` TEXT NOT NULL, `createdAt` TEXT, `updatedAt` TEXT, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `author` TEXT NOT NULL, `pets` TEXT NOT NULL, `name` TEXT NOT NULL, `mediaType` TEXT NOT NULL, `description` TEXT, `file` TEXT NOT NULL, `createdAt` TEXT, `updatedAt` TEXT, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -361,6 +361,18 @@
           {
             "fieldPath": "pets",
             "columnName": "pets",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "mediaType",
+            "columnName": "mediaType",
             "affinity": "TEXT",
             "notNull": true
           },
@@ -450,7 +462,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '38864710e602ce415bcfa154895891d4')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'e6fe757448f02083f41608d9c8b6a55b')"
     ]
   }
 }
