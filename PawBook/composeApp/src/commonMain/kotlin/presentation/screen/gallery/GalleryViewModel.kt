@@ -17,8 +17,11 @@ import org.koin.core.component.inject
 @Serializable
 data class FileData(
     val name: String,
-    val mediaType: MediaType, val data: ByteArray,
-    val pets: List<String>, val description: String)
+    val mediaType: MediaType,
+    val data: ByteArray,
+    val pets: List<String>,
+    val description: String,
+)
 
 class GalleryViewModel() : ViewModel(), KoinComponent {
     private val galleryRepository: GalleryRepositoryImpl by inject()

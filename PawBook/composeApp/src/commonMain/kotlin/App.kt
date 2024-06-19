@@ -28,6 +28,8 @@ import presentation.screen.profile.ProfileViewModel
 import presentation.screen.register.RegisterViewModel
 import presentation.screen.splash.SplashViewModel
 import presentation.screen.storage.StorageViewModel
+import utils.compose.ThumbnailGenerator
+import utils.compose.getThumbnailGenerator
 
 enum class AppScreen() {
     Splash,
@@ -111,6 +113,8 @@ fun appModule() = module {
     single<GalleryRepositoryImpl> { GalleryRepositoryImpl() }
     single<GalleryViewModel> { GalleryViewModel() }
     single<GalleryUploadViewModel> { GalleryUploadViewModel()}
+
+    single<ThumbnailGenerator> { getThumbnailGenerator() }
 }
 
 
